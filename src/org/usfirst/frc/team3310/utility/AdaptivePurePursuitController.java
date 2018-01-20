@@ -100,10 +100,10 @@ public class AdaptivePurePursuitController {
         // Update the controllers Kf and set point.
 		for (TalonSRXEncoder motorController : motorControllers) {
 			if (motorController.isRight()) {
-				motorController.setVelocityWorld(-setpoint.right);
+				motorController.setVelocityWorld(setpoint.right);
 			}
 			else {
-				motorController.setVelocityWorld(-setpoint.left);
+				motorController.setVelocityWorld(setpoint.left);
 			}
 		}
 		

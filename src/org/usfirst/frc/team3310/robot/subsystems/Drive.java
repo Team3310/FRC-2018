@@ -8,6 +8,7 @@ import org.usfirst.frc.team3310.robot.OI;
 import org.usfirst.frc.team3310.robot.Robot;
 import org.usfirst.frc.team3310.robot.RobotMap;
 import org.usfirst.frc.team3310.utility.AdaptivePurePursuitController;
+import org.usfirst.frc.team3310.utility.BHRDifferentialDrive;
 import org.usfirst.frc.team3310.utility.BHRMathUtils;
 import org.usfirst.frc.team3310.utility.CheesyDriveHelper;
 import org.usfirst.frc.team3310.utility.ControlLoopable;
@@ -39,8 +40,8 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drive extends Subsystem implements ControlLoopable
@@ -87,11 +88,8 @@ public class Drive extends Subsystem implements ControlLoopable
 	private WPI_TalonSRX rightDrive2;
 	private WPI_TalonSRX rightDrive3;
 
-	private DifferentialDrive m_drive;
+	private BHRDifferentialDrive m_drive;
 	private CheesyDriveHelper driveHelper= new CheesyDriveHelper();
-
-	private DigitalInput hopperSensorRed;
-	private DigitalInput hopperSensorBlue;
 
 	
 	private double climbSpeed;
@@ -101,7 +99,7 @@ public class Drive extends Subsystem implements ControlLoopable
 	private double periodMs;
 
 	// Pneumatics
-//	private Solenoid speedShift;
+	private Solenoid speedShift;
 
 	// Input devices
 	public static final int DRIVER_INPUT_JOYSTICK_ARCADE = 0;
@@ -173,6 +171,10 @@ public class Drive extends Subsystem implements ControlLoopable
 	private double kPGyro = 0.04;
 	private boolean isCalibrating = false;
 	private double gyroOffsetDeg = 0;
+	
+	private Solenoid flipper1;
+	private Solenoid flipper2;
+
 
 	public Drive() {
 		try {
@@ -189,11 +191,8 @@ public class Drive extends Subsystem implements ControlLoopable
 			
 			gyroPigeon = new PigeonIMU(leftDrive2);
 			
-			hopperSensorRed = new DigitalInput(RobotMap.HOPPER_SENSOR_RED_DIO_ID);
-			hopperSensorBlue = new DigitalInput(RobotMap.HOPPER_SENSOR_BLUE_DIO_ID);
-
 //			leftDrive1.clearStickyFaults(TalonSRXEncoder.TIMEOUT_MS);
-			leftDrive1.setInverted(false);
+			leftDrive1.setInverted(true);
 			leftDrive1.setSensorPhase(false);
 //			leftDrive1.configClosedloopRamp(VOLTAGE_RAMP_RATE, TalonSRXEncoder.TIMEOUT_MS);
 			leftDrive1.setNeutralMode(NeutralMode.Brake);
@@ -209,10 +208,12 @@ public class Drive extends Subsystem implements ControlLoopable
 //	        }
 			
 			leftDrive2.set(ControlMode.Follower, leftDrive1.getDeviceID());
+			leftDrive2.setInverted(true);
 			leftDrive2.setNeutralMode(NeutralMode.Brake);
 			leftDrive2.setSafetyEnabled(false);
 
 			leftDrive3.set(ControlMode.Follower, leftDrive1.getDeviceID());
+			leftDrive3.setInverted(true);
 			leftDrive3.setNeutralMode(NeutralMode.Brake);
 			leftDrive3.setSafetyEnabled(false);
 			
@@ -232,20 +233,25 @@ public class Drive extends Subsystem implements ControlLoopable
 //	        }
 			
 			rightDrive2.set(ControlMode.Follower, rightDrive1.getDeviceID());
+			rightDrive2.setInverted(false);
 			rightDrive2.setNeutralMode(NeutralMode.Brake);
 			rightDrive2.setSafetyEnabled(false);
 
 			rightDrive3.set(ControlMode.Follower, rightDrive1.getDeviceID());
+			rightDrive3.setInverted(false);
 			rightDrive3.setNeutralMode(NeutralMode.Brake);
 			rightDrive3.setSafetyEnabled(false);
 							
 			motorControllers.add(leftDrive1);
 			motorControllers.add(rightDrive1);
 			
-			m_drive = new DifferentialDrive(leftDrive1, rightDrive1);
+			m_drive = new BHRDifferentialDrive(leftDrive1, rightDrive1);
 			m_drive.setSafetyEnabled(false);
 			
-//			speedShift = new Solenoid(RobotMap.DRIVETRAIN_SPEEDSHIFT_PCM_ID);
+			flipper1 = new Solenoid(4);
+			flipper2 = new Solenoid(5);
+			
+			speedShift = new Solenoid(RobotMap.DRIVETRAIN_SPEEDSHIFT_PCM_ID);
 		}
 		catch (Exception e) {
 			System.err.println("An error occurred in the DriveTrain constructor");
@@ -267,6 +273,7 @@ public class Drive extends Subsystem implements ControlLoopable
 			
 	public void resetGyro() {
 		gyroPigeon.setYaw(0, TalonSRXEncoder.TIMEOUT_MS);
+		gyroPigeon.addFusedHeading(0, TalonSRXEncoder.TIMEOUT_MS);
 	}
 	
 	public void resetEncoders() {
@@ -287,22 +294,6 @@ public class Drive extends Subsystem implements ControlLoopable
 		gyroOffsetDeg = offsetDeg;
 	}
 	
-	public boolean isHopperSensorRedOn() {
-		return hopperSensorRed.get();
-	}
-
-	public boolean isHopperSensorBlueOn() {
-		return hopperSensorBlue.get();
-	}
-	
-	public boolean isHopperSensorOn() {
-		if (isRed() == true) {
-			return isHopperSensorRedOn();
-		}		
-		else {
-			return isHopperSensorBlueOn();
-		}
-	}
 
 	public void setStraightMM(double distanceInches, double maxVelocity, double maxAcceleration, boolean useGyroLock, boolean useAbsolute, double desiredAbsoluteAngle) {
 		double yawAngle = useAbsolute ? BHRMathUtils.adjustAccumAngleToDesired(getGyroAngleDeg(), desiredAbsoluteAngle) : getGyroAngleDeg();
@@ -556,23 +547,52 @@ public class Drive extends Subsystem implements ControlLoopable
 		// OI.getInstance().getDriveTrainController().getRightXAxis();
 //		m_moveInput = -OI.getInstance().getDriverController().getRightXAxis();
 //		m_steerInput = -OI.getInstance().getDriverController().getLeftYAxis();
-		m_moveInput = OI.getInstance().getDriverController().getLeftYAxis();
-		m_steerInput = -OI.getInstance().getDriverController().getRightXAxis();
+		m_moveInput = -OI.getInstance().getDriverController().getLeftYAxis();
+		m_steerInput = OI.getInstance().getDriverController().getRightXAxis();
 		
 		boolean isQuickTurn = OI.getInstance().getDriverController().isQuickTurn();
 //		boolean isCheesy = OI.getInstance().getOperatorController().isQuickTurn();
 		boolean isCheesy = false;
 		
-		boolean isArmOn = OI.getInstance().getDriverController().getLeftBumperButton();
-		if (isArmOn) {
-			leftArm.set(ControlMode.PercentOutput, isArmOn ? 1.0 : 0.0);
-			rightArm.set(ControlMode.PercentOutput, isArmOn ? -1.0 : 0.0);
+		boolean isFlipper = OI.getInstance().getDriverController().getAButton();
+		flipper1.set(isFlipper ? true : false);
+		flipper2.set(isFlipper ? true : false);
+		
+//		boolean isArmOn = OI.getInstance().getDriverController().getLeftBumperButton();
+//		if (isArmOn) {
+//			leftArm.set(ControlMode.PercentOutput, isArmOn ? 1.0 : 0.0);
+//			rightArm.set(ControlMode.PercentOutput, isArmOn ? -1.0 : 0.0);
+//		}
+//		else {
+//			boolean isArmEject = OI.getInstance().getDriverController().getRightBumperButton();
+//			leftArm.set(ControlMode.PercentOutput, isArmEject ? -1.0 : 0.0);
+//			rightArm.set(ControlMode.PercentOutput, isArmEject ? 1.0 : 0.0);
+//		}
+		
+		boolean isShift = OI.getInstance().getDriverController().getLeftBumperButton();
+		if (isShift) {
+			speedShift.set(true);
 		}
 		else {
-			boolean isArmEject = OI.getInstance().getDriverController().getRightBumperButton();
-			leftArm.set(ControlMode.PercentOutput, isArmEject ? -1.0 : 0.0);
-			rightArm.set(ControlMode.PercentOutput, isArmEject ? 1.0 : 0.0);
+			speedShift.set(false);
 		}
+		
+				
+		
+//		boolean isArmOn = OI.getInstance().getDriverController().getLeftBumperButton();
+//		if (isArmOn) {
+//			rightArm.set(ControlMode.PercentOutput, 1.0);
+//		}
+//		else{
+//			rightArm.set(ControlMode.PercentOutput, 0.0);
+//		}
+//		boolean isArmEject = OI.getInstance().getDriverController().getRightBumperButton();
+//		if (isArmEject){
+//			leftArm.set(ControlMode.PercentOutput, isArmEject ? -1.0 : 0.0);
+//		}
+//		else{
+//			leftArm.set(ControlMode.PercentOutput, 0.0);
+//		}
 		
 		if(isCheesy == false){
 
@@ -679,10 +699,10 @@ public class Drive extends Subsystem implements ControlLoopable
 
 	public void setShiftState(SpeedShiftState state) {
 		if(state == SpeedShiftState.HI) {
-//			speedShift.set(true);
+			speedShift.set(true);
 		}
 		else if(state == SpeedShiftState.LO) {
-//			speedShift.set(false);
+			speedShift.set(false);
 		}
 	}
 
@@ -750,7 +770,7 @@ public class Drive extends Subsystem implements ControlLoopable
 //				SmartDashboard.putBoolean("Hopper Sensor Red", isHopperSensorRedOn());
 //				SmartDashboard.putBoolean("Hopper Sensor Blue", isHopperSensorBlueOn());
 //				SmartDashboard.putBoolean("Drive Hold", controlMode == DriveControlMode.HOLD);
-//				SmartDashboard.putNumber("Yaw Angle Pigeon Deg", getGyroPigeonAngleDeg());
+				SmartDashboard.putNumber("Yaw Angle Pigeon Deg", getGyroPigeonAngleDeg());
 //				MotionProfilePoint mpPoint = mpTurnController.getCurrentPoint(); 
 //				double delta = mpPoint != null ? getGyroAngleDeg() - mpTurnController.getCurrentPoint().position : 0;
 //				SmartDashboard.putNumber("Gyro Delta", delta);

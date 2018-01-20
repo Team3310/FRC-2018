@@ -33,8 +33,8 @@ public class RobotMap {
 	public static final int DRIVETRAIN_SPEEDSHIFT_PCM_ID = 2;
 	public static final int SHOOTER_SHOT_POSITION_PCM_ID = 3;
 	public static final int GEAR_INNER_POSITION_PCM_ID = 1;
-	public static final int GEAR_OUTER_POSITION_PCM_ID = 4;
-	public static final int HOPPER_POSITION_PCM_ID = 5;		
+	public static final int LEFT_SIDE_CATAPULT_PCM_ID = 4;
+	public static final int RIGHT_SIDE_CATAPULT_PCM_ID = 5;		
 	
 	// DIO
 	public static final int HOPPER_SENSOR_RED_DIO_ID = 4;

@@ -15,4 +15,5 @@ public interface IHandController {
 	public boolean getLeftBumperButton();
 
 	public boolean getRightBumperButton();
+	public boolean getAButton();
 }
