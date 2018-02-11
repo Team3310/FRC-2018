@@ -19,7 +19,6 @@ import org.usfirst.frc.team3310.utility.MPSoftwarePIDController;
 import org.usfirst.frc.team3310.utility.MPSoftwarePIDController.MPSoftwareTurnType;
 import org.usfirst.frc.team3310.utility.MPTalonPIDController;
 import org.usfirst.frc.team3310.utility.MPTalonPIDPathController;
-import org.usfirst.frc.team3310.utility.MPTalonPIDPathVelocityController;
 import org.usfirst.frc.team3310.utility.PIDParams;
 import org.usfirst.frc.team3310.utility.Path;
 import org.usfirst.frc.team3310.utility.RigidTransform2d;
@@ -39,13 +38,14 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 //import com.ctre.PigeonImu.CalibrationMode;
 import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drive extends Subsystem implements ControlLoopable
 {
+	private static Drive instance;
+
 	public static enum DriveControlMode { JOYSTICK, MP_STRAIGHT, MP_TURN, PID_TURN, HOLD, MANUAL, CLIMB, MP_PATH, MP_PATH_VELOCITY, MOTION_MAGIC, ADAPTIVE_PURSUIT };
 	public static enum SpeedShiftState { HI, LO };
 	public static enum ClimberState { DEPLOYED, RETRACTED };
@@ -80,9 +80,6 @@ public class Drive extends Subsystem implements ControlLoopable
 	private TalonSRXEncoder leftDrive1;
 	private WPI_TalonSRX leftDrive2;
 	private WPI_TalonSRX leftDrive3;
-
-	private WPI_TalonSRX leftArm;
-	private WPI_TalonSRX rightArm;
 
 	private TalonSRXEncoder rightDrive1;
 	private WPI_TalonSRX rightDrive2;
@@ -147,13 +144,10 @@ public class Drive extends Subsystem implements ControlLoopable
 	
 	private SoftwarePIDController pidTurnController;
 	private PIDParams pidTurnPIDParams = new PIDParams(0.04, 0.001, 0.4, 0, 0, 0.0, 100); //i=0.0008
-	private double targetPIDAngle;
 
 	private MPTalonPIDPathController mpPathController;
 	private PIDParams mpPathPIDParams = new PIDParams(0.1, 0, 0, 0.005, 0.03, 0.28, 100);  // 4 omni   g=.3
 
-	private MPTalonPIDPathVelocityController mpPathVelocityController;
-	private PIDParams mpPathVelocityPIDParams = new PIDParams(0.5, 0.001, 5, 0.44); 
 
 	private AdaptivePurePursuitController adaptivePursuitController;
 	private PIDParams adaptivePursuitPIDParams = new PIDParams(0.1, 0.00, 1, 0.44); 
@@ -171,20 +165,13 @@ public class Drive extends Subsystem implements ControlLoopable
 	private double kPGyro = 0.04;
 	private boolean isCalibrating = false;
 	private double gyroOffsetDeg = 0;
-	
-	private Solenoid flipper1;
-	private Solenoid flipper2;
 
-
-	public Drive() {
+	private Drive() {
 		try {
 			leftDrive1 = new TalonSRXEncoder(RobotMap.DRIVETRAIN_LEFT_MOTOR1_CAN_ID, ENCODER_TICKS_TO_INCHES, false, FeedbackDevice.QuadEncoder);
 			leftDrive2 = new WPI_TalonSRX(RobotMap.DRIVETRAIN_LEFT_MOTOR2_CAN_ID);
 			leftDrive3 = new WPI_TalonSRX(RobotMap.DRIVETRAIN_LEFT_MOTOR3_CAN_ID);
 
-			leftArm = new WPI_TalonSRX(3);
-			rightArm = new WPI_TalonSRX(12);
-			
 			rightDrive1 = new TalonSRXEncoder(RobotMap.DRIVETRAIN_RIGHT_MOTOR1_CAN_ID, ENCODER_TICKS_TO_INCHES, true, FeedbackDevice.QuadEncoder);
 			rightDrive2 = new WPI_TalonSRX(RobotMap.DRIVETRAIN_RIGHT_MOTOR2_CAN_ID);
 			rightDrive3 = new WPI_TalonSRX(RobotMap.DRIVETRAIN_RIGHT_MOTOR3_CAN_ID);
@@ -247,9 +234,6 @@ public class Drive extends Subsystem implements ControlLoopable
 			
 			m_drive = new BHRDifferentialDrive(leftDrive1, rightDrive1);
 			m_drive.setSafetyEnabled(false);
-			
-			flipper1 = new Solenoid(4);
-			flipper2 = new Solenoid(5);
 			
 			speedShift = new Solenoid(RobotMap.DRIVETRAIN_SPEEDSHIFT_PCM_ID);
 		}
@@ -340,13 +324,7 @@ public class Drive extends Subsystem implements ControlLoopable
 		mpTurnController.setMPTurnTarget(key, turnType, TRACK_WIDTH_INCHES);
 		setControlMode(DriveControlMode.MP_TURN);
 	}
-	
-	public void setRelativeTurnPID(double relativeTurnAngleDeg, double maxError, double maxPrevError, MPSoftwareTurnType turnType) {
-		this.targetPIDAngle = relativeTurnAngleDeg + getGyroAngleDeg();
-		pidTurnController.setPIDTurnTarget(relativeTurnAngleDeg + getGyroAngleDeg(), maxError, maxPrevError, turnType);
-		setControlMode(DriveControlMode.PID_TURN);
-	}
-	
+		
 //	public void setPathMP(PathGenerator path) {
 //		mpPathController.setPID(mpPathPIDParams);
 //		mpPathController.setMPPathTarget(path); 
@@ -541,10 +519,10 @@ public class Drive extends Subsystem implements ControlLoopable
 		// speedToUseSteer = m_steerScale;
 		// }
 
-		// m_moveInput =
-		// OI.getInstance().getDriveTrainController().getLeftYAxis();
-		// m_steerInput =
-		// OI.getInstance().getDriveTrainController().getRightXAxis();
+//		m_moveInput =
+//		OI.getInstance().getDriveTrainController().getLeftYAxis();
+//		m_steerInput =
+//		OI.getInstance().getDriveTrainController().getRightXAxis();
 //		m_moveInput = -OI.getInstance().getDriverController().getRightXAxis();
 //		m_steerInput = -OI.getInstance().getDriverController().getLeftYAxis();
 		m_moveInput = -OI.getInstance().getDriverController().getLeftYAxis();
@@ -553,22 +531,7 @@ public class Drive extends Subsystem implements ControlLoopable
 		boolean isQuickTurn = OI.getInstance().getDriverController().isQuickTurn();
 //		boolean isCheesy = OI.getInstance().getOperatorController().isQuickTurn();
 		boolean isCheesy = false;
-		
-		boolean isFlipper = OI.getInstance().getDriverController().getAButton();
-		flipper1.set(isFlipper ? true : false);
-		flipper2.set(isFlipper ? true : false);
-		
-//		boolean isArmOn = OI.getInstance().getDriverController().getLeftBumperButton();
-//		if (isArmOn) {
-//			leftArm.set(ControlMode.PercentOutput, isArmOn ? 1.0 : 0.0);
-//			rightArm.set(ControlMode.PercentOutput, isArmOn ? -1.0 : 0.0);
-//		}
-//		else {
-//			boolean isArmEject = OI.getInstance().getDriverController().getRightBumperButton();
-//			leftArm.set(ControlMode.PercentOutput, isArmEject ? -1.0 : 0.0);
-//			rightArm.set(ControlMode.PercentOutput, isArmEject ? 1.0 : 0.0);
-//		}
-		
+				
 		boolean isShift = OI.getInstance().getDriverController().getLeftBumperButton();
 		if (isShift) {
 			speedShift.set(true);
@@ -578,21 +541,6 @@ public class Drive extends Subsystem implements ControlLoopable
 		}
 		
 				
-		
-//		boolean isArmOn = OI.getInstance().getDriverController().getLeftBumperButton();
-//		if (isArmOn) {
-//			rightArm.set(ControlMode.PercentOutput, 1.0);
-//		}
-//		else{
-//			rightArm.set(ControlMode.PercentOutput, 0.0);
-//		}
-//		boolean isArmEject = OI.getInstance().getDriverController().getRightBumperButton();
-//		if (isArmEject){
-//			leftArm.set(ControlMode.PercentOutput, isArmEject ? -1.0 : 0.0);
-//		}
-//		else{
-//			leftArm.set(ControlMode.PercentOutput, 0.0);
-//		}
 		
 		if(isCheesy == false){
 
@@ -721,7 +669,6 @@ public class Drive extends Subsystem implements ControlLoopable
 		mpTurnController = new MPSoftwarePIDController(periodMs, mpTurnPIDParams, motorControllers);
 		pidTurnController = new SoftwarePIDController(pidTurnPIDParams, motorControllers);
 		mpPathController = new MPTalonPIDPathController(periodMs, mpPathPIDParams, motorControllers);
-		mpPathVelocityController = new MPTalonPIDPathVelocityController(periodMs, mpPathVelocityPIDParams, motorControllers);
 		adaptivePursuitController = new AdaptivePurePursuitController(periodMs, adaptivePursuitPIDParams, motorControllers);
 		this.periodMs = periodMs;
 	}
@@ -791,5 +738,11 @@ public class Drive extends Subsystem implements ControlLoopable
 //		}
 	}	
 	
+	public static Drive getInstance() {
+		if(instance == null) {
+			instance = new Drive();
+		}
+		return instance;
+	}
 
 }

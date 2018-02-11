@@ -203,6 +203,13 @@ public class MPTalonPIDController
 		return false;
 	}
 	
+	public void setTarget(double position, double Kf) {
+		for (TalonSRXEncoder motorController : motorControllers) {
+			motorController.config_kF(0, Kf, TalonSRXEncoder.TIMEOUT_MS);
+			motorController.setWorld(ControlMode.Position, position);
+		}
+	}
+	
 	public MotionProfilePoint getCurrentPoint() {
 		return mpPoint;
 	}

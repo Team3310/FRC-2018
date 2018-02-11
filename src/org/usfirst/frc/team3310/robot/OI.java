@@ -3,13 +3,23 @@ package org.usfirst.frc.team3310.robot;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.usfirst.frc.team3310.buttons.XBoxDPadTriggerButton;
 import org.usfirst.frc.team3310.controller.IHandController;
 import org.usfirst.frc.team3310.controller.XboxController;
 import org.usfirst.frc.team3310.robot.commands.DriveGyroReset;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
 import org.usfirst.frc.team3310.robot.commands.DriveSpeedShift;
 import org.usfirst.frc.team3310.robot.commands.DriveStraightMP;
+import org.usfirst.frc.team3310.robot.commands.ElevatorResetZero;
+import org.usfirst.frc.team3310.robot.commands.ElevatorSetMode;
+import org.usfirst.frc.team3310.robot.commands.ElevatorSetSpeed;
+import org.usfirst.frc.team3310.robot.commands.FlipperFlip;
+import org.usfirst.frc.team3310.robot.commands.IntakeSetSpeed;
 import org.usfirst.frc.team3310.robot.subsystems.Drive;
+import org.usfirst.frc.team3310.robot.subsystems.Elevator;
+import org.usfirst.frc.team3310.robot.subsystems.Elevator.ElevatorControlMode;
+import org.usfirst.frc.team3310.robot.subsystems.Flipper.FlipperSide;
+import org.usfirst.frc.team3310.robot.subsystems.Intake;
 import org.usfirst.frc.team3310.utility.Path;
 import org.usfirst.frc.team3310.utility.Path.Waypoint;
 import org.usfirst.frc.team3310.utility.Translation2d;
@@ -42,11 +52,52 @@ public class OI {
 		// Operator controller
 		m_operatorXbox = new XboxController(RobotMap.OPERATOR_JOYSTICK_1_USB_ID);
 		
-		//Smart Dashboard
+        JoystickButton intakeLoad = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.RIGHT_BUMPER_BUTTON);
+        intakeLoad.whenPressed(new IntakeSetSpeed(Intake.INTAKE_LOAD_SPEED));
+        intakeLoad.whenReleased(new IntakeSetSpeed(0.0));
+		
+        JoystickButton intakeEject = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.LEFT_BUMPER_BUTTON);
+        intakeEject.whenPressed(new IntakeSetSpeed(Intake.INTAKE_EJECT_SPEED));
+        intakeEject.whenReleased(new IntakeSetSpeed(0.0));
+		
+        XBoxDPadTriggerButton elevatorManualUp = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.UP);
+        elevatorManualUp.whenPressed(new ElevatorSetSpeed(Elevator.TEST_SPEED));
+        elevatorManualUp.whenReleased(new ElevatorSetSpeed(0.0));
+
+        XBoxDPadTriggerButton elevatorManualDown = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.DOWN);
+        elevatorManualDown.whenPressed(new ElevatorSetSpeed(-Elevator.TEST_SPEED));
+        elevatorManualDown.whenReleased(new ElevatorSetSpeed(0.0));
+
+        XBoxDPadTriggerButton elevatorManualMode = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.LEFT);
+        elevatorManualMode.whenPressed(new ElevatorSetMode(ElevatorControlMode.MANUAL));
+
+        JoystickButton elevatorPidMode = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.BACK_BUTTON);
+        elevatorPidMode.whenPressed(new ElevatorSetMode(ElevatorControlMode.PID));
+
+        JoystickButton elevatorReset = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.START_BUTTON);
+        elevatorReset.whenPressed(new ElevatorResetZero());
+
+        //Smart Dashboard
+		Button flipLeft = new InternalButton();
+		flipLeft.whenPressed(new FlipperFlip(FlipperSide.LEFT));
+		SmartDashboard.putData("Flip Cube Left", flipLeft);
+		
+		Button flipRight = new InternalButton();
+		flipRight.whenPressed(new FlipperFlip(FlipperSide.RIGHT));
+		SmartDashboard.putData("Flip Cube Right", flipRight);
+		
+		Button intakeOn = new InternalButton();
+		intakeOn.whenPressed(new IntakeSetSpeed(Intake.INTAKE_LOAD_SPEED));
+		SmartDashboard.putData("Intake On", intakeOn);
+		
+		Button intakeOff = new InternalButton();
+		intakeOff.whenPressed(new IntakeSetSpeed(0.0));
+		SmartDashboard.putData("Intake Off", intakeOff);
+		
 		Button driveMP = new InternalButton();
 		driveMP.whenPressed(new DriveStraightMP(70, Drive.MP_AUTON_MAX_STRAIGHT_VELOCITY_INCHES_PER_SEC, true, false, 0));
 		SmartDashboard.putData("Drive Straight MP", driveMP);
-	
+		
 		// Center back around switch to scale
 //		List<Waypoint> waypoints = new ArrayList<>();
 //        waypoints.add(new Waypoint(new Translation2d(0, 0), 65.0));
@@ -104,11 +155,11 @@ public class OI {
 		return instance;
 	}
 
-	public IHandController getDriverController() {
+	public XboxController getDriverController() {
 		return m_driverXbox;
 	}
 
-	public IHandController getOperatorController() {
+	public XboxController getOperatorController() {
 		return m_operatorXbox;
 	}
 
