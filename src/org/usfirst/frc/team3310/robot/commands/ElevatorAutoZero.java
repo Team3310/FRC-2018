@@ -9,11 +9,12 @@ public class ElevatorAutoZero extends Command
 {
 	public ElevatorAutoZero() {
 		requires(Robot.elevator);
+		setInterruptible(false);
 	}
 
 	@Override
 	protected void initialize() {
-		Robot.elevator.setSpeed(-Elevator.TEST_SPEED);
+		Robot.elevator.setSpeed(Elevator.AUTO_ZERO_SPEED);
 	}
 
 	@Override

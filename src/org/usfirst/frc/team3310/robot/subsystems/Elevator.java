@@ -22,27 +22,30 @@ public class Elevator extends Subsystem implements ControlLoopable
 {
 	private static Elevator instance;
 
-	public static enum ElevatorControlMode { MP, PID, MANUAL };
+	public static enum ElevatorControlMode { MOTION_PROFILE, JOYSTICK_PID, JOYSTICK_MANUAL, MANUAL };
 	public static enum SpeedShiftState { HI, LO };
 
-	public static final double ENCODER_TICKS_TO_INCHES = (24.0 / 36.0) * 4096.0 / (1.88 * Math.PI);   // 24/36 pulley ratio, 30T Drive 1.880" PD
+	public static final double ENCODER_TICKS_TO_INCHES = (24.0 / 36.0) * (24.0 / 36.0) * 4096.0 / (1.88 * Math.PI);   // 24/36 gear ratio * 24/36 pulley ratio, 30T Drive 1.880" PD
 	
+	// Defined speeds
 	public static final double CLIMB_SPEED = 1.0;
-	public static final double TEST_SPEED = 0.1;
+	public static final double TEST_SPEED_UP = 0.3;
+	public static final double TEST_SPEED_DOWN = -0.1;
+	public static final double AUTO_ZERO_SPEED = -0.1;
 	public static final double JOYSTICK_INCHES_PER_MS = 0.086;
 	
+	// Defined positions
+	public static final double MIN_POSITION_INCHES = 0.0;
+	public static final double MAX_POSITION_INCHES = 87.0;
+	
+	public static final double SWITCH_POSITION_INCHES = 18.0;
+	public static final double SCALE_LOW_POSITION_INCHES = 48.0;
+	public static final double SCALE_HIGH_POSITION_INCHES = 87.0;
+
 	// Motion profile max velocities and accel times
 	public static final double MP_MAX_VELOCITY_INCHES_PER_SEC =  120; 
 	public static final double MP_T1 = 600;
 	public static final double MP_T2 = 300;
-	
-	public static final double KF_UP = 0.1;
-	public static final double KF_DOWN = 0.0;
-	
-	public static final double MIN_POSITION_INCHES = 0.0;
-	public static final double MAX_POSITION_INCHES = 85.0;
-	
-	public static final double AUTO_ZERO_MOTOR_CURRENT = 2.0;
 	
 	// Motor controllers
 	private ArrayList<TalonSRXEncoder> motorControllers = new ArrayList<TalonSRXEncoder>();	
@@ -51,16 +54,20 @@ public class Elevator extends Subsystem implements ControlLoopable
 	private TalonSRX motor2;
 	private TalonSRX motor3;
 	
+	// PID controller and params
 	private MPTalonPIDController mpController;
-	private PIDParams mpPIDParams = new PIDParams(0.1, 0, 0, 0.005, 0.03, 0.03);  // 4 omni
-
+	private PIDParams mpPIDParams = new PIDParams(0.1, 0, 0, 0.005, 0.03, 0.0);  
+	public static final double KF_UP = 0.1;
+	public static final double KF_DOWN = 0.0;
 	private double periodMs;
 
 	// Pneumatics
 	private Solenoid speedShift;
 
+	// Misc
+	public static final double AUTO_ZERO_MOTOR_CURRENT = 2.0;	
 	private boolean isFinished;
-	private ElevatorControlMode controlMode = ElevatorControlMode.MANUAL;
+	private ElevatorControlMode controlMode = ElevatorControlMode.JOYSTICK_MANUAL;
 	
 	private Elevator() {
 		try {
@@ -111,15 +118,20 @@ public class Elevator extends Subsystem implements ControlLoopable
 		motor1.set(ControlMode.PercentOutput, speed);
 	}
 		
+	public void setSpeedJoystick(double speed) {
+		this.controlMode = ElevatorControlMode.JOYSTICK_MANUAL;
+		motor1.set(ControlMode.PercentOutput, speed);
+	}
+		
 	public void setPositionPID(double targetPositionInches) {
- 		this.controlMode = ElevatorControlMode.PID;
+ 		this.controlMode = ElevatorControlMode.JOYSTICK_PID;
 		double startPositionInches = motor1.getPositionWorld();
 		mpController.setTarget(limitPosition(targetPositionInches), targetPositionInches > startPositionInches ? KF_UP : KF_DOWN); 
 		isFinished = false;
 	}
 	
 	public void setPositionMP(double targetPositionInches) {
- 		this.controlMode = ElevatorControlMode.MP;
+ 		this.controlMode = ElevatorControlMode.MOTION_PROFILE;
 		double startPositionInches = motor1.getPositionWorld();
 		mpController.setMPTarget(startPositionInches, limitPosition(targetPositionInches), MP_MAX_VELOCITY_INCHES_PER_SEC, MP_T1, MP_T2); 
 		isFinished = false;
@@ -137,20 +149,32 @@ public class Elevator extends Subsystem implements ControlLoopable
 	}
 	
 	public synchronized void controlLoopUpdate() {
-		if (controlMode == ElevatorControlMode.PID) {
-			controlWithJoystick();
-		}
-		else if (!isFinished) {
-			if (controlMode == ElevatorControlMode.MP) {
-				isFinished = mpController.controlLoopUpdate(); 
-			}
+		switch( controlMode ) {
+			case JOYSTICK_PID: 
+				controlPidWithJoystick();
+				break;
+			case JOYSTICK_MANUAL:
+				controlManualWithJoystick();
+				break;
+			case MOTION_PROFILE: 
+				if (!isFinished) {
+					isFinished = mpController.controlLoopUpdate(); 
+				}
+				break;
+			default:
+				break;
 		}
 	}
 	
-	private void controlWithJoystick() {
+	private void controlPidWithJoystick() {
 		double deltaPosition = Robot.oi.getOperatorController().getLeftYAxis() * JOYSTICK_INCHES_PER_MS;
 		double targetPosition = getPositionInches() + deltaPosition;
 		setPositionPID(targetPosition);
+	}
+	
+	private void controlManualWithJoystick() {
+		double joyStickSpeed = Robot.oi.getOperatorController().getLeftYAxis();
+		setSpeedJoystick(joyStickSpeed);
 	}
 	
 	public void setShiftState(SpeedShiftState state) {
@@ -167,7 +191,7 @@ public class Elevator extends Subsystem implements ControlLoopable
 	}
 	
 	public double getMotorCurrent() {
-		return motor1.getOutputCurrent();
+		return (motor1.getOutputCurrent() + motor2.getOutputCurrent() + motor3.getOutputCurrent()) / 3;
 	}
 		
 	public synchronized boolean isFinished() {
@@ -192,6 +216,13 @@ public class Elevator extends Subsystem implements ControlLoopable
 		if (operationMode == Robot.OperationMode.TEST) {
 			try {
 				SmartDashboard.putNumber("Elevator Position Inches", motor1.getPositionWorld());
+				SmartDashboard.putNumber("Elevator Motor 1 Amps", motor1.getOutputCurrent());
+				SmartDashboard.putNumber("Elevator Motor 2 Amps", motor1.getOutputCurrent());
+				SmartDashboard.putNumber("Elevator Motor 3 Amps", motor1.getOutputCurrent());
+				SmartDashboard.putNumber("Elevator Average Amps", getMotorCurrent());
+				SmartDashboard.putNumber("Elevator Motor 1 Amps PDP", Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_1_CAN_ID));
+				SmartDashboard.putNumber("Elevator Motor 2 Amps PDP", Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_2_CAN_ID));
+				SmartDashboard.putNumber("Elevator Motor 3 Amps PDP", Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_3_CAN_ID));
 			}
 			catch (Exception e) {
 				System.err.println("Elevator update status error");

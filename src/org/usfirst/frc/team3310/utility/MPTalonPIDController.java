@@ -204,8 +204,11 @@ public class MPTalonPIDController
 	}
 	
 	public void setTarget(double position, double Kf) {
+		// Kf gets multipled by position in the Talon 
+		double KfPerPosition = Math.abs(position) > 0.001 ? Kf / position : 0;
+
 		for (TalonSRXEncoder motorController : motorControllers) {
-			motorController.config_kF(0, Kf, TalonSRXEncoder.TIMEOUT_MS);
+			motorController.config_kF(0, KfPerPosition, TalonSRXEncoder.TIMEOUT_MS);
 			motorController.setWorld(ControlMode.Position, position);
 		}
 	}

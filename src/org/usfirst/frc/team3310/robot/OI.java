@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.usfirst.frc.team3310.buttons.XBoxDPadTriggerButton;
-import org.usfirst.frc.team3310.controller.IHandController;
 import org.usfirst.frc.team3310.controller.XboxController;
 import org.usfirst.frc.team3310.robot.commands.DriveGyroReset;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
@@ -12,6 +11,7 @@ import org.usfirst.frc.team3310.robot.commands.DriveSpeedShift;
 import org.usfirst.frc.team3310.robot.commands.DriveStraightMP;
 import org.usfirst.frc.team3310.robot.commands.ElevatorResetZero;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetMode;
+import org.usfirst.frc.team3310.robot.commands.ElevatorSetPositionMP;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetSpeed;
 import org.usfirst.frc.team3310.robot.commands.FlipperFlip;
 import org.usfirst.frc.team3310.robot.commands.IntakeSetSpeed;
@@ -61,21 +61,33 @@ public class OI {
         intakeEject.whenReleased(new IntakeSetSpeed(0.0));
 		
         XBoxDPadTriggerButton elevatorManualUp = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.UP);
-        elevatorManualUp.whenPressed(new ElevatorSetSpeed(Elevator.TEST_SPEED));
+        elevatorManualUp.whenPressed(new ElevatorSetSpeed(Elevator.TEST_SPEED_UP));
         elevatorManualUp.whenReleased(new ElevatorSetSpeed(0.0));
 
         XBoxDPadTriggerButton elevatorManualDown = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.DOWN);
-        elevatorManualDown.whenPressed(new ElevatorSetSpeed(-Elevator.TEST_SPEED));
+        elevatorManualDown.whenPressed(new ElevatorSetSpeed(Elevator.TEST_SPEED_DOWN));
         elevatorManualDown.whenReleased(new ElevatorSetSpeed(0.0));
 
-        XBoxDPadTriggerButton elevatorManualMode = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.LEFT);
-        elevatorManualMode.whenPressed(new ElevatorSetMode(ElevatorControlMode.MANUAL));
+        XBoxDPadTriggerButton elevatorJoystickManualMode = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.LEFT);
+        elevatorJoystickManualMode.whenPressed(new ElevatorSetMode(ElevatorControlMode.JOYSTICK_MANUAL));
 
-        JoystickButton elevatorPidMode = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.BACK_BUTTON);
-        elevatorPidMode.whenPressed(new ElevatorSetMode(ElevatorControlMode.PID));
+//        JoystickButton elevatorPidMode = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.BACK_BUTTON);
+//        elevatorPidMode.whenPressed(new ElevatorSetMode(ElevatorControlMode.JOYSTICK_PID));
 
         JoystickButton elevatorReset = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.START_BUTTON);
         elevatorReset.whenPressed(new ElevatorResetZero());
+
+//        JoystickButton elevatorMinPosition = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.A_BUTTON);
+//        elevatorMinPosition.whenPressed(new ElevatorSetPositionMP(Elevator.MIN_POSITION_INCHES));
+//
+//        JoystickButton elevatorMaxPosition = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.Y_BUTTON);
+//        elevatorMaxPosition.whenPressed(new ElevatorSetPositionMP(Elevator.MAX_POSITION_INCHES));
+//
+//        JoystickButton elevatorScalePosition = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.B_BUTTON);
+//        elevatorScalePosition.whenPressed(new ElevatorSetPositionMP(Elevator.SCALE_LOW_POSITION_INCHES));
+//
+//        JoystickButton elevatorSwitchPosition = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.X_BUTTON);
+//        elevatorSwitchPosition.whenPressed(new ElevatorSetPositionMP(Elevator.SWITCH_POSITION_INCHES));
 
         //Smart Dashboard
 		Button flipLeft = new InternalButton();

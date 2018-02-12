@@ -7,6 +7,7 @@ import org.usfirst.frc.team3310.robot.Constants;
 import org.usfirst.frc.team3310.robot.OI;
 import org.usfirst.frc.team3310.robot.Robot;
 import org.usfirst.frc.team3310.robot.RobotMap;
+import org.usfirst.frc.team3310.robot.subsystems.Drive.DriveControlMode;
 import org.usfirst.frc.team3310.utility.AdaptivePurePursuitController;
 import org.usfirst.frc.team3310.utility.BHRDifferentialDrive;
 import org.usfirst.frc.team3310.utility.BHRMathUtils;
@@ -46,13 +47,12 @@ public class Drive extends Subsystem implements ControlLoopable
 {
 	private static Drive instance;
 
-	public static enum DriveControlMode { JOYSTICK, MP_STRAIGHT, MP_TURN, PID_TURN, HOLD, MANUAL, CLIMB, MP_PATH, MP_PATH_VELOCITY, MOTION_MAGIC, ADAPTIVE_PURSUIT };
+	public static enum DriveControlMode { JOYSTICK, MP_STRAIGHT, MP_TURN, PID_TURN, HOLD, MANUAL, MP_PATH, MP_PATH_VELOCITY, MOTION_MAGIC, ADAPTIVE_PURSUIT };
 	public static enum SpeedShiftState { HI, LO };
 	public static enum ClimberState { DEPLOYED, RETRACTED };
 
 	public static final double TRACK_WIDTH_INCHES = 26.937;
-	public static final double ENCODER_TICKS_TO_INCHES = 4096 / (3.7 * Math.PI); //3.70
-	public static final double CLIMB_SPEED = 0.45;
+	public static final double ENCODER_TICKS_TO_INCHES = 4096 / (5.7 * Math.PI); 
 	
 	public static final double VOLTAGE_RAMP_RATE = 150;  // Volts per second
 
@@ -87,9 +87,6 @@ public class Drive extends Subsystem implements ControlLoopable
 
 	private BHRDifferentialDrive m_drive;
 	private CheesyDriveHelper driveHelper= new CheesyDriveHelper();
-
-	
-	private double climbSpeed;
 	
 	private boolean isRed = true;
 	
@@ -395,10 +392,6 @@ public class Drive extends Subsystem implements ControlLoopable
 //			leftDrive1.changeControlMode(ControlMode.PercentVbus);
 //			rightDrive1.changeControlMode(ControlMode.PercentVbus);
 		}
-		else if (controlMode == DriveControlMode.CLIMB) {
-//			leftDrive1.changeControlMode(ControlMode.PercentVbus);
-//			rightDrive1.changeControlMode(ControlMode.PercentVbus);
-		}
 		else if (controlMode == DriveControlMode.HOLD) {
 			mpStraightController.setPID(mpHoldPIDParams);
 //			leftDrive1.changeControlMode(ControlMode.Position);
@@ -412,7 +405,7 @@ public class Drive extends Subsystem implements ControlLoopable
 	}
 	
 	public synchronized void controlLoopUpdate() {
-		if (controlMode == DriveControlMode.JOYSTICK || controlMode == DriveControlMode.CLIMB) {
+		if (controlMode == DriveControlMode.JOYSTICK) {
 			driveWithJoystick();
 		}
 		else if (!isFinished) {
@@ -452,16 +445,6 @@ public class Drive extends Subsystem implements ControlLoopable
 		}
 	}
 	
-	public void setClimbSpeed(double climbSpeed) {
-		this.climbSpeed = climbSpeed;
-		if (climbSpeed == 0) {
-			setControlMode(DriveControlMode.JOYSTICK);
-		}
-		else {
-			setControlMode(DriveControlMode.CLIMB);
-		}
-	}
-	
 	public void setGyroLock(boolean useGyroLock, boolean snapToAbsolute0or180) {
 		if (snapToAbsolute0or180) {
 			gyroLockAngleDeg = BHRMathUtils.adjustAccumAngleToClosest180(getGyroAngleDeg());
@@ -474,124 +457,29 @@ public class Drive extends Subsystem implements ControlLoopable
 
 	public void driveWithJoystick() {
 		if(m_drive == null) return;
-		// switch(m_controllerMode) {
-		// case CONTROLLER_JOYSTICK_ARCADE:
-		// m_moveInput = OI.getInstance().getJoystick1().getY();
-		// m_steerInput = OI.getInstance().getJoystick1().getX();
-		// m_moveOutput = adjustForSensitivity(m_moveScale, m_moveTrim,
-		// m_moveInput, m_moveNonLinear, MOVE_NON_LINEARITY);
-		// m_steerOutput = adjustForSensitivity(m_steerScale, m_steerTrim,
-		// m_steerInput, m_steerNonLinear, STEER_NON_LINEARITY);
-		// m_drive.arcadeDrive(m_moveOutput, m_steerOutput);
-		// break;
-		// case CONTROLLER_JOYSTICK_TANK:
-		// m_moveInput = OI.getInstance().getJoystick1().getY();
-		// m_steerInput = OI.getInstance().getJoystick2().getY();
-		// m_moveOutput = adjustForSensitivity(m_moveScale, m_moveTrim,
-		// m_moveInput, m_moveNonLinear, MOVE_NON_LINEARITY);
-		// m_steerOutput = adjustForSensitivity(m_moveScale, m_moveTrim,
-		// m_steerInput, m_moveNonLinear, MOVE_NON_LINEARITY);
-		// m_drive.tankDrive(m_moveOutput, m_steerOutput);
-		// break;
-		// case CONTROLLER_JOYSTICK_CHEESY:
-		// m_moveInput = OI.getInstance().getJoystick1().getY();
-		// m_steerInput = OI.getInstance().getJoystick2().getX();
-		// m_moveOutput = adjustForSensitivity(m_moveScale, m_moveTrim,
-		// m_moveInput, m_moveNonLinear, MOVE_NON_LINEARITY);
-		// m_steerOutput = adjustForSensitivity(m_steerScale, m_steerTrim,
-		// m_steerInput, m_steerNonLinear, STEER_NON_LINEARITY);
-		// m_drive.arcadeDrive(m_moveOutput, m_steerOutput);
-		// break;
-		// case CONTROLLER_XBOX_CHEESY:
-		// boolean turbo = OI.getInstance().getDriveTrainController()
-		// .getLeftJoystickButton();
-		// boolean slow = OI.getInstance().getDriveTrainController()
-		// .getRightJoystickButton();
-		// double speedToUseMove, speedToUseSteer;
-		// if (turbo && !slow) {
-		// speedToUseMove = m_moveScaleTurbo;
-		// speedToUseSteer = m_steerScaleTurbo;
-		// } else if (!turbo && slow) {
-		// speedToUseMove = m_moveScaleSlow;
-		// speedToUseSteer = m_steerScaleSlow;
-		// } else {
-		// speedToUseMove = m_moveScale;
-		// speedToUseSteer = m_steerScale;
-		// }
 
-//		m_moveInput =
-//		OI.getInstance().getDriveTrainController().getLeftYAxis();
-//		m_steerInput =
-//		OI.getInstance().getDriveTrainController().getRightXAxis();
-//		m_moveInput = -OI.getInstance().getDriverController().getRightXAxis();
-//		m_steerInput = -OI.getInstance().getDriverController().getLeftYAxis();
 		m_moveInput = -OI.getInstance().getDriverController().getLeftYAxis();
 		m_steerInput = OI.getInstance().getDriverController().getRightXAxis();
 		
-		boolean isQuickTurn = OI.getInstance().getDriverController().isQuickTurn();
-//		boolean isCheesy = OI.getInstance().getOperatorController().isQuickTurn();
-		boolean isCheesy = false;
-				
 		boolean isShift = OI.getInstance().getDriverController().getLeftBumperButton();
 		if (isShift) {
 			speedShift.set(true);
 		}
 		else {
 			speedShift.set(false);
-		}
+		}		
 		
-				
-		
-		if(isCheesy == false){
+		m_moveOutput = adjustForSensitivity(m_moveScale, m_moveTrim,
+					m_moveInput, m_moveNonLinear, MOVE_NON_LINEARITY);
+		m_steerOutput = adjustForSensitivity(m_steerScale, m_steerTrim,
+				m_steerInput, m_steerNonLinear, STEER_NON_LINEARITY);
 
-			if (controlMode == DriveControlMode.JOYSTICK) {
-				m_moveOutput = adjustForSensitivity(m_moveScale, m_moveTrim,
-						m_moveInput, m_moveNonLinear, MOVE_NON_LINEARITY);
-			}
-			else if (controlMode == DriveControlMode.CLIMB) {
-				m_moveOutput = climbSpeed;
-			}
-			m_steerOutput = adjustForSensitivity(m_steerScale, m_steerTrim,
-					m_steerInput, m_steerNonLinear, STEER_NON_LINEARITY);
-
-			if (useGyroLock) {
-				double yawError = gyroLockAngleDeg - getGyroAngleDeg();
-				m_steerOutput = kPGyro * yawError;
-			}
-
-			m_drive.arcadeDrive(m_moveOutput, m_steerOutput);
+		if (useGyroLock) {
+			double yawError = gyroLockAngleDeg - getGyroAngleDeg();
+			m_steerOutput = kPGyro * yawError;
 		}
-		else{
-//			DriveSignal driveSignal = driveHelper.cheesyDrive(m_steerInput, -m_moveInput, !isQuickTurn, speedShift.get());
-			DriveSignal driveSignal = driveHelper.cheesyDrive(m_steerInput, -m_moveInput, !isQuickTurn, true);
-			leftDrive1.set(ControlMode.PercentOutput, -driveSignal.getLeft());
-			rightDrive1.set(ControlMode.PercentOutput, -driveSignal.getRight());
-		}
-		
-		// break;
-		// case CONTROLLER_XBOX_ARCADE_RIGHT:
-		// m_moveInput =
-		// OI.getInstance().getDrivetrainController().getRightYAxis();
-		// m_steerInput =
-		// OI.getInstance().getDrivetrainController().getRightXAxis();
-		// m_moveOutput = adjustForSensitivity(m_moveScale, m_moveTrim,
-		// m_moveInput, m_moveNonLinear, MOVE_NON_LINEARITY);
-		// m_steerOutput = adjustForSensitivity(m_steerScale, m_steerTrim,
-		// m_steerInput, m_steerNonLinear, STEER_NON_LINEARITY);
-		// m_drive.arcadeDrive(m_moveOutput, m_steerOutput);
-		// break;
-		// case CONTROLLER_XBOX_ARCADE_LEFT:
-		// m_moveInput =
-		// OI.getInstance().getDrivetrainController().getLeftYAxis();
-		// m_steerInput =
-		// OI.getInstance().getDrivetrainController().getLeftXAxis();
-		// m_moveOutput = adjustForSensitivity(m_moveScale, m_moveTrim,
-		// m_moveInput, m_moveNonLinear, MOVE_NON_LINEARITY);
-		// m_steerOutput = adjustForSensitivity(m_steerScale, m_steerTrim,
-		// m_steerInput, m_steerNonLinear, STEER_NON_LINEARITY);
-		// m_drive.arcadeDrive(m_moveOutput, m_steerOutput);
-		// break;
-		// }
+
+		m_drive.arcadeDrive(m_moveOutput, m_steerOutput);	
 	}
 
 	private boolean inDeadZone(double input) {
@@ -702,40 +590,29 @@ public class Drive extends Subsystem implements ControlLoopable
     }
 
 	public void updateStatus(Robot.OperationMode operationMode) {
-//		if (operationMode == Robot.OperationMode.TEST) {
-//			try {
-				SmartDashboard.putNumber("Right Pos Inches", rightDrive1.getPositionWorld());
-				SmartDashboard.putNumber("Left Pos Inches", leftDrive1.getPositionWorld());
-//				SmartDashboard.putNumber("Right Vel Ft-Sec", rightDrive1.getVelocityWorld() / 12);
-//				SmartDashboard.putNumber("Left Vel Ft-Sec", leftDrive1.getVelocityWorld() / 12);
-//				SmartDashboard.putNumber("Left 1 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_LEFT_MOTOR1_CAN_ID));
-//				SmartDashboard.putNumber("Left 2 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_LEFT_MOTOR2_CAN_ID));
-//				SmartDashboard.putNumber("Left 3 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_LEFT_MOTOR3_CAN_ID));
-//				SmartDashboard.putNumber("Right 1 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_RIGHT_MOTOR1_CAN_ID));
-//				SmartDashboard.putNumber("Right 2 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_RIGHT_MOTOR2_CAN_ID));
-//				SmartDashboard.putNumber("Right 3 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_RIGHT_MOTOR3_CAN_ID));
-//				SmartDashboard.putBoolean("Hopper Sensor Red", isHopperSensorRedOn());
-//				SmartDashboard.putBoolean("Hopper Sensor Blue", isHopperSensorBlueOn());
-//				SmartDashboard.putBoolean("Drive Hold", controlMode == DriveControlMode.HOLD);
+		if (operationMode == Robot.OperationMode.TEST) {
+			try {
+				SmartDashboard.putNumber("Drive Right Position Inches", rightDrive1.getPositionWorld());
+				SmartDashboard.putNumber("Drive Left Position Inches", leftDrive1.getPositionWorld());
+				SmartDashboard.putNumber("Drive Left 1 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_LEFT_MOTOR1_CAN_ID));
+				SmartDashboard.putNumber("Drive Left 2 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_LEFT_MOTOR2_CAN_ID));
+				SmartDashboard.putNumber("Drive Left 3 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_LEFT_MOTOR3_CAN_ID));
+				SmartDashboard.putNumber("Drive Right 1 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_RIGHT_MOTOR1_CAN_ID));
+				SmartDashboard.putNumber("Drive Right 2 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_RIGHT_MOTOR2_CAN_ID));
+				SmartDashboard.putNumber("Drive Right 3 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_RIGHT_MOTOR3_CAN_ID));
 				SmartDashboard.putNumber("Yaw Angle Pigeon Deg", getGyroPigeonAngleDeg());
-//				MotionProfilePoint mpPoint = mpTurnController.getCurrentPoint(); 
-//				double delta = mpPoint != null ? getGyroAngleDeg() - mpTurnController.getCurrentPoint().position : 0;
-//				SmartDashboard.putNumber("Gyro Delta", delta);
-//				SmartDashboard.putBoolean("Gyro Calibrating", isCalibrating);
-//				SmartDashboard.putNumber("Gyro Offset", gyroOffsetDeg);
-//				SmartDashboard.putNumber("Delta PID Angle", targetPIDAngle - getGyroAngleDeg());
 //				SmartDashboard.putNumber("Steer Output", m_steerOutput);
 //				SmartDashboard.putNumber("Move Output", m_moveOutput);
 //				SmartDashboard.putNumber("Steer Input", m_steerInput);
 //				SmartDashboard.putNumber("Move Input", m_moveInput);
-//			}
-//			catch (Exception e) {
-//				System.err.println("Drivetrain update status error");
-//			}
-//		}
-//		else {
-//			
-//		}
+			}
+			catch (Exception e) {
+				System.err.println("Drivetrain update status error");
+			}
+		}
+		else {
+			
+		}
 	}	
 	
 	public static Drive getInstance() {

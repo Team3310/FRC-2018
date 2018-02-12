@@ -19,7 +19,7 @@ public class ElevatorSetMode extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	if (controlMode == ElevatorControlMode.PID) {
+    	if (controlMode == ElevatorControlMode.JOYSTICK_PID) {
     		Robot.elevator.setPositionPID(Robot.elevator.getPositionInches());
     	}
     	else {
