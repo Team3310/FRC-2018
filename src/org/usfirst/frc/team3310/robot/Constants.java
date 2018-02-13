@@ -8,14 +8,14 @@ import org.usfirst.frc.team3310.utility.ConstantsBase;
  */
 public class Constants extends ConstantsBase {
     // Wheels
-    public static double kDriveWheelDiameterInches = 3.7; 
-    public static double kTrackLengthInches = 25;
-    public static double kTrackWidthInches = 26.937;
+    public static double kDriveWheelDiameterInches = 5.7; 
+    public static double kTrackLengthInches = 22.5;  // 25;
+    public static double kTrackWidthInches = 24.56;  // 26.937;
     public static double kTrackEffectiveDiameter = (kTrackWidthInches * kTrackWidthInches + kTrackLengthInches * kTrackLengthInches) / kTrackWidthInches;
     public static double kTrackScrubFactor = 0.75;
 
     // Drive constants
-    public static double kDriveLowGearMaxSpeedInchesPerSec = 12.0 * 5.0;
+    public static double kDriveLowGearMaxSpeedInchesPerSec = 12.0 * 10.0;
 
     // CONTROL LOOP GAINS
 

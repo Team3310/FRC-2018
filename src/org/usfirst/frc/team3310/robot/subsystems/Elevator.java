@@ -25,7 +25,8 @@ public class Elevator extends Subsystem implements ControlLoopable
 	public static enum ElevatorControlMode { MOTION_PROFILE, JOYSTICK_PID, JOYSTICK_MANUAL, MANUAL };
 	public static enum SpeedShiftState { HI, LO };
 
-	public static final double ENCODER_TICKS_TO_INCHES = (24.0 / 36.0) * (24.0 / 36.0) * 4096.0 / (1.88 * Math.PI);   // 24/36 gear ratio * 24/36 pulley ratio, 30T Drive 1.880" PD
+	// 36/12 encoder, 24/34 gear ratio, 24/36 pulley ratio, 30T Drive 1.880" PD
+	public static final double ENCODER_TICKS_TO_INCHES = (36.0 / 12.0) * (24.0 / 34.0) * (24.0 / 36.0) * 4096.0 / (1.88 * Math.PI);   
 	
 	// Defined speeds
 	public static final double CLIMB_SPEED = 1.0;

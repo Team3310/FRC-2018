@@ -51,8 +51,9 @@ public class Drive extends Subsystem implements ControlLoopable
 	public static enum SpeedShiftState { HI, LO };
 	public static enum ClimberState { DEPLOYED, RETRACTED };
 
-	public static final double TRACK_WIDTH_INCHES = 26.937;
-	public static final double ENCODER_TICKS_TO_INCHES = 4096 / (5.7 * Math.PI); 
+	// 36/12 mag encoder on ball shifter, 24/60 gears
+	public static final double ENCODER_TICKS_TO_INCHES = (36.0 / 12.0) * (24.0 / 60.0) * 4096.0 / (5.7 * Math.PI);  
+	public static final double TRACK_WIDTH_INCHES = 24.56;  // 26.937;
 	
 	public static final double VOLTAGE_RAMP_RATE = 150;  // Volts per second
 
