@@ -92,7 +92,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableBuilder;
  * {@link edu.wpi.first.wpilibj.RobotDrive#drive(double, double)} with the addition of a quick turn
  * mode. However, it is not designed to give exactly the same response.
  */
-public class BHRDifferentialDrive extends RobotDriveBase {
+public class OrigDifferentialDrive extends RobotDriveBase {
   public static final double kDefaultQuickStopThreshold = 0.2;
   public static final double kDefaultQuickStopAlpha = 0.1;
 
@@ -112,7 +112,7 @@ public class BHRDifferentialDrive extends RobotDriveBase {
    * <p>To pass multiple motors per side, use a {@link SpeedControllerGroup}. If a motor needs to be
    * inverted, do so before passing it in.
    */
-  public BHRDifferentialDrive(SpeedController leftMotor, SpeedController rightMotor) {
+  public OrigDifferentialDrive(SpeedController leftMotor, SpeedController rightMotor) {
     m_leftMotor = leftMotor;
     m_rightMotor = rightMotor;
     addChild(m_leftMotor);
@@ -188,7 +188,7 @@ public class BHRDifferentialDrive extends RobotDriveBase {
     }
 
     m_leftMotor.set(limit(leftMotorOutput) * m_maxOutput);
-    m_rightMotor.set(limit(rightMotorOutput) * m_maxOutput);
+    m_rightMotor.set(-limit(rightMotorOutput) * m_maxOutput);
 
     m_safetyHelper.feed();
   }
@@ -262,7 +262,7 @@ public class BHRDifferentialDrive extends RobotDriveBase {
         rightMotorOutput = -1.0;
       }
     }
-    
+
     // Normalize the wheel speeds
     double maxMagnitude = Math.max(Math.abs(leftMotorOutput), Math.abs(rightMotorOutput));
     if (maxMagnitude > 1.0) {
@@ -271,7 +271,7 @@ public class BHRDifferentialDrive extends RobotDriveBase {
     }
 
     m_leftMotor.set(leftMotorOutput * m_maxOutput);
-    m_rightMotor.set(rightMotorOutput * m_maxOutput);
+    m_rightMotor.set(-rightMotorOutput * m_maxOutput);
 
     m_safetyHelper.feed();
   }
@@ -318,7 +318,7 @@ public class BHRDifferentialDrive extends RobotDriveBase {
     }
 
     m_leftMotor.set(leftSpeed * m_maxOutput);
-    m_rightMotor.set(rightSpeed * m_maxOutput);
+    m_rightMotor.set(-rightSpeed * m_maxOutput);
 
     m_safetyHelper.feed();
   }
@@ -369,14 +369,10 @@ public class BHRDifferentialDrive extends RobotDriveBase {
   @Override
   public void initSendable(SendableBuilder builder) {
     builder.setSmartDashboardType("DifferentialDrive");
-//    builder.addDoubleProperty("Left Motor Speed", m_leftMotor::get, m_leftMotor::set);
-    builder.addDoubleProperty(
-            "Left Motor Speed",
-            () -> m_leftMotor.get(),
-            x -> m_leftMotor.set(x));
+    builder.addDoubleProperty("Left Motor Speed", m_leftMotor::get, m_leftMotor::set);
     builder.addDoubleProperty(
         "Right Motor Speed",
-        () -> m_rightMotor.get(),
-        x -> m_rightMotor.set(x));
+        () -> -m_rightMotor.get(),
+        x -> m_rightMotor.set(-x));
   }
 }

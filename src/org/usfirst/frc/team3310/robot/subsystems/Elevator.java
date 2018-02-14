@@ -25,8 +25,8 @@ public class Elevator extends Subsystem implements ControlLoopable
 	public static enum ElevatorControlMode { MOTION_PROFILE, JOYSTICK_PID, JOYSTICK_MANUAL, MANUAL };
 	public static enum SpeedShiftState { HI, LO };
 
-	// 36/12 encoder, 24/34 gear ratio, 24/36 pulley ratio, 30T Drive 1.880" PD
-	public static final double ENCODER_TICKS_TO_INCHES = (36.0 / 12.0) * (24.0 / 34.0) * (24.0 / 36.0) * 4096.0 / (1.88 * Math.PI);   
+	// One revolution of the 30T Drive 1.880" PD pulley = Pi * PD inches = 36/24 revs due to pulleys * 34/24 revs due to gears * 36/12 revs due mag encoder gear on ball shifter * 4096 ticks 
+	public static final double ENCODER_TICKS_TO_INCHES = (36.0 / 12.0) * (36.0 / 24.0) * (34.0 / 24.0) * 4096.0 / (1.88 * Math.PI);   
 	
 	// Defined speeds
 	public static final double CLIMB_SPEED = 1.0;
@@ -76,8 +76,7 @@ public class Elevator extends Subsystem implements ControlLoopable
 			motor2 = new TalonSRX(RobotMap.ELEVATOR_MOTOR_2_CAN_ID);
 			motor3 = new TalonSRX(RobotMap.ELEVATOR_MOTOR_3_CAN_ID);
 			
-			motor1.setInverted(false);
-			motor1.setSensorPhase(false);
+			motor1.setSensorPhase(true);
 			motor1.setNeutralMode(NeutralMode.Brake);
 //			motor1.configVoltageCompSaturation(12.0, TalonSRXEncoder.TIMEOUT_MS);
 //			motor1.enableVoltageCompensation(true);
@@ -89,12 +88,10 @@ public class Elevator extends Subsystem implements ControlLoopable
 //	            Driver.reportError("Could not detect elevator motor 1 encoder encoder!", false);
 //	        }
 			
-			motor2.set(ControlMode.Follower, motor1.getDeviceID());
-			motor2.setInverted(false);
+			motor2.set(ControlMode.Follower, RobotMap.ELEVATOR_MOTOR_1_CAN_ID);
 			motor2.setNeutralMode(NeutralMode.Brake);
 
-			motor3.set(ControlMode.Follower, motor1.getDeviceID());
-			motor3.setInverted(false);
+			motor3.set(ControlMode.Follower, RobotMap.ELEVATOR_MOTOR_1_CAN_ID);
 			motor3.setNeutralMode(NeutralMode.Brake);
 										
 			motorControllers.add(motor1);

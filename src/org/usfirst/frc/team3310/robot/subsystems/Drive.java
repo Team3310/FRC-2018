@@ -7,13 +7,10 @@ import org.usfirst.frc.team3310.robot.Constants;
 import org.usfirst.frc.team3310.robot.OI;
 import org.usfirst.frc.team3310.robot.Robot;
 import org.usfirst.frc.team3310.robot.RobotMap;
-import org.usfirst.frc.team3310.robot.subsystems.Drive.DriveControlMode;
 import org.usfirst.frc.team3310.utility.AdaptivePurePursuitController;
 import org.usfirst.frc.team3310.utility.BHRDifferentialDrive;
 import org.usfirst.frc.team3310.utility.BHRMathUtils;
-import org.usfirst.frc.team3310.utility.CheesyDriveHelper;
 import org.usfirst.frc.team3310.utility.ControlLoopable;
-import org.usfirst.frc.team3310.utility.DriveSignal;
 import org.usfirst.frc.team3310.utility.Kinematics;
 import org.usfirst.frc.team3310.utility.MMTalonPIDController;
 import org.usfirst.frc.team3310.utility.MPSoftwarePIDController;
@@ -28,15 +25,11 @@ import org.usfirst.frc.team3310.utility.SoftwarePIDController;
 import org.usfirst.frc.team3310.utility.TalonSRXEncoder;
 import org.usfirst.frc.team3310.utility.Translation2d;
 
-//import com.ctre.CANTalon.TalonControlMode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-//import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-//import com.ctre.PigeonImu;
 import com.ctre.phoenix.sensors.PigeonIMU;
-//import com.ctre.PigeonImu.CalibrationMode;
 import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
 import edu.wpi.first.wpilibj.Solenoid;
@@ -51,8 +44,8 @@ public class Drive extends Subsystem implements ControlLoopable
 	public static enum SpeedShiftState { HI, LO };
 	public static enum ClimberState { DEPLOYED, RETRACTED };
 
-	// 36/12 mag encoder on ball shifter, 24/60 gears
-	public static final double ENCODER_TICKS_TO_INCHES = (36.0 / 12.0) * (24.0 / 60.0) * 4096.0 / (5.7 * Math.PI);  
+	// One revolution of the wheel = Pi * D inches = 60/24 revs due to gears * 36/12 revs due mag encoder gear on ball shifter * 4096 ticks 
+	public static final double ENCODER_TICKS_TO_INCHES = (36.0 / 12.0) * (60.0 / 24.0) * 4096.0 / (5.7 * Math.PI);  
 	public static final double TRACK_WIDTH_INCHES = 24.56;  // 26.937;
 	
 	public static final double VOLTAGE_RAMP_RATE = 150;  // Volts per second
@@ -176,8 +169,7 @@ public class Drive extends Subsystem implements ControlLoopable
 			gyroPigeon = new PigeonIMU(rightDrive2);
 			
 //			leftDrive1.clearStickyFaults(TalonSRXEncoder.TIMEOUT_MS);
-			leftDrive1.setInverted(false);
-			leftDrive1.setSensorPhase(false);
+			leftDrive1.setSensorPhase(true);   // Encoder on ball shifter spins opposite direction due to gears
 //			leftDrive1.configClosedloopRamp(VOLTAGE_RAMP_RATE, TalonSRXEncoder.TIMEOUT_MS);
 			leftDrive1.setNeutralMode(NeutralMode.Brake);
 //			leftDrive1.configVoltageCompSaturation(12.0, TalonSRXEncoder.TIMEOUT_MS);
@@ -191,19 +183,15 @@ public class Drive extends Subsystem implements ControlLoopable
 //	            Driver.reportError("Could not detect left drive encoder encoder!", false);
 //	        }
 			
-			leftDrive2.set(ControlMode.Follower, leftDrive1.getDeviceID());
-			leftDrive2.setInverted(false);
+			leftDrive2.set(ControlMode.Follower, RobotMap.DRIVETRAIN_LEFT_MOTOR1_CAN_ID);
 			leftDrive2.setNeutralMode(NeutralMode.Brake);
 			leftDrive2.setSafetyEnabled(false);
 
-			leftDrive3.set(ControlMode.Follower, leftDrive1.getDeviceID());
-			leftDrive3.setInverted(false);
+			leftDrive3.set(ControlMode.Follower, RobotMap.DRIVETRAIN_LEFT_MOTOR1_CAN_ID);
 			leftDrive3.setNeutralMode(NeutralMode.Brake);
 			leftDrive3.setSafetyEnabled(false);
 			
 //			rightDrive1.clearStickyFaults(TalonSRXEncoder.TIMEOUT_MS);
-			rightDrive1.setInverted(false);
-			rightDrive1.setSensorPhase(false);
 //			rightDrive1.configVoltageCompSaturation(12.0, TalonSRXEncoder.TIMEOUT_MS);
 //			rightDrive1.enableVoltageCompensation(true);
 //			rightDrive1.configNominalOutputForward(0.0, TalonSRXEncoder.TIMEOUT_MS);
@@ -216,12 +204,12 @@ public class Drive extends Subsystem implements ControlLoopable
 //	            DriverStation.reportError("Could not detect right drive encoder encoder!", false);
 //	        }
 			
-			rightDrive2.set(ControlMode.Follower, rightDrive1.getDeviceID());
+			rightDrive2.set(ControlMode.Follower, RobotMap.DRIVETRAIN_RIGHT_MOTOR1_CAN_ID);
 			rightDrive2.setInverted(false);
 			rightDrive2.setNeutralMode(NeutralMode.Brake);
 			rightDrive2.setSafetyEnabled(false);
 
-			rightDrive3.set(ControlMode.Follower, rightDrive1.getDeviceID());
+			rightDrive3.set(ControlMode.Follower, RobotMap.DRIVETRAIN_RIGHT_MOTOR1_CAN_ID);
 			rightDrive3.setInverted(false);
 			rightDrive3.setNeutralMode(NeutralMode.Brake);
 			rightDrive3.setSafetyEnabled(false);
