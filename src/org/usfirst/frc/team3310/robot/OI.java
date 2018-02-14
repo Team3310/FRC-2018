@@ -151,11 +151,11 @@ public class OI {
 		
 		Button driveAP = new InternalButton();
 		driveAP.whenPressed(new DrivePathAdaptivePursuit(new Path(waypoints), false));
-		SmartDashboard.putData("Drive Adaptive Pursuit 2", driveAP);
+		SmartDashboard.putData("Drive Adaptive Pursuit", driveAP);
 
 		Button gyroReset = new InternalButton();
 		gyroReset.whenPressed(new DriveGyroReset());
-		SmartDashboard.putData("Gyro Reset 2", gyroReset);
+		SmartDashboard.putData("Gyro Reset", gyroReset);
 
 		m_driverXbox.getLeftBumperButton();
 	}

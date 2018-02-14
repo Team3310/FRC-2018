@@ -29,7 +29,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-	public static OI oi = OI.getInstance();;
+	public static OI oi;
 	
 	// Declare subsystems
 	public static final Drive drive = Drive.getInstance();
@@ -58,6 +58,8 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void robotInit() {
+		oi = OI.getInstance();
+		
     	controlLoop.addLoopable(drive);
     	controlLoop.addLoopable(elevator);
     	controlLoop.start();

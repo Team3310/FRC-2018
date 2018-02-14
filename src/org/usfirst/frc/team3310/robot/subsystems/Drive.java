@@ -87,7 +87,6 @@ public class Drive extends Subsystem implements ControlLoopable
 	private WPI_TalonSRX rightDrive3;
 
 	private BHRDifferentialDrive m_drive;
-	private CheesyDriveHelper driveHelper= new CheesyDriveHelper();
 	
 	private boolean isRed = true;
 	
@@ -174,10 +173,10 @@ public class Drive extends Subsystem implements ControlLoopable
 			rightDrive2 = new WPI_TalonSRX(RobotMap.DRIVETRAIN_RIGHT_MOTOR2_CAN_ID);
 			rightDrive3 = new WPI_TalonSRX(RobotMap.DRIVETRAIN_RIGHT_MOTOR3_CAN_ID);
 			
-			gyroPigeon = new PigeonIMU(leftDrive2);
+			gyroPigeon = new PigeonIMU(rightDrive2);
 			
 //			leftDrive1.clearStickyFaults(TalonSRXEncoder.TIMEOUT_MS);
-			leftDrive1.setInverted(true);
+			leftDrive1.setInverted(false);
 			leftDrive1.setSensorPhase(false);
 //			leftDrive1.configClosedloopRamp(VOLTAGE_RAMP_RATE, TalonSRXEncoder.TIMEOUT_MS);
 			leftDrive1.setNeutralMode(NeutralMode.Brake);
@@ -193,12 +192,12 @@ public class Drive extends Subsystem implements ControlLoopable
 //	        }
 			
 			leftDrive2.set(ControlMode.Follower, leftDrive1.getDeviceID());
-			leftDrive2.setInverted(true);
+			leftDrive2.setInverted(false);
 			leftDrive2.setNeutralMode(NeutralMode.Brake);
 			leftDrive2.setSafetyEnabled(false);
 
 			leftDrive3.set(ControlMode.Follower, leftDrive1.getDeviceID());
-			leftDrive3.setInverted(true);
+			leftDrive3.setInverted(false);
 			leftDrive3.setNeutralMode(NeutralMode.Brake);
 			leftDrive3.setSafetyEnabled(false);
 			
@@ -459,7 +458,7 @@ public class Drive extends Subsystem implements ControlLoopable
 	public void driveWithJoystick() {
 		if(m_drive == null) return;
 
-		m_moveInput = -OI.getInstance().getDriverController().getLeftYAxis();
+		m_moveInput = OI.getInstance().getDriverController().getLeftYAxis();
 		m_steerInput = OI.getInstance().getDriverController().getRightXAxis();
 		
 		boolean isShift = OI.getInstance().getDriverController().getLeftBumperButton();
