@@ -30,9 +30,9 @@ public class Elevator extends Subsystem implements ControlLoopable
 	
 	// Defined speeds
 	public static final double CLIMB_SPEED = 1.0;
-	public static final double TEST_SPEED_UP = 0.3;
-	public static final double TEST_SPEED_DOWN = -0.1;
-	public static final double AUTO_ZERO_SPEED = -0.1;
+	public static final double TEST_SPEED_UP = 0.5;
+	public static final double TEST_SPEED_DOWN = -0.3;
+	public static final double AUTO_ZERO_SPEED = -0.3;
 	public static final double JOYSTICK_INCHES_PER_MS = 0.086;
 	
 	// Defined positions

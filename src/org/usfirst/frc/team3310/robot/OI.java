@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.usfirst.frc.team3310.buttons.XBoxDPadTriggerButton;
+import org.usfirst.frc.team3310.buttons.XBoxTriggerButton;
 import org.usfirst.frc.team3310.controller.XboxController;
 import org.usfirst.frc.team3310.robot.commands.DriveGyroReset;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
@@ -13,6 +14,7 @@ import org.usfirst.frc.team3310.robot.commands.ElevatorResetZero;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetMode;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetPositionMP;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetSpeed;
+import org.usfirst.frc.team3310.robot.commands.ElevatorSpeedShift;
 import org.usfirst.frc.team3310.robot.commands.FlipperFlip;
 import org.usfirst.frc.team3310.robot.commands.IntakeSetSpeed;
 import org.usfirst.frc.team3310.robot.subsystems.Drive;
@@ -52,6 +54,12 @@ public class OI {
 		// Operator controller
 		m_operatorXbox = new XboxController(RobotMap.OPERATOR_JOYSTICK_1_USB_ID);
 		
+        XBoxTriggerButton shiftElevatorLo = new XBoxTriggerButton(m_operatorXbox, XBoxTriggerButton.LEFT_TRIGGER);
+        shiftElevatorLo.whenPressed(new ElevatorSpeedShift(Elevator.SpeedShiftState.LO));
+
+        XBoxTriggerButton shiftElevatorHi = new XBoxTriggerButton(m_operatorXbox, XBoxTriggerButton.RIGHT_TRIGGER);
+        shiftElevatorHi.whenPressed(new ElevatorSpeedShift(Elevator.SpeedShiftState.HI));
+
         JoystickButton intakeLoad = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.RIGHT_BUMPER_BUTTON);
         intakeLoad.whenPressed(new IntakeSetSpeed(Intake.INTAKE_LOAD_SPEED));
         intakeLoad.whenReleased(new IntakeSetSpeed(0.0));
@@ -71,23 +79,23 @@ public class OI {
         XBoxDPadTriggerButton elevatorJoystickManualMode = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.LEFT);
         elevatorJoystickManualMode.whenPressed(new ElevatorSetMode(ElevatorControlMode.JOYSTICK_MANUAL));
 
-//        JoystickButton elevatorPidMode = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.BACK_BUTTON);
-//        elevatorPidMode.whenPressed(new ElevatorSetMode(ElevatorControlMode.JOYSTICK_PID));
+        JoystickButton elevatorPidMode = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.BACK_BUTTON);
+        elevatorPidMode.whenPressed(new ElevatorSetMode(ElevatorControlMode.JOYSTICK_PID));
 
         JoystickButton elevatorReset = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.START_BUTTON);
         elevatorReset.whenPressed(new ElevatorResetZero());
 
-//        JoystickButton elevatorMinPosition = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.A_BUTTON);
-//        elevatorMinPosition.whenPressed(new ElevatorSetPositionMP(Elevator.MIN_POSITION_INCHES));
-//
-//        JoystickButton elevatorMaxPosition = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.Y_BUTTON);
-//        elevatorMaxPosition.whenPressed(new ElevatorSetPositionMP(Elevator.MAX_POSITION_INCHES));
-//
-//        JoystickButton elevatorScalePosition = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.B_BUTTON);
-//        elevatorScalePosition.whenPressed(new ElevatorSetPositionMP(Elevator.SCALE_LOW_POSITION_INCHES));
-//
-//        JoystickButton elevatorSwitchPosition = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.X_BUTTON);
-//        elevatorSwitchPosition.whenPressed(new ElevatorSetPositionMP(Elevator.SWITCH_POSITION_INCHES));
+        JoystickButton elevatorMinPosition = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.A_BUTTON);
+        elevatorMinPosition.whenPressed(new ElevatorSetPositionMP(Elevator.MIN_POSITION_INCHES));
+
+        JoystickButton elevatorMaxPosition = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.Y_BUTTON);
+        elevatorMaxPosition.whenPressed(new ElevatorSetPositionMP(Elevator.MAX_POSITION_INCHES));
+
+        JoystickButton elevatorScalePosition = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.B_BUTTON);
+        elevatorScalePosition.whenPressed(new ElevatorSetPositionMP(Elevator.SCALE_LOW_POSITION_INCHES));
+
+        JoystickButton elevatorSwitchPosition = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.X_BUTTON);
+        elevatorSwitchPosition.whenPressed(new ElevatorSetPositionMP(Elevator.SWITCH_POSITION_INCHES));
 
         //Smart Dashboard
 		Button flipLeft = new InternalButton();

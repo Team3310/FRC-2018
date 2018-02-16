@@ -41,7 +41,7 @@ public class Intake extends Subsystem
 	
 	public void setSpeed(double speed) {
 		leftArm.set(ControlMode.PercentOutput, speed);
-		rightArm.set(ControlMode.PercentOutput, speed);
+		rightArm.set(ControlMode.PercentOutput, -speed);
 	}
 		
 	public static Intake getInstance() {

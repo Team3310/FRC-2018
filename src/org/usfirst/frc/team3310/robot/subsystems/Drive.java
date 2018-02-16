@@ -447,7 +447,7 @@ public class Drive extends Subsystem implements ControlLoopable
 		if(m_drive == null) return;
 
 		m_moveInput = OI.getInstance().getDriverController().getLeftYAxis();
-		m_steerInput = OI.getInstance().getDriverController().getRightXAxis();
+		m_steerInput = -OI.getInstance().getDriverController().getRightXAxis();
 		
 		boolean isShift = OI.getInstance().getDriverController().getLeftBumperButton();
 		if (isShift) {
