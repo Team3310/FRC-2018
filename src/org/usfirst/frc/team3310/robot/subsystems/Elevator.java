@@ -33,11 +33,11 @@ public class Elevator extends Subsystem implements ControlLoopable
 	public static final double TEST_SPEED_UP = 0.5;
 	public static final double TEST_SPEED_DOWN = -0.3;
 	public static final double AUTO_ZERO_SPEED = -0.3;
-	public static final double JOYSTICK_INCHES_PER_MS = 0.086;
+	public static final double JOYSTICK_INCHES_PER_MS = 0.75;
 	
 	// Defined positions
-	public static final double MIN_POSITION_INCHES = 0.0;
-	public static final double MAX_POSITION_INCHES = 87.0;
+	public static final double MIN_POSITION_INCHES = 1.0;
+	public static final double MAX_POSITION_INCHES = 83.0;
 	
 	public static final double SWITCH_POSITION_INCHES = 18.0;
 	public static final double SCALE_LOW_POSITION_INCHES = 48.0;
@@ -57,8 +57,8 @@ public class Elevator extends Subsystem implements ControlLoopable
 	
 	// PID controller and params
 	private MPTalonPIDController mpController;
-	private PIDParams mpPIDParams = new PIDParams(0.1, 0, 0, 0.005, 0.03, 0.0);  
-	public static final double KF_UP = 0.1;
+	private PIDParams mpPIDParams = new PIDParams(0.03, 0, 0, 0.005, 0.03, 0.0);  
+	public static final double KF_UP = 0.005;
 	public static final double KF_DOWN = 0.0;
 	private double periodMs;
 
@@ -69,6 +69,7 @@ public class Elevator extends Subsystem implements ControlLoopable
 	public static final double AUTO_ZERO_MOTOR_CURRENT = 2.0;	
 	private boolean isFinished;
 	private ElevatorControlMode controlMode = ElevatorControlMode.JOYSTICK_MANUAL;
+	private double targetPositionInchesPID = 0;
 	
 	private Elevator() {
 		try {
@@ -76,7 +77,8 @@ public class Elevator extends Subsystem implements ControlLoopable
 			motor2 = new TalonSRX(RobotMap.ELEVATOR_MOTOR_2_CAN_ID);
 			motor3 = new TalonSRX(RobotMap.ELEVATOR_MOTOR_3_CAN_ID);
 			
-			motor1.setSensorPhase(true);
+//			motor1.setSensorPhase(true);
+			motor1.setInverted(true);
 			motor1.setNeutralMode(NeutralMode.Brake);
 //			motor1.configVoltageCompSaturation(12.0, TalonSRXEncoder.TIMEOUT_MS);
 //			motor1.enableVoltageCompensation(true);
@@ -90,9 +92,11 @@ public class Elevator extends Subsystem implements ControlLoopable
 			
 			motor2.set(ControlMode.Follower, RobotMap.ELEVATOR_MOTOR_1_CAN_ID);
 			motor2.setNeutralMode(NeutralMode.Brake);
+			motor2.setInverted(true);
 
 			motor3.set(ControlMode.Follower, RobotMap.ELEVATOR_MOTOR_1_CAN_ID);
 			motor3.setNeutralMode(NeutralMode.Brake);
+			motor3.setInverted(true);
 										
 			motorControllers.add(motor1);
 			
@@ -113,18 +117,21 @@ public class Elevator extends Subsystem implements ControlLoopable
 
 	public void setSpeed(double speed) {
 		this.controlMode = ElevatorControlMode.MANUAL;
+		System.out.println("Manual speed = " + speed);
 		motor1.set(ControlMode.PercentOutput, speed);
 	}
 		
 	public void setSpeedJoystick(double speed) {
 		this.controlMode = ElevatorControlMode.JOYSTICK_MANUAL;
+		System.out.println("Joystick speed = " + speed);
 		motor1.set(ControlMode.PercentOutput, speed);
 	}
 		
 	public void setPositionPID(double targetPositionInches) {
  		this.controlMode = ElevatorControlMode.JOYSTICK_PID;
+ 		targetPositionInchesPID = targetPositionInches;
 		double startPositionInches = motor1.getPositionWorld();
-		mpController.setTarget(limitPosition(targetPositionInches), targetPositionInches > startPositionInches ? KF_UP : KF_DOWN); 
+		mpController.setTarget(limitPosition(targetPositionInchesPID), targetPositionInchesPID > startPositionInches ? KF_UP : KF_DOWN); 
 		isFinished = false;
 	}
 	
@@ -165,13 +172,16 @@ public class Elevator extends Subsystem implements ControlLoopable
 	}
 	
 	private void controlPidWithJoystick() {
-		double deltaPosition = Robot.oi.getOperatorController().getLeftYAxis() * JOYSTICK_INCHES_PER_MS;
-		double targetPosition = getPositionInches() + deltaPosition;
-		setPositionPID(targetPosition);
+		double joystickPosition = -Robot.oi.getOperatorController().getLeftYAxis();
+		double deltaPosition = joystickPosition * JOYSTICK_INCHES_PER_MS;
+		targetPositionInchesPID = targetPositionInchesPID + deltaPosition;
+		System.out.println("Joystick = " + joystickPosition + "Delta = " + deltaPosition + "Target = " + targetPositionInchesPID);
+		setPositionPID(targetPositionInchesPID);
 	}
 	
 	private void controlManualWithJoystick() {
-		double joyStickSpeed = Robot.oi.getOperatorController().getLeftYAxis();
+		double joyStickSpeed = -Robot.oi.getOperatorController().getLeftYAxis();
+//		System.out.println("Joystick = " + joyStickSpeed);
 		setSpeedJoystick(joyStickSpeed);
 	}
 	

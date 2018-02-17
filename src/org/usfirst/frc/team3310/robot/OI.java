@@ -13,6 +13,7 @@ import org.usfirst.frc.team3310.robot.commands.DriveStraightMP;
 import org.usfirst.frc.team3310.robot.commands.ElevatorResetZero;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetMode;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetPositionMP;
+import org.usfirst.frc.team3310.robot.commands.ElevatorSetPositionPID;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetSpeed;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSpeedShift;
 import org.usfirst.frc.team3310.robot.commands.FlipperFlip;
@@ -97,7 +98,31 @@ public class OI {
         JoystickButton elevatorSwitchPosition = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.X_BUTTON);
         elevatorSwitchPosition.whenPressed(new ElevatorSetPositionMP(Elevator.SWITCH_POSITION_INCHES));
 
+//        JoystickButton elevatorScalePosition = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.B_BUTTON);
+//        elevatorScalePosition.whenPressed(new ElevatorSetPositionPID(30));
+//
+//        JoystickButton elevatorSwitchPosition = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.X_BUTTON);
+//        elevatorSwitchPosition.whenPressed(new ElevatorSetPositionPID(10));
+
         //Smart Dashboard
+        Button elevatorLo = new InternalButton();
+        elevatorLo.whenPressed(new ElevatorSpeedShift(Elevator.SpeedShiftState.LO));
+        SmartDashboard.putData("Elevator Lo Shift", elevatorLo);
+        
+        Button elevatorHi = new InternalButton();
+        elevatorHi.whenPressed(new ElevatorSpeedShift(Elevator.SpeedShiftState.HI));
+        SmartDashboard.putData("Elevator Hi Shift", elevatorHi);
+        
+        Button elevatorButtonUp = new InternalButton();
+        elevatorButtonUp.whenPressed(new ElevatorSetSpeed(Elevator.TEST_SPEED_UP));
+        elevatorButtonUp.whenReleased(new ElevatorSetSpeed(0.0));
+        SmartDashboard.putData("Elevator Up", elevatorButtonUp);
+        
+        Button elevatorButtonDown = new InternalButton();;
+        elevatorButtonDown.whenPressed(new ElevatorSetSpeed(Elevator.TEST_SPEED_DOWN));
+        elevatorButtonDown.whenReleased(new ElevatorSetSpeed(0.0));
+        SmartDashboard.putData("Elevator Down", elevatorButtonDown);
+
 		Button flipLeft = new InternalButton();
 		flipLeft.whenPressed(new FlipperFlip(FlipperSide.LEFT));
 		SmartDashboard.putData("Flip Cube Left", flipLeft);
