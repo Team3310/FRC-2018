@@ -30,7 +30,7 @@ public class Elevator extends Subsystem implements ControlLoopable
 	
 	// Defined speeds
 	public static final double CLIMB_SPEED = 1.0;
-	public static final double TEST_SPEED_UP = 0.5;
+	public static final double TEST_SPEED_UP = 0.3;
 	public static final double TEST_SPEED_DOWN = -0.3;
 	public static final double AUTO_ZERO_SPEED = -0.3;
 	public static final double JOYSTICK_INCHES_PER_MS = 0.75;
@@ -66,7 +66,7 @@ public class Elevator extends Subsystem implements ControlLoopable
 	private Solenoid speedShift;
 
 	// Misc
-	public static final double AUTO_ZERO_MOTOR_CURRENT = 2.0;	
+	public static final double AUTO_ZERO_MOTOR_CURRENT = 20.0;	
 	private boolean isFinished;
 	private ElevatorControlMode controlMode = ElevatorControlMode.JOYSTICK_MANUAL;
 	private double targetPositionInchesPID = 0;
@@ -117,13 +117,11 @@ public class Elevator extends Subsystem implements ControlLoopable
 
 	public void setSpeed(double speed) {
 		this.controlMode = ElevatorControlMode.MANUAL;
-		System.out.println("Manual speed = " + speed);
 		motor1.set(ControlMode.PercentOutput, speed);
 	}
 		
 	public void setSpeedJoystick(double speed) {
 		this.controlMode = ElevatorControlMode.JOYSTICK_MANUAL;
-		System.out.println("Joystick speed = " + speed);
 		motor1.set(ControlMode.PercentOutput, speed);
 	}
 		
@@ -175,13 +173,11 @@ public class Elevator extends Subsystem implements ControlLoopable
 		double joystickPosition = -Robot.oi.getOperatorController().getLeftYAxis();
 		double deltaPosition = joystickPosition * JOYSTICK_INCHES_PER_MS;
 		targetPositionInchesPID = targetPositionInchesPID + deltaPosition;
-		System.out.println("Joystick = " + joystickPosition + "Delta = " + deltaPosition + "Target = " + targetPositionInchesPID);
 		setPositionPID(targetPositionInchesPID);
 	}
 	
 	private void controlManualWithJoystick() {
 		double joyStickSpeed = -Robot.oi.getOperatorController().getLeftYAxis();
-//		System.out.println("Joystick = " + joyStickSpeed);
 		setSpeedJoystick(joyStickSpeed);
 	}
 	
@@ -199,7 +195,7 @@ public class Elevator extends Subsystem implements ControlLoopable
 	}
 	
 	public double getMotorCurrent() {
-		return (motor1.getOutputCurrent() + motor2.getOutputCurrent() + motor3.getOutputCurrent()) / 3;
+		return (Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_1_CAN_ID) + Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_2_CAN_ID) + Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_3_CAN_ID)) / 3;
 	}
 		
 	public synchronized boolean isFinished() {

@@ -13,7 +13,6 @@ import org.usfirst.frc.team3310.robot.commands.DriveStraightMP;
 import org.usfirst.frc.team3310.robot.commands.ElevatorResetZero;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetMode;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetPositionMP;
-import org.usfirst.frc.team3310.robot.commands.ElevatorSetPositionPID;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetSpeed;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSpeedShift;
 import org.usfirst.frc.team3310.robot.commands.FlipperFlip;
@@ -105,6 +104,26 @@ public class OI {
 //        elevatorSwitchPosition.whenPressed(new ElevatorSetPositionPID(10));
 
         //Smart Dashboard
+        Button elevatorMinPositionSD = new InternalButton();
+        elevatorMinPositionSD.whenPressed(new ElevatorSetPositionMP(Elevator.MIN_POSITION_INCHES));
+        SmartDashboard.putData("Elevator Min Position", elevatorMinPositionSD);
+        
+        Button elevatorSwitchPositionSD = new InternalButton();
+        elevatorSwitchPositionSD.whenPressed(new ElevatorSetPositionMP(Elevator.SWITCH_POSITION_INCHES));
+        SmartDashboard.putData("Elevator Switch Position", elevatorSwitchPositionSD);
+        
+        Button elevatorScaleLowPositionSD = new InternalButton();
+        elevatorScaleLowPositionSD.whenPressed(new ElevatorSetPositionMP(Elevator.SCALE_LOW_POSITION_INCHES));
+        SmartDashboard.putData("Elevator Scale Low Position", elevatorScaleLowPositionSD);
+        
+        Button elevatorScaleHighPositionSD = new InternalButton();
+        elevatorScaleHighPositionSD.whenPressed(new ElevatorSetPositionMP(Elevator.SCALE_HIGH_POSITION_INCHES));
+        SmartDashboard.putData("Elevator Scale High Position", elevatorScaleHighPositionSD);
+        
+        Button elevatorMaxPositionSD = new InternalButton();
+        elevatorMaxPositionSD.whenPressed(new ElevatorSetPositionMP(Elevator.MAX_POSITION_INCHES));
+        SmartDashboard.putData("Elevator Max Position", elevatorMaxPositionSD);
+        
         Button elevatorLo = new InternalButton();
         elevatorLo.whenPressed(new ElevatorSpeedShift(Elevator.SpeedShiftState.LO));
         SmartDashboard.putData("Elevator Lo Shift", elevatorLo);
