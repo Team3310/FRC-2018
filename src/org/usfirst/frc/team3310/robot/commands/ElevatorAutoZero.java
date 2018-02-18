@@ -7,14 +7,16 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class ElevatorAutoZero extends Command
 {
-	public ElevatorAutoZero() {
+	public ElevatorAutoZero(boolean interrutible) {
+		requires(Robot.intake);
 		requires(Robot.elevator);
-		setInterruptible(false);
+		setInterruptible(interrutible);
 	}
 
 	@Override
 	protected void initialize() {
 		Robot.elevator.setSpeed(Elevator.AUTO_ZERO_SPEED);
+		System.out.println("Auto zero initialize");
 	}
 
 	@Override
@@ -24,12 +26,16 @@ public class ElevatorAutoZero extends Command
 
 	@Override
 	protected boolean isFinished() {
+		Robot.elevator.setSpeed(Elevator.AUTO_ZERO_SPEED);
 		return Robot.elevator.getMotorCurrent() > Elevator.AUTO_ZERO_MOTOR_CURRENT;
 	}
 
 	@Override
 	protected void end() {
-		Robot.elevator.resetZeroPosition();
+		Robot.elevator.setSpeed(0);
+		Robot.elevator.resetZeroPosition(Elevator.ZERO_POSITION_INCHES);
+		Robot.elevator.setPositionPID(Elevator.MIN_POSITION_INCHES);
+		System.out.println("Elevator Zeroed");
 	}
 
 	@Override

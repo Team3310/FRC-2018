@@ -14,6 +14,7 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -29,24 +30,29 @@ public class Elevator extends Subsystem implements ControlLoopable
 	public static final double ENCODER_TICKS_TO_INCHES = (36.0 / 12.0) * (36.0 / 24.0) * (34.0 / 24.0) * 4096.0 / (1.88 * Math.PI);   
 	
 	// Defined speeds
-	public static final double CLIMB_SPEED = 1.0;
+	public static final double CLIMB_SPEED = -1.0;
 	public static final double TEST_SPEED_UP = 0.3;
 	public static final double TEST_SPEED_DOWN = -0.3;
-	public static final double AUTO_ZERO_SPEED = -0.3;
+	public static final double AUTO_ZERO_SPEED = -0.4;
 	public static final double JOYSTICK_INCHES_PER_MS = 0.75;
 	
 	// Defined positions
-	public static final double MIN_POSITION_INCHES = 1.0;
+	public static final double MIN_POSITION_INCHES = 0.0;
 	public static final double MAX_POSITION_INCHES = 83.0;
-	
+	public static final double ZERO_POSITION_INCHES = -0.25;
+	public static final double NEAR_ZERO_POSITION_INCHES = 3.0;
+
 	public static final double SWITCH_POSITION_INCHES = 18.0;
 	public static final double SCALE_LOW_POSITION_INCHES = 48.0;
 	public static final double SCALE_HIGH_POSITION_INCHES = 87.0;
+	public static final double CLIMB_BAR_POSITION_INCHES = 70.0;
+	public static final double CLIMB_HIGH_POSITION_INCHES = 10.0;
+	public static final double CLIMB_ASSIST_POSITION_INCHES = 50.0;
 
 	// Motion profile max velocities and accel times
 	public static final double MP_MAX_VELOCITY_INCHES_PER_SEC =  120; 
-	public static final double MP_T1 = 600;
-	public static final double MP_T2 = 300;
+	public static final double MP_T1 = 600;  // Fast = 300
+	public static final double MP_T2 = 300;  // Fast = 150
 	
 	// Motor controllers
 	private ArrayList<TalonSRXEncoder> motorControllers = new ArrayList<TalonSRXEncoder>();	
@@ -55,21 +61,32 @@ public class Elevator extends Subsystem implements ControlLoopable
 	private TalonSRX motor2;
 	private TalonSRX motor3;
 	
+	// Sensors
+	private DigitalInput frontIntakeSensor;
+	private DigitalInput backIntakeSensor;
+	
 	// PID controller and params
 	private MPTalonPIDController mpController;
-	private PIDParams mpPIDParams = new PIDParams(0.03, 0, 0, 0.005, 0.03, 0.0);  
+
+	public static int PID_SLOT = 0;
+	public static int MP_SLOT = 1;
+
+	private PIDParams mpPIDParams = new PIDParams(0.1, 0.0, 0.0, 0.0, 0.005, 0.0);  
+	private PIDParams pidPIDParams = new PIDParams(0.035, 0.0, 0.0, 0.0, 0.0, 0.0);  
 	public static final double KF_UP = 0.005;
 	public static final double KF_DOWN = 0.0;
+	public static final double PID_ERROR_INCHES = 1.0;
 	private double periodMs;
 
 	// Pneumatics
 	private Solenoid speedShift;
 
 	// Misc
-	public static final double AUTO_ZERO_MOTOR_CURRENT = 20.0;	
+	public static final double AUTO_ZERO_MOTOR_CURRENT = 8.0;	
 	private boolean isFinished;
 	private ElevatorControlMode controlMode = ElevatorControlMode.JOYSTICK_MANUAL;
 	private double targetPositionInchesPID = 0;
+	private boolean firstMpPoint;
 	
 	private Elevator() {
 		try {
@@ -80,6 +97,7 @@ public class Elevator extends Subsystem implements ControlLoopable
 //			motor1.setSensorPhase(true);
 			motor1.setInverted(true);
 			motor1.setNeutralMode(NeutralMode.Brake);
+//			motor1.configMaxIntegralAccumulator(arg0, arg1, arg2);
 //			motor1.configVoltageCompSaturation(12.0, TalonSRXEncoder.TIMEOUT_MS);
 //			motor1.enableVoltageCompensation(true);
 //			motor1.configNominalOutputForward(0.0, TalonSRXEncoder.TIMEOUT_MS);
@@ -101,6 +119,10 @@ public class Elevator extends Subsystem implements ControlLoopable
 			motorControllers.add(motor1);
 			
 			speedShift = new Solenoid(RobotMap.ELEVATOR_SPEEDSHIFT_PCM_ID);
+			frontIntakeSensor = new DigitalInput(RobotMap.INTAKE_FRONT_SENSOR_DIO_ID);
+			backIntakeSensor = new DigitalInput(RobotMap.INTAKE_BACK_SENSOR_DIO_ID);
+			
+			
 		}
 		catch (Exception e) {
 			System.err.println("An error occurred in the DriveTrain constructor");
@@ -111,8 +133,8 @@ public class Elevator extends Subsystem implements ControlLoopable
 	public void initDefaultCommand() {
 	}
 		
-	public void resetZeroPosition() {
-		mpController.resetZeroPosition();
+	public void resetZeroPosition(double position) {
+		mpController.resetZeroPosition(position);
 	}	
 
 	public void setSpeed(double speed) {
@@ -127,17 +149,19 @@ public class Elevator extends Subsystem implements ControlLoopable
 		
 	public void setPositionPID(double targetPositionInches) {
  		this.controlMode = ElevatorControlMode.JOYSTICK_PID;
- 		targetPositionInchesPID = targetPositionInches;
+ 		
+ 		targetPositionInchesPID = limitPosition(targetPositionInches);
 		double startPositionInches = motor1.getPositionWorld();
-		mpController.setTarget(limitPosition(targetPositionInchesPID), targetPositionInchesPID > startPositionInches ? KF_UP : KF_DOWN); 
+		mpController.setTarget(targetPositionInchesPID, targetPositionInchesPID > startPositionInches ? KF_UP : KF_DOWN); 
 		isFinished = false;
 	}
 	
 	public void setPositionMP(double targetPositionInches) {
- 		this.controlMode = ElevatorControlMode.MOTION_PROFILE;
 		double startPositionInches = motor1.getPositionWorld();
 		mpController.setMPTarget(startPositionInches, limitPosition(targetPositionInches), MP_MAX_VELOCITY_INCHES_PER_SEC, MP_T1, MP_T2); 
 		isFinished = false;
+		firstMpPoint = true;
+ 		this.controlMode = ElevatorControlMode.MOTION_PROFILE;
 	}
 	
 	private double limitPosition(double targetPosition) {
@@ -161,7 +185,15 @@ public class Elevator extends Subsystem implements ControlLoopable
 				break;
 			case MOTION_PROFILE: 
 				if (!isFinished) {
+					if (firstMpPoint) {
+						mpController.setPIDSlot(MP_SLOT);
+						firstMpPoint = false;
+					}
 					isFinished = mpController.controlLoopUpdate(); 
+					if (isFinished) {
+						mpController.setPIDSlot(PID_SLOT);
+					}
+					
 				}
 				break;
 			default:
@@ -208,12 +240,23 @@ public class Elevator extends Subsystem implements ControlLoopable
 	
 	@Override
 	public void setPeriodMs(long periodMs) {
-		mpController = new MPTalonPIDController(periodMs, mpPIDParams, motorControllers);
+		mpController = new MPTalonPIDController(periodMs, motorControllers);
+		mpController.setPID(mpPIDParams, MP_SLOT);
+		mpController.setPID(pidPIDParams, PID_SLOT);
+		mpController.setPIDSlot(PID_SLOT);
 		this.periodMs = periodMs;
 	}
 	
 	public double getPeriodMs() {
 		return periodMs;
+	}
+	
+	public boolean getFrontIntakeSensor() {
+		return frontIntakeSensor.get();
+	}
+	
+	public boolean getBackIntakeSensor() {
+		return backIntakeSensor.get();
 	}
 	
 	public void updateStatus(Robot.OperationMode operationMode) {
@@ -227,6 +270,9 @@ public class Elevator extends Subsystem implements ControlLoopable
 				SmartDashboard.putNumber("Elevator Motor 1 Amps PDP", Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_1_CAN_ID));
 				SmartDashboard.putNumber("Elevator Motor 2 Amps PDP", Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_2_CAN_ID));
 				SmartDashboard.putNumber("Elevator Motor 3 Amps PDP", Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_3_CAN_ID));
+				SmartDashboard.putBoolean("Intake Front Sensor", getFrontIntakeSensor());
+				SmartDashboard.putBoolean("Intake Back Sensor", getBackIntakeSensor());
+				SmartDashboard.putNumber("Elevator Target PID Position", targetPositionInchesPID);
 			}
 			catch (Exception e) {
 				System.err.println("Elevator update status error");

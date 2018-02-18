@@ -273,14 +273,14 @@ public class Drive extends Subsystem implements ControlLoopable
 	
 	public void setStraightMP(double distanceInches, double maxVelocity, boolean useGyroLock, boolean useAbsolute, double desiredAbsoluteAngle) {
 		double yawAngle = useAbsolute ? BHRMathUtils.adjustAccumAngleToDesired(getGyroAngleDeg(), desiredAbsoluteAngle) : getGyroAngleDeg();
-		mpStraightController.setPID(mpStraightPIDParams);
+		mpStraightController.setPID(mpStraightPIDParams, 0);
 		mpStraightController.setMPStraightTarget(0, distanceInches, maxVelocity, MP_STRAIGHT_T1, MP_STRAIGHT_T2, useGyroLock, yawAngle, true); 
 		setControlMode(DriveControlMode.MP_STRAIGHT);
 	}
 	
 	public void setStraightMPCached(String key, boolean useGyroLock, boolean useAbsolute, double desiredAbsoluteAngle) {
 		double yawAngle = useAbsolute ? BHRMathUtils.adjustAccumAngleToDesired(getGyroAngleDeg(), desiredAbsoluteAngle) : getGyroAngleDeg();
-		mpStraightController.setPID(mpStraightPIDParams);
+		mpStraightController.setPID(mpStraightPIDParams, 0);
 		mpStraightController.setMPStraightTarget(key, useGyroLock, yawAngle, true); 
 		setControlMode(DriveControlMode.MP_STRAIGHT);
 	}
@@ -381,7 +381,7 @@ public class Drive extends Subsystem implements ControlLoopable
 //			rightDrive1.changeControlMode(ControlMode.PercentVbus);
 		}
 		else if (controlMode == DriveControlMode.HOLD) {
-			mpStraightController.setPID(mpHoldPIDParams);
+			mpStraightController.setPID(mpHoldPIDParams, 0);
 //			leftDrive1.changeControlMode(ControlMode.Position);
 			leftDrive1.setPosition(0);
 			leftDrive1.set(ControlMode.Position, 0);
@@ -541,7 +541,8 @@ public class Drive extends Subsystem implements ControlLoopable
 	@Override
 	public void setPeriodMs(long periodMs) {
 		mmStraightController = new MMTalonPIDController(periodMs, mmStraightPIDParams, motorControllers);
-		mpStraightController = new MPTalonPIDController(periodMs, mpStraightPIDParams, motorControllers);
+		mpStraightController = new MPTalonPIDController(periodMs, motorControllers);
+		mpStraightController.setPID(mpStraightPIDParams, 0);
 		mpTurnController = new MPSoftwarePIDController(periodMs, mpTurnPIDParams, motorControllers);
 		pidTurnController = new SoftwarePIDController(pidTurnPIDParams, motorControllers);
 		mpPathController = new MPTalonPIDPathController(periodMs, mpPathPIDParams, motorControllers);

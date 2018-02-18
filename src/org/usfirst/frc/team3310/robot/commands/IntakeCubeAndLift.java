@@ -1,0 +1,19 @@
+package org.usfirst.frc.team3310.robot.commands;
+
+import org.usfirst.frc.team3310.robot.subsystems.Elevator;
+import org.usfirst.frc.team3310.robot.subsystems.Intake;
+
+import edu.wpi.first.wpilibj.command.CommandGroup;
+
+/**
+ *
+ */
+public class IntakeCubeAndLift extends CommandGroup {
+
+    public IntakeCubeAndLift() {
+        addSequential(new ElevatorSetPositionMP(Elevator.NEAR_ZERO_POSITION_INCHES));
+        addSequential(new ElevatorAutoZero(true));
+        addSequential(new IntakeSetSpeedFrontSensorOff(Intake.INTAKE_LOAD_SPEED));
+        addSequential(new ElevatorSetPositionMP(Elevator.SWITCH_POSITION_INCHES));
+    }
+}

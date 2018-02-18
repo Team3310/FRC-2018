@@ -7,6 +7,7 @@
 
 package org.usfirst.frc.team3310.robot;
 
+import org.usfirst.frc.team3310.robot.commands.ElevatorAutoZero;
 import org.usfirst.frc.team3310.robot.subsystems.Drive;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator;
 import org.usfirst.frc.team3310.robot.subsystems.Flipper;
@@ -70,6 +71,10 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putData("Operation Mode", operationModeChooser);
 
 		updateStatus();
+	}  
+	
+	// Called every loop for all modes
+	public void robotPeriodic() {
 	}
 
 	/**
@@ -114,7 +119,6 @@ public class Robot extends TimedRobot {
     	drive.resetEncoders();
     	drive.resetGyro();
     	drive.setIsRed(getAlliance().equals(Alliance.Red));
-    	elevator.resetZeroPosition();
 
 		// schedule the autonomous command (example)
 		if (autonomousCommand != null) {
@@ -148,7 +152,7 @@ public class Robot extends TimedRobot {
     	drive.endGyroCalibration();
     	elevator.setShiftState(Elevator.SpeedShiftState.HI);
     	
-//    	Scheduler.getInstance().add(new ElevatorAutoZero());
+    	Scheduler.getInstance().add(new ElevatorAutoZero(false));
  
     	updateStatus();
 	}

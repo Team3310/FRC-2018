@@ -33,8 +33,8 @@ public class RobotMap {
 	public static final int RIGHT_FLIPPER_PCM_ID = 3;		
 	
 	// DIO
-	public static final int INTAKE_FRONT_SENSOR_RED_DIO_ID = 4;
-	public static final int INTAKE_BACK_SENSOR_BLUE_DIO_ID = 5;
+	public static final int INTAKE_FRONT_SENSOR_DIO_ID = 0;
+	public static final int INTAKE_BACK_SENSOR_DIO_ID = 1;
 
 	// Analog
 	public static final int REAR_SCALE_SENSOR_ANALOG_ID = 0;

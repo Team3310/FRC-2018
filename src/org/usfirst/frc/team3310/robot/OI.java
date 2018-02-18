@@ -10,13 +10,17 @@ import org.usfirst.frc.team3310.robot.commands.DriveGyroReset;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
 import org.usfirst.frc.team3310.robot.commands.DriveSpeedShift;
 import org.usfirst.frc.team3310.robot.commands.DriveStraightMP;
+import org.usfirst.frc.team3310.robot.commands.ElevatorAutoZero;
+import org.usfirst.frc.team3310.robot.commands.ElevatorClimb;
 import org.usfirst.frc.team3310.robot.commands.ElevatorResetZero;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetMode;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetPositionMP;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetSpeed;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSpeedShift;
 import org.usfirst.frc.team3310.robot.commands.FlipperFlip;
+import org.usfirst.frc.team3310.robot.commands.IntakeCubeAndLift;
 import org.usfirst.frc.team3310.robot.commands.IntakeSetSpeed;
+import org.usfirst.frc.team3310.robot.commands.IntakeSetSpeedFrontSensorOff;
 import org.usfirst.frc.team3310.robot.subsystems.Drive;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator.ElevatorControlMode;
@@ -54,12 +58,6 @@ public class OI {
 		// Operator controller
 		m_operatorXbox = new XboxController(RobotMap.OPERATOR_JOYSTICK_1_USB_ID);
 		
-        XBoxTriggerButton shiftElevatorLo = new XBoxTriggerButton(m_operatorXbox, XBoxTriggerButton.LEFT_TRIGGER);
-        shiftElevatorLo.whenPressed(new ElevatorSpeedShift(Elevator.SpeedShiftState.LO));
-
-        XBoxTriggerButton shiftElevatorHi = new XBoxTriggerButton(m_operatorXbox, XBoxTriggerButton.RIGHT_TRIGGER);
-        shiftElevatorHi.whenPressed(new ElevatorSpeedShift(Elevator.SpeedShiftState.HI));
-
         JoystickButton intakeLoad = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.RIGHT_BUMPER_BUTTON);
         intakeLoad.whenPressed(new IntakeSetSpeed(Intake.INTAKE_LOAD_SPEED));
         intakeLoad.whenReleased(new IntakeSetSpeed(0.0));
@@ -68,13 +66,12 @@ public class OI {
         intakeEject.whenPressed(new IntakeSetSpeed(Intake.INTAKE_EJECT_SPEED));
         intakeEject.whenReleased(new IntakeSetSpeed(0.0));
 		
-        XBoxDPadTriggerButton elevatorManualUp = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.UP);
-        elevatorManualUp.whenPressed(new ElevatorSetSpeed(Elevator.TEST_SPEED_UP));
-        elevatorManualUp.whenReleased(new ElevatorSetSpeed(0.0));
+        XBoxDPadTriggerButton elevatorShiftHi = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.UP);
+        elevatorShiftHi.whenPressed(new ElevatorSpeedShift(Elevator.SpeedShiftState.HI));
 
-        XBoxDPadTriggerButton elevatorManualDown = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.DOWN);
-        elevatorManualDown.whenPressed(new ElevatorSetSpeed(Elevator.TEST_SPEED_DOWN));
-        elevatorManualDown.whenReleased(new ElevatorSetSpeed(0.0));
+        XBoxDPadTriggerButton elevatorClimb = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.DOWN);
+        elevatorClimb.whenPressed(new ElevatorClimb());
+        elevatorClimb.whenReleased(new ElevatorSetMode(ElevatorControlMode.JOYSTICK_PID));
 
         XBoxDPadTriggerButton elevatorJoystickManualMode = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.LEFT);
         elevatorJoystickManualMode.whenPressed(new ElevatorSetMode(ElevatorControlMode.JOYSTICK_MANUAL));
@@ -85,8 +82,11 @@ public class OI {
         JoystickButton elevatorReset = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.START_BUTTON);
         elevatorReset.whenPressed(new ElevatorResetZero());
 
-        JoystickButton elevatorMinPosition = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.A_BUTTON);
-        elevatorMinPosition.whenPressed(new ElevatorSetPositionMP(Elevator.MIN_POSITION_INCHES));
+//        JoystickButton elevatorMinPosition = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.A_BUTTON);
+//        elevatorMinPosition.whenPressed(new ElevatorSetPositionMP(Elevator.MIN_POSITION_INCHES));
+
+		JoystickButton intakeCubeAndLift = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.A_BUTTON);
+		intakeCubeAndLift.whenPressed(new IntakeCubeAndLift());
 
         JoystickButton elevatorMaxPosition = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.Y_BUTTON);
         elevatorMaxPosition.whenPressed(new ElevatorSetPositionMP(Elevator.MAX_POSITION_INCHES));
@@ -104,6 +104,14 @@ public class OI {
 //        elevatorSwitchPosition.whenPressed(new ElevatorSetPositionPID(10));
 
         //Smart Dashboard
+        Button intakeCube = new InternalButton();
+        intakeCube.whenPressed(new IntakeSetSpeedFrontSensorOff(Intake.INTAKE_LOAD_SPEED));
+        SmartDashboard.putData("Intake Cube", intakeCube);
+        
+        Button autoZero = new InternalButton();
+        autoZero.whenPressed(new ElevatorAutoZero(false));
+        SmartDashboard.putData("Elevator Auto Zero", autoZero);
+        
         Button elevatorMinPositionSD = new InternalButton();
         elevatorMinPositionSD.whenPressed(new ElevatorSetPositionMP(Elevator.MIN_POSITION_INCHES));
         SmartDashboard.putData("Elevator Min Position", elevatorMinPositionSD);

@@ -9,7 +9,6 @@ public class MPTalonPIDController
 {	
 	protected static enum MPControlMode { STRAIGHT, TURN };
 	public static enum MPTalonTurnType { TANK, LEFT_SIDE_ONLY, RIGHT_SIDE_ONLY };
-
 	protected ArrayList<TalonSRXEncoder> motorControllers;	
 	protected long periodMs;
 	protected PIDParams pidParams;	
@@ -21,19 +20,27 @@ public class MPTalonPIDController
 	protected double trackDistance;
 	protected MPControlMode controlMode;
 	protected MPTalonTurnType turnType;
+	protected int pidSlot;
 	
-	public MPTalonPIDController(long periodMs, PIDParams pidParams, ArrayList<TalonSRXEncoder> motorControllers) 
+	public MPTalonPIDController(long periodMs, ArrayList<TalonSRXEncoder> motorControllers) 
 	{
 		this.motorControllers = motorControllers;
 		this.periodMs = periodMs;
-		setPID(pidParams);
 	}
     
-	public void setPID(PIDParams pidParams) {
+	public void setPID(PIDParams pidParams, int slot) {
 		this.pidParams = pidParams;
 		
 		for (TalonSRXEncoder motorController : motorControllers) {
-			motorController.setPID(0, pidParams.kP, pidParams.kI, pidParams.kD);
+			motorController.setPID(slot, pidParams.kP, pidParams.kI, pidParams.kD);
+		}
+	}
+	
+	public void setPIDSlot(int slot) {
+		this.pidSlot = slot;
+		System.out.println("Slot id = " + slot);
+		for (TalonSRXEncoder motorController : motorControllers) {
+			motorController.selectProfileSlot(slot, 0);
 		}
 	}
 	
@@ -56,7 +63,7 @@ public class MPTalonPIDController
 			if (resetEncoder) {
 				motorController.setPosition(0);
 			}
-			motorController.set(ControlMode.Position, mp.getStartDistance());
+			motorController.setWorld(ControlMode.Position, mp.getStartDistance());
 		}
 	}
 	
@@ -71,7 +78,7 @@ public class MPTalonPIDController
 			if (resetEncoder) {
 				motorController.setPosition(0);
 			}
-			motorController.set(ControlMode.Position, mp.getStartDistance());
+			motorController.setWorld(ControlMode.Position, mp.getStartDistance());
 		}
 	}
 	
@@ -123,9 +130,9 @@ public class MPTalonPIDController
 		}
 	}
 
-	public void resetZeroPosition(double angle) {
+	public void resetZeroPosition(double position) {
 		for (TalonSRXEncoder motorController : motorControllers) {
-			motorController.setPositionWorld(angle);
+			motorController.setPositionWorld(position);
 		}
 	}
 
@@ -144,7 +151,7 @@ public class MPTalonPIDController
 		// Calculate the motion profile feed forward and gyro feedback terms
 		double KfLeft = 0.0;
 		double KfRight = 0.0;
-
+		
 		// Update the set points and Kf gains
 		if (controlMode == MPControlMode.STRAIGHT) {
 			double gyroDelta = useGyroLock ? startGyroAngle - currentGyroAngle: 0;
