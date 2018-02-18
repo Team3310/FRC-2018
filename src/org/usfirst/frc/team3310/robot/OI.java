@@ -66,6 +66,14 @@ public class OI {
         intakeEject.whenPressed(new IntakeSetSpeed(Intake.INTAKE_EJECT_SPEED));
         intakeEject.whenReleased(new IntakeSetSpeed(0.0));
 		
+        XBoxTriggerButton intakeLoadSlow = new XBoxTriggerButton(m_operatorXbox, XBoxTriggerButton.RIGHT_TRIGGER);
+        intakeLoadSlow.whenPressed(new IntakeSetSpeed(Intake.INTAKE_LOAD_SLOW_SPEED));
+        intakeLoadSlow.whenReleased(new IntakeSetSpeed(0.0));
+		
+        XBoxTriggerButton intakeEjectSlow = new XBoxTriggerButton(m_operatorXbox, XBoxTriggerButton.LEFT_TRIGGER);
+        intakeEjectSlow.whenPressed(new IntakeSetSpeed(Intake.INTAKE_EJECT_SLOW_SPEED));
+        intakeEjectSlow.whenReleased(new IntakeSetSpeed(0.0));
+		
         XBoxDPadTriggerButton elevatorShiftHi = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.UP);
         elevatorShiftHi.whenPressed(new ElevatorSpeedShift(Elevator.SpeedShiftState.HI));
 
@@ -85,8 +93,8 @@ public class OI {
 //        JoystickButton elevatorMinPosition = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.A_BUTTON);
 //        elevatorMinPosition.whenPressed(new ElevatorSetPositionMP(Elevator.MIN_POSITION_INCHES));
 
-		JoystickButton intakeCubeAndLift = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.A_BUTTON);
-		intakeCubeAndLift.whenPressed(new IntakeCubeAndLift());
+		JoystickButton intakeCube = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.A_BUTTON);
+		intakeCube.whenPressed(new IntakeSetSpeedFrontSensorOff(Intake.INTAKE_LOAD_SPEED));
 
         JoystickButton elevatorMaxPosition = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.Y_BUTTON);
         elevatorMaxPosition.whenPressed(new ElevatorSetPositionMP(Elevator.MAX_POSITION_INCHES));
@@ -104,8 +112,8 @@ public class OI {
 //        elevatorSwitchPosition.whenPressed(new ElevatorSetPositionPID(10));
 
         //Smart Dashboard
-        Button intakeCube = new InternalButton();
-        intakeCube.whenPressed(new IntakeSetSpeedFrontSensorOff(Intake.INTAKE_LOAD_SPEED));
+        Button intakeCubeSD = new InternalButton();
+        intakeCubeSD.whenPressed(new IntakeSetSpeedFrontSensorOff(Intake.INTAKE_LOAD_SPEED));
         SmartDashboard.putData("Intake Cube", intakeCube);
         
         Button autoZero = new InternalButton();
