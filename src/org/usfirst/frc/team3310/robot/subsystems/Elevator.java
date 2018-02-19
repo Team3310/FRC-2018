@@ -37,14 +37,14 @@ public class Elevator extends Subsystem implements ControlLoopable
 	public static final double JOYSTICK_INCHES_PER_MS = 0.75;
 	
 	// Defined positions
-	public static final double MIN_POSITION_INCHES = 0.0;
-	public static final double MAX_POSITION_INCHES = 83.0;
 	public static final double ZERO_POSITION_INCHES = -0.25;
 	public static final double NEAR_ZERO_POSITION_INCHES = 3.0;
+	public static final double MIN_POSITION_INCHES = 0.0;
+	public static final double MAX_POSITION_INCHES = 83.0;
 
-	public static final double SWITCH_POSITION_INCHES = 18.0;
-	public static final double SCALE_LOW_POSITION_INCHES = 48.0;
-	public static final double SCALE_HIGH_POSITION_INCHES = 87.0;
+	public static final double SWITCH_POSITION_INCHES = 24.0;
+	public static final double SCALE_LOW_POSITION_INCHES = 56.0;
+	public static final double SCALE_HIGH_POSITION_INCHES = MAX_POSITION_INCHES;
 	public static final double CLIMB_BAR_POSITION_INCHES = 70.0;
 	public static final double CLIMB_HIGH_POSITION_INCHES = 10.0;
 	public static final double CLIMB_ASSIST_POSITION_INCHES = 50.0;
@@ -82,7 +82,7 @@ public class Elevator extends Subsystem implements ControlLoopable
 	private Solenoid speedShift;
 
 	// Misc
-	public static final double AUTO_ZERO_MOTOR_CURRENT = 8.0;	
+	public static final double AUTO_ZERO_MOTOR_CURRENT = 20.0;	
 	private boolean isFinished;
 	private ElevatorControlMode controlMode = ElevatorControlMode.JOYSTICK_MANUAL;
 	private double targetPositionInchesPID = 0;
@@ -120,9 +120,7 @@ public class Elevator extends Subsystem implements ControlLoopable
 			
 			speedShift = new Solenoid(RobotMap.ELEVATOR_SPEEDSHIFT_PCM_ID);
 			frontIntakeSensor = new DigitalInput(RobotMap.INTAKE_FRONT_SENSOR_DIO_ID);
-			backIntakeSensor = new DigitalInput(RobotMap.INTAKE_BACK_SENSOR_DIO_ID);
-			
-			
+			backIntakeSensor = new DigitalInput(RobotMap.INTAKE_BACK_SENSOR_DIO_ID);						
 		}
 		catch (Exception e) {
 			System.err.println("An error occurred in the DriveTrain constructor");
