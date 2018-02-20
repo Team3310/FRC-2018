@@ -29,7 +29,7 @@ public class RobotMap {
 	// Pneumatics
 	public static final int ELEVATOR_SPEEDSHIFT_PCM_ID = 0;
 	public static final int RAMP_LATCH_PCM_ID = 1;
-	public static final int RAMP_PULL_UP_PCM_ID = 2;
+	public static final int RAMP_PULL_PCM_ID = 2;
 	public static final int DRIVETRAIN_SPEEDSHIFT_PCM_ID = 3;
 	public static final int LEFT_FLIPPER_PCM_ID = 4;
 	public static final int RIGHT_FLIPPER_PCM_ID = 5;		

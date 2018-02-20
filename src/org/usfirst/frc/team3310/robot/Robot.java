@@ -12,6 +12,7 @@ import org.usfirst.frc.team3310.robot.subsystems.Drive;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator;
 import org.usfirst.frc.team3310.robot.subsystems.Flipper;
 import org.usfirst.frc.team3310.robot.subsystems.Intake;
+import org.usfirst.frc.team3310.robot.subsystems.Ramp;
 import org.usfirst.frc.team3310.utility.ControlLooper;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -37,6 +38,7 @@ public class Robot extends TimedRobot {
 	public static final Elevator elevator = Elevator.getInstance();
 	public static final Intake intake = Intake.getInstance();
 	public static final Flipper flipper = Flipper.getInstance();
+	public static final Ramp ramp = Ramp.getInstance();
 	
 	// Control looper
 	public static final long periodMS = 10;
@@ -47,16 +49,12 @@ public class Robot extends TimedRobot {
 	private SendableChooser<Command> autonTaskChooser;
     private Command autonomousCommand;
 
-	public static enum OperationMode { TEST, COMPETITION };
-	public static OperationMode operationMode = OperationMode.TEST;
+	public static enum OperationMode { TEST, PRACTICE, COMPETITION };
+	public static OperationMode operationMode = OperationMode.PRACTICE;
 
 	// PDP
 	public static final PowerDistributionPanel pdp = new PowerDistributionPanel();
 
-	/**
-	 * This function is run when the robot is first started up and should be
-	 * used for any initialization code.
-	 */
 	@Override
 	public void robotInit() {
 		oi = OI.getInstance();
@@ -65,9 +63,11 @@ public class Robot extends TimedRobot {
     	controlLoop.addLoopable(elevator);
     	controlLoop.start();
  
+    	// Update default at competition!!!
     	operationModeChooser = new SendableChooser<OperationMode>();
-	    operationModeChooser.addDefault("Test", OperationMode.TEST);
+	    operationModeChooser.addDefault("Practice", OperationMode.PRACTICE);
 	    operationModeChooser.addObject("Competition", OperationMode.COMPETITION);
+	    operationModeChooser.addObject("Test", OperationMode.TEST);
 		SmartDashboard.putData("Operation Mode", operationModeChooser);
 
 		updateStatus();
@@ -77,11 +77,6 @@ public class Robot extends TimedRobot {
 	public void robotPeriodic() {
 	}
 
-	/**
-	 * This function is called once each time the robot enters Disabled mode.
-	 * You can use it to reset any subsystem information you want to clear when
-	 * the robot is disabled.
-	 */
 	@Override
 	public void disabledInit() {
 		updateStatus();
@@ -93,34 +88,17 @@ public class Robot extends TimedRobot {
 		updateStatus();
 	}
 
-	/**
-	 * This autonomous (along with the chooser code above) shows how to select
-	 * between different autonomous modes using the dashboard. The sendable
-	 * chooser code works with the Java SmartDashboard. If you prefer the
-	 * LabVIEW Dashboard, remove all of the chooser code and uncomment the
-	 * getString code to get the auto name from the text box below the Gyro
-	 *
-	 * <p>You can add additional auto modes by adding additional commands to the
-	 * chooser code above (like the commented example) or additional comparisons
-	 * to the switch structure below with additional strings & commands.
-	 */
 	@Override
 	public void autonomousInit() {
 		autonomousCommand = autonTaskChooser.getSelected();
 
-		/*
-		 * String autoSelected = SmartDashboard.getString("Auto Selector",
-		 * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
-		 * = new MyAutoCommand(); break; case "Default Auto": default:
-		 * autonomousCommand = new ExampleCommand(); break; }
-		 */
     	controlLoop.start();
     	drive.endGyroCalibration();
     	drive.resetEncoders();
     	drive.resetGyro();
     	drive.setIsRed(getAlliance().equals(Alliance.Red));
+    	elevator.setShiftState(Elevator.SpeedShiftState.HI);
 
-		// schedule the autonomous command (example)
 		if (autonomousCommand != null) {
 			autonomousCommand.start();
 		}
@@ -128,9 +106,6 @@ public class Robot extends TimedRobot {
 		updateStatus();
 	}
 
-	/**
-	 * This function is called periodically during autonomous.
-	 */
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
@@ -140,26 +115,24 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void teleopInit() {
-		// This makes sure that the autonomous stops running when
-		// teleop starts running. If you want the autonomous to
-		// continue until interrupted by another command, remove
-		// this line or comment it out.
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
 		}
+
+		operationMode = operationModeChooser.getSelected();
+		
         controlLoop.start();
     	drive.resetEncoders();
     	drive.endGyroCalibration();
     	elevator.setShiftState(Elevator.SpeedShiftState.HI);
     	
-//    	Scheduler.getInstance().add(new ElevatorAutoZero(false));
+    	if (operationMode != OperationMode.COMPETITION) {
+    		Scheduler.getInstance().add(new ElevatorAutoZero(false));
+    	}
  
     	updateStatus();
 	}
 
-	/**
-	 * This function is called periodically during operator control.
-	 */
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
@@ -176,6 +149,7 @@ public class Robot extends TimedRobot {
     	intake.updateStatus(operationMode);
     	elevator.updateStatus(operationMode);
     	flipper.updateStatus(operationMode);
+    	ramp.updateStatus(operationMode);
     }
 
 }

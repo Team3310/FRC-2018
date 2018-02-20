@@ -7,6 +7,9 @@ import edu.wpi.first.wpilibj.command.Command;
 
 public class ElevatorAutoZero extends Command
 {
+	private double MIN_ELEVATOR_POSITION_CHANGE = 0.1;
+	private double lastElevatorPosition;
+	
 	public ElevatorAutoZero(boolean interrutible) {
 		requires(Robot.intake);
 		requires(Robot.elevator);
@@ -15,6 +18,7 @@ public class ElevatorAutoZero extends Command
 
 	@Override
 	protected void initialize() {
+		lastElevatorPosition = Elevator.MAX_POSITION_INCHES;
 		Robot.elevator.setSpeed(Elevator.AUTO_ZERO_SPEED);
 		System.out.println("Auto zero initialize");
 	}
@@ -27,7 +31,10 @@ public class ElevatorAutoZero extends Command
 	@Override
 	protected boolean isFinished() {
 		Robot.elevator.setSpeed(Elevator.AUTO_ZERO_SPEED);
-		return Robot.elevator.getMotorCurrent() > Elevator.AUTO_ZERO_MOTOR_CURRENT;
+		double currentElevatorPosition = Robot.elevator.getPositionInches();
+		double elevatorPositionChange = lastElevatorPosition - currentElevatorPosition;
+		lastElevatorPosition = currentElevatorPosition;
+		return elevatorPositionChange < MIN_ELEVATOR_POSITION_CHANGE && Robot.elevator.getMotorCurrent() > Elevator.AUTO_ZERO_MOTOR_CURRENT;
 	}
 
 	@Override

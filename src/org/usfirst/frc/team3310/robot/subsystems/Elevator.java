@@ -61,10 +61,6 @@ public class Elevator extends Subsystem implements ControlLoopable
 	private TalonSRX motor2;
 	private TalonSRX motor3;
 	
-	// Sensors
-	private DigitalInput frontIntakeSensor;
-	private DigitalInput backIntakeSensor;
-	
 	// PID controller and params
 	private MPTalonPIDController mpController;
 
@@ -119,8 +115,6 @@ public class Elevator extends Subsystem implements ControlLoopable
 			motorControllers.add(motor1);
 			
 			speedShift = new Solenoid(RobotMap.ELEVATOR_SPEEDSHIFT_PCM_ID);
-			frontIntakeSensor = new DigitalInput(RobotMap.INTAKE_FRONT_SENSOR_DIO_ID);
-			backIntakeSensor = new DigitalInput(RobotMap.INTAKE_BACK_SENSOR_DIO_ID);						
 		}
 		catch (Exception e) {
 			System.err.println("An error occurred in the DriveTrain constructor");
@@ -136,22 +130,21 @@ public class Elevator extends Subsystem implements ControlLoopable
 	}	
 
 	public void setSpeed(double speed) {
-		this.controlMode = ElevatorControlMode.MANUAL;
 		motor1.set(ControlMode.PercentOutput, speed);
+		this.controlMode = ElevatorControlMode.MANUAL;
 	}
 		
 	public void setSpeedJoystick(double speed) {
-		this.controlMode = ElevatorControlMode.JOYSTICK_MANUAL;
 		motor1.set(ControlMode.PercentOutput, speed);
+		this.controlMode = ElevatorControlMode.JOYSTICK_MANUAL;
 	}
 		
 	public void setPositionPID(double targetPositionInches) {
- 		this.controlMode = ElevatorControlMode.JOYSTICK_PID;
- 		
  		targetPositionInchesPID = limitPosition(targetPositionInches);
 		double startPositionInches = motor1.getPositionWorld();
 		mpController.setTarget(targetPositionInchesPID, targetPositionInchesPID > startPositionInches ? KF_UP : KF_DOWN); 
 		isFinished = false;
+ 		this.controlMode = ElevatorControlMode.JOYSTICK_PID;		
 	}
 	
 	public void setPositionMP(double targetPositionInches) {
@@ -191,7 +184,6 @@ public class Elevator extends Subsystem implements ControlLoopable
 					if (isFinished) {
 						mpController.setPIDSlot(PID_SLOT);
 					}
-					
 				}
 				break;
 			default:
@@ -249,14 +241,6 @@ public class Elevator extends Subsystem implements ControlLoopable
 		return periodMs;
 	}
 	
-	public boolean getFrontIntakeSensor() {
-		return frontIntakeSensor.get();
-	}
-	
-	public boolean getBackIntakeSensor() {
-		return backIntakeSensor.get();
-	}
-	
 	public void updateStatus(Robot.OperationMode operationMode) {
 		if (operationMode == Robot.OperationMode.TEST) {
 			try {
@@ -268,12 +252,9 @@ public class Elevator extends Subsystem implements ControlLoopable
 				SmartDashboard.putNumber("Elevator Motor 1 Amps PDP", Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_1_CAN_ID));
 				SmartDashboard.putNumber("Elevator Motor 2 Amps PDP", Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_2_CAN_ID));
 				SmartDashboard.putNumber("Elevator Motor 3 Amps PDP", Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_3_CAN_ID));
-				SmartDashboard.putBoolean("Intake Front Sensor", getFrontIntakeSensor());
-				SmartDashboard.putBoolean("Intake Back Sensor", getBackIntakeSensor());
 				SmartDashboard.putNumber("Elevator Target PID Position", targetPositionInchesPID);
 			}
 			catch (Exception e) {
-				System.err.println("Elevator update status error");
 			}
 		}
 	}	

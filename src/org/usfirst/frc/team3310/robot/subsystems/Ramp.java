@@ -11,21 +11,20 @@ public class Ramp extends Subsystem
 {
 	private static Ramp instance;
 	
-	public static enum FlipperSide { RIGHT, LEFT };
-	public static enum FlipperState { RETRACTED, DEPLOYED };
+	public static enum RampLatch { STOWED, DEPLOYED };
+	public static enum RampPull { UP, DOWN };
 
-	private Solenoid leftFlipper;
-	private Solenoid rightFlipper;
+	private Solenoid latch;
+	private Solenoid pull;
 
 
 	private Ramp() {
 		try {
-			leftFlipper = new Solenoid(RobotMap.RAMP_LATCH_PCM_ID);
-			rightFlipper = new Solenoid(RobotMap.RAMP_PULL_UP_PCM_ID);
-			
+			latch = new Solenoid(RobotMap.RAMP_LATCH_PCM_ID);
+			pull = new Solenoid(RobotMap.RAMP_PULL_PCM_ID);
 		}
 		catch (Exception e) {
-			System.err.println("An error occurred in the Flipper constructor");
+			System.err.println("An error occurred in the Ramp constructor");
 		}
 	}
 
@@ -40,48 +39,30 @@ public class Ramp extends Subsystem
 		return instance;
 	}
 
-	public void setPosition(FlipperSide flipperSide, FlipperState state) {
-		if(flipperSide == FlipperSide.RIGHT) {
-			setRightPosition(state);
+	public void setLatchPosition(RampLatch state) {
+		if(state == RampLatch.DEPLOYED) {
+			pull.set(true);
 		}
-		else {
-			setLeftPosition(state);
-		}
-	}
-
-	public void setRightPosition(FlipperState state) {
-		if(state == FlipperState.DEPLOYED) {
-			rightFlipper.set(true);
-		}
-		else if(state == FlipperState.RETRACTED) {
-			rightFlipper.set(false);
+		else if(state == RampLatch.STOWED) {
+			pull.set(false);
 		}
 	}
-	
-	public FlipperState getRightFlipper() {
-		return (rightFlipper.get() == true) ? FlipperState.DEPLOYED : FlipperState.RETRACTED;
-	}
-	
-	public void setLeftPosition(FlipperState state) {
-		if(state == FlipperState.DEPLOYED) {
-			leftFlipper.set(true);
+		
+	public void setPullPosition(RampPull state) {
+		if(state == RampPull.DOWN) {
+			pull.set(true);
 		}
-		else if(state == FlipperState.RETRACTED) {
-			leftFlipper.set(false);
+		else if(state == RampPull.UP) {
+			pull.set(false);
 		}
 	}
-	
-	public FlipperState getLeftFlipper() {
-		return (leftFlipper.get() == true) ? FlipperState.DEPLOYED : FlipperState.RETRACTED;
-	}
-	
+		
 	public void updateStatus(Robot.OperationMode operationMode) {
 		if (operationMode == Robot.OperationMode.TEST) {
 			try {
 				
 			}
 			catch (Exception e) {
-				System.err.println("Flipper update status error");
 			}
 		}
 	}

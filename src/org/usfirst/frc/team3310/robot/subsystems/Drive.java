@@ -590,18 +590,9 @@ public class Drive extends Subsystem implements ControlLoopable
 				SmartDashboard.putNumber("Drive Right 2 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_RIGHT_MOTOR2_CAN_ID));
 				SmartDashboard.putNumber("Drive Right 3 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_RIGHT_MOTOR3_CAN_ID));
 				SmartDashboard.putNumber("Yaw Angle Pigeon Deg", getGyroPigeonAngleDeg());
-
-//				SmartDashboard.putNumber("Steer Output", m_steerOutput);
-//				SmartDashboard.putNumber("Move Output", m_moveOutput);
-//				SmartDashboard.putNumber("Steer Input", m_steerInput);
-//				SmartDashboard.putNumber("Move Input", m_moveInput);
 			}
 			catch (Exception e) {
-				System.err.println("Drivetrain update status error");
 			}
-		}
-		else {
-			
 		}
 	}	
 	

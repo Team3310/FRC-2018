@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -23,6 +24,10 @@ public class Intake extends Subsystem
 	private TalonSRX leftArm;
 	private TalonSRX rightArm;
 
+	// Sensors
+	private DigitalInput frontIntakeSensor;
+	private DigitalInput backIntakeSensor;
+	
 	private Intake() {
 		try {
 			leftArm = new TalonSRX(RobotMap.INTAKE_LEFT);
@@ -31,6 +36,9 @@ public class Intake extends Subsystem
 			
 			rightArm = new TalonSRX(RobotMap.INTAKE_RIGHT);
 			rightArm.setNeutralMode(NeutralMode.Brake);
+
+			frontIntakeSensor = new DigitalInput(RobotMap.INTAKE_FRONT_SENSOR_DIO_ID);
+			backIntakeSensor = new DigitalInput(RobotMap.INTAKE_BACK_SENSOR_DIO_ID);						
 		}
 		catch (Exception e) {
 			System.err.println("An error occurred in the Intake constructor");
@@ -53,14 +61,21 @@ public class Intake extends Subsystem
 		return instance;
 	}
 
-
+	public boolean getFrontIntakeSensor() {
+		return frontIntakeSensor.get();
+	}
+	
+	public boolean getBackIntakeSensor() {
+		return backIntakeSensor.get();
+	}
+	
 	public void updateStatus(Robot.OperationMode operationMode) {
 		if (operationMode == Robot.OperationMode.TEST) {
 			try {
-				
+				SmartDashboard.putBoolean("Intake Front Sensor", getFrontIntakeSensor());
+				SmartDashboard.putBoolean("Intake Back Sensor", getBackIntakeSensor());
 			}
 			catch (Exception e) {
-				System.err.println("Intake update status error");
 			}
 		}
 	}

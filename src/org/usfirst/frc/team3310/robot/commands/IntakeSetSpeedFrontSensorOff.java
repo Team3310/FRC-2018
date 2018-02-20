@@ -27,7 +27,7 @@ public class IntakeSetSpeedFrontSensorOff extends ExtraTimeoutCommand {
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	if (cubeDetected == false && Robot.elevator.getFrontIntakeSensor()) {
+    	if (cubeDetected == false && Robot.intake.getFrontIntakeSensor()) {
     		startExtraTimeout(EXTRA_INTAKE_TIME);
     		cubeDetected = true;
     	}

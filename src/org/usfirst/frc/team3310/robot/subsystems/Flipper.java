@@ -81,7 +81,6 @@ public class Flipper extends Subsystem
 				
 			}
 			catch (Exception e) {
-				System.err.println("Flipper update status error");
 			}
 		}
 	}

@@ -21,11 +21,14 @@ import org.usfirst.frc.team3310.robot.commands.FlipperFlip;
 import org.usfirst.frc.team3310.robot.commands.IntakeCubeAndLift;
 import org.usfirst.frc.team3310.robot.commands.IntakeSetSpeed;
 import org.usfirst.frc.team3310.robot.commands.IntakeSetSpeedFrontSensorOff;
+import org.usfirst.frc.team3310.robot.commands.RampSetPullPosition;
 import org.usfirst.frc.team3310.robot.subsystems.Drive;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator.ElevatorControlMode;
 import org.usfirst.frc.team3310.robot.subsystems.Flipper.FlipperSide;
 import org.usfirst.frc.team3310.robot.subsystems.Intake;
+import org.usfirst.frc.team3310.robot.subsystems.Ramp.RampLatch;
+import org.usfirst.frc.team3310.robot.subsystems.Ramp.RampPull;
 import org.usfirst.frc.team3310.utility.Path;
 import org.usfirst.frc.team3310.utility.Path.Waypoint;
 import org.usfirst.frc.team3310.utility.Translation2d;
@@ -54,7 +57,7 @@ public class OI {
         JoystickButton shiftDrivetrain = new JoystickButton(m_driverXbox.getJoyStick(), XboxController.LEFT_BUMPER_BUTTON);
         shiftDrivetrain.whenPressed(new DriveSpeedShift(Drive.SpeedShiftState.HI));
         shiftDrivetrain.whenReleased(new DriveSpeedShift(Drive.SpeedShiftState.LO));
-		
+
 		// Operator controller
 		m_operatorXbox = new XboxController(RobotMap.OPERATOR_JOYSTICK_1_USB_ID);
 		
@@ -83,6 +86,9 @@ public class OI {
 
         XBoxDPadTriggerButton elevatorJoystickManualMode = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.LEFT);
         elevatorJoystickManualMode.whenPressed(new ElevatorSetMode(ElevatorControlMode.JOYSTICK_MANUAL));
+
+        XBoxDPadTriggerButton rampPullDown = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.RIGHT);
+        rampPullDown.whenPressed(new RampSetPullPosition(RampPull.DOWN));
 
         JoystickButton elevatorPidMode = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.BACK_BUTTON);
         elevatorPidMode.whenPressed(new ElevatorSetMode(ElevatorControlMode.JOYSTICK_PID));
