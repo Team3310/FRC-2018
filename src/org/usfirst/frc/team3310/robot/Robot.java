@@ -152,7 +152,7 @@ public class Robot extends TimedRobot {
     	drive.endGyroCalibration();
     	elevator.setShiftState(Elevator.SpeedShiftState.HI);
     	
-    	Scheduler.getInstance().add(new ElevatorAutoZero(false));
+//    	Scheduler.getInstance().add(new ElevatorAutoZero(false));
  
     	updateStatus();
 	}

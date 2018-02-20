@@ -82,7 +82,7 @@ public class Elevator extends Subsystem implements ControlLoopable
 	private Solenoid speedShift;
 
 	// Misc
-	public static final double AUTO_ZERO_MOTOR_CURRENT = 20.0;	
+	public static final double AUTO_ZERO_MOTOR_CURRENT = 7.0;	
 	private boolean isFinished;
 	private ElevatorControlMode controlMode = ElevatorControlMode.JOYSTICK_MANUAL;
 	private double targetPositionInchesPID = 0;
