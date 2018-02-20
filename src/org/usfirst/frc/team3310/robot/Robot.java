@@ -57,6 +57,8 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotInit() {
+//		setPeriod(periodMS/1000.0);
+		
 		oi = OI.getInstance();
 		
     	controlLoop.addLoopable(drive);
