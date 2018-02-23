@@ -14,6 +14,6 @@ public class IntakeCubeAndLift extends CommandGroup {
         addSequential(new ElevatorSetPositionMP(Elevator.NEAR_ZERO_POSITION_INCHES));
         addSequential(new ElevatorAutoZero(true));
         addSequential(new IntakeSetSpeedFrontSensorOff(Intake.INTAKE_LOAD_SPEED));
-        addSequential(new ElevatorSetPositionMP(Elevator.SWITCH_POSITION_INCHES));
+//        addSequential(new ElevatorSetPositionMP(Elevator.SWITCH_POSITION_INCHES));
     }
 }

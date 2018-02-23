@@ -41,10 +41,10 @@ public class Ramp extends Subsystem
 
 	public void setLatchPosition(RampLatch state) {
 		if(state == RampLatch.DEPLOYED) {
-			pull.set(true);
+			latch.set(true);
 		}
 		else if(state == RampLatch.STOWED) {
-			pull.set(false);
+			latch.set(false);
 		}
 	}
 		

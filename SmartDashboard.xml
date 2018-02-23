@@ -1,0 +1,224 @@
+<xml version="1.0">
+<dashboard>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.CameraServerViewer">
+		<location x="0" y="52"/>
+		<property name="Camera Choice" value=""/>
+	</static-widget>
+	<widget field="Ramp Pull Retract" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="0" y="26"/>
+	</widget>
+	<widget field="Ramp Latch Close" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="0" y="0"/>
+	</widget>
+	<widget field="Elevator Down" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="524" y="278"/>
+	</widget>
+	<widget field="Elevator Scale High Position" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="470" y="88"/>
+	</widget>
+	<widget field="Elevator Hi Shift" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="487" y="41"/>
+	</widget>
+	<widget field="Intake On" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="202" y="640"/>
+	</widget>
+	<widget field="Elevator Min Position" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="308" y="321"/>
+	</widget>
+	<widget field="Elevator Auto Zero" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="182" y="451"/>
+	</widget>
+	<widget field="Operation Mode" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="289" y="36"/>
+	</widget>
+	<widget field="Elevator Up" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="48" y="272"/>
+	</widget>
+	<widget field="Drive Straight MP" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="164" y="317"/>
+	</widget>
+	<widget field="Elevator Lo Shift" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="51" y="756"/>
+	</widget>
+	<widget field="Intake Off" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="54" y="580"/>
+	</widget>
+	<widget field="Drive Adaptive Pursuit" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="44" y="363"/>
+	</widget>
+	<widget field="Elevator Max Position" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="96" y="586"/>
+	</widget>
+	<widget field="Intake Cube" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="288" y="525"/>
+	</widget>
+	<widget field="Flip Cube Left" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="305" y="562"/>
+	</widget>
+	<widget field="Elevator Scale Low Position" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="282" y="577"/>
+	</widget>
+	<widget field="Elevator Switch Position" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="179" y="424"/>
+	</widget>
+	<widget field="Flip Cube Right" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="66" y="346"/>
+	</widget>
+	<widget field="Gyro Reset" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="160" y="408"/>
+	</widget>
+	<widget field="Drive Left 2 Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="599" y="407"/>
+	</widget>
+	<widget field="Intake Back Sensor" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1345" y="269"/>
+	</widget>
+	<widget field="Elevator Motor 3 Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1089" y="435"/>
+	</widget>
+	<widget field="Elevator Target PID Position" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1368" y="622"/>
+	</widget>
+	<widget field="Drive Right 1 Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="834" y="380"/>
+	</widget>
+	<widget field="Elevator Position Inches" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1343" y="522"/>
+	</widget>
+	<widget field="Elevator Motor 1 Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1089" y="380"/>
+		<height>22</height>
+	</widget>
+	<widget field="Drive Left 3 Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="597" y="440"/>
+	</widget>
+	<widget field="Intake Front Sensor" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1351" y="311"/>
+	</widget>
+	<widget field="Drive Right 2 Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="832" y="407"/>
+	</widget>
+	<widget field="Elevator Motor 3 Amps PDP" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1350" y="436"/>
+	</widget>
+	<widget field="Drive Left 1 Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="597" y="377"/>
+	</widget>
+	<widget field="Yaw Angle Pigeon Deg" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="803" y="564"/>
+	</widget>
+	<widget field="Elevator Motor 2 Amps PDP" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1341" y="405"/>
+	</widget>
+	<widget field="Elevator Motor 2 Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1090" y="406"/>
+	</widget>
+	<widget field="Drive Left Position Inches" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="550" y="483"/>
+	</widget>
+	<widget field="Elevator Average Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1372" y="471"/>
+	</widget>
+	<widget field="Drive Right Position Inches" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="818" y="483"/>
+	</widget>
+	<widget field="Drive Right 3 Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="844" y="442"/>
+	</widget>
+	<widget field="Elevator Motor 1 Amps PDP" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="1344" y="377"/>
+	</widget>
+</dashboard>
+<live-window>
+	<widget field="Intake" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
+		<location x="2" y="25"/>
+	</widget>
+	<widget field="Drive" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
+		<location x="9" y="9"/>
+	</widget>
+	<widget field="Flipper" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
+		<location x="25" y="7"/>
+	</widget>
+	<widget field="Ramp" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
+		<location x="10" y="16"/>
+	</widget>
+	<widget field="Elevator" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
+		<location x="16" y="6"/>
+	</widget>
+	<widget field="Ungrouped" type="LW Subsystem" class="edu.wpi.first.smartdashboard.livewindow.elements.LWSubsystem">
+		<widget field="PowerDistributionPanel[0]" type="PowerDistributionPanel" class="edu.wpi.first.smartdashboard.livewindow.elements.PowerDistributionPanel">
+			<location x="6" y="18"/>
+			<height>213</height>
+			<width>376</width>
+		</widget>
+		<widget field="Talon SRX [11]" type="Speed Controller" class="edu.wpi.first.smartdashboard.livewindow.elements.SpeedController">
+			<location x="6" y="231"/>
+			<height>51</height>
+			<width>376</width>
+		</widget>
+		<widget field="DigitalInput[0]" type="Digital Input" class="edu.wpi.first.smartdashboard.livewindow.elements.DigitalInputDisplay">
+			<location x="6" y="282"/>
+			<height>22</height>
+			<width>376</width>
+		</widget>
+		<widget field="Talon SRX [4]" type="Speed Controller" class="edu.wpi.first.smartdashboard.livewindow.elements.SpeedController">
+			<location x="6" y="304"/>
+			<height>51</height>
+			<width>376</width>
+		</widget>
+		<widget field="Talon SRX [1]" type="Speed Controller" class="edu.wpi.first.smartdashboard.livewindow.elements.SpeedController">
+			<location x="6" y="355"/>
+			<height>51</height>
+			<width>376</width>
+		</widget>
+		<widget field="Solenoid[0,3]" type="Solenoid" class="edu.wpi.first.smartdashboard.livewindow.elements.DigitalOutputController">
+			<location x="132" y="406"/>
+			<height>25</height>
+			<width>123</width>
+		</widget>
+		<widget field="Solenoid[0,1]" type="Solenoid" class="edu.wpi.first.smartdashboard.livewindow.elements.DigitalOutputController">
+			<location x="132" y="431"/>
+			<height>25</height>
+			<width>123</width>
+		</widget>
+		<widget field="Solenoid[0,0]" type="Solenoid" class="edu.wpi.first.smartdashboard.livewindow.elements.DigitalOutputController">
+			<location x="132" y="456"/>
+			<height>25</height>
+			<width>123</width>
+		</widget>
+		<widget field="Solenoid[0,2]" type="Solenoid" class="edu.wpi.first.smartdashboard.livewindow.elements.DigitalOutputController">
+			<location x="132" y="481"/>
+			<height>25</height>
+			<width>123</width>
+		</widget>
+		<widget field="Talon SRX [2]" type="Speed Controller" class="edu.wpi.first.smartdashboard.livewindow.elements.SpeedController">
+			<location x="6" y="506"/>
+			<height>51</height>
+			<width>376</width>
+		</widget>
+		<widget field="Talon SRX [14]" type="Speed Controller" class="edu.wpi.first.smartdashboard.livewindow.elements.SpeedController">
+			<location x="6" y="557"/>
+			<height>51</height>
+			<width>376</width>
+		</widget>
+		<widget field="Solenoid[0,5]" type="Solenoid" class="edu.wpi.first.smartdashboard.livewindow.elements.DigitalOutputController">
+			<location x="132" y="608"/>
+			<height>25</height>
+			<width>123</width>
+		</widget>
+		<widget field="DigitalInput[1]" type="Digital Input" class="edu.wpi.first.smartdashboard.livewindow.elements.DigitalInputDisplay">
+			<location x="6" y="633"/>
+			<height>22</height>
+			<width>376</width>
+		</widget>
+		<widget field="Solenoid[0,4]" type="Solenoid" class="edu.wpi.first.smartdashboard.livewindow.elements.DigitalOutputController">
+			<location x="132" y="655"/>
+			<height>25</height>
+			<width>123</width>
+		</widget>
+		<location x="10" y="12"/>
+		<width>388</width>
+		<height>687</height>
+	</widget>
+</live-window>
+</xml>

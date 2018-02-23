@@ -38,7 +38,6 @@ public class MPTalonPIDController
 	
 	public void setPIDSlot(int slot) {
 		this.pidSlot = slot;
-		System.out.println("Slot id = " + slot);
 		for (TalonSRXEncoder motorController : motorControllers) {
 			motorController.selectProfileSlot(slot, 0);
 		}
@@ -65,6 +64,14 @@ public class MPTalonPIDController
 			}
 			motorController.setWorld(ControlMode.Position, mp.getStartDistance());
 		}
+	}
+	
+	public double getStartPosition() {
+		return mp != null ? mp.getStartDistance() : 0;
+	}
+	
+	public double getTargetPosition() {
+		return mp != null ? mp.getTargetDistance() : 0;
 	}
 	
 	public void setMPStraightTarget(String key, boolean useGyroLock, double desiredAngle, boolean resetEncoder) {

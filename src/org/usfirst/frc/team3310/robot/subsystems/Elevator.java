@@ -33,7 +33,7 @@ public class Elevator extends Subsystem implements ControlLoopable
 	public static final double CLIMB_SPEED = -1.0;
 	public static final double TEST_SPEED_UP = 0.3;
 	public static final double TEST_SPEED_DOWN = -0.3;
-	public static final double AUTO_ZERO_SPEED = -0.4;
+	public static final double AUTO_ZERO_SPEED = -0.3;
 	public static final double JOYSTICK_INCHES_PER_MS = 0.75;
 	
 	// Defined positions
@@ -140,11 +140,15 @@ public class Elevator extends Subsystem implements ControlLoopable
 	}
 		
 	public void setPositionPID(double targetPositionInches) {
+		setPositionPIDInternal(targetPositionInches);
+ 		this.controlMode = ElevatorControlMode.JOYSTICK_PID;	
+	}
+	
+	public void setPositionPIDInternal(double targetPositionInches) {
  		targetPositionInchesPID = limitPosition(targetPositionInches);
 		double startPositionInches = motor1.getPositionWorld();
 		mpController.setTarget(targetPositionInchesPID, targetPositionInchesPID > startPositionInches ? KF_UP : KF_DOWN); 
 		isFinished = false;
- 		this.controlMode = ElevatorControlMode.JOYSTICK_PID;		
 	}
 	
 	public void setPositionMP(double targetPositionInches) {
@@ -153,7 +157,7 @@ public class Elevator extends Subsystem implements ControlLoopable
 		isFinished = false;
 		firstMpPoint = true;
  		this.controlMode = ElevatorControlMode.MOTION_PROFILE;
-	}
+ 	}
 	
 	private double limitPosition(double targetPosition) {
 		if (targetPosition < MIN_POSITION_INCHES) {
@@ -195,7 +199,7 @@ public class Elevator extends Subsystem implements ControlLoopable
 		double joystickPosition = -Robot.oi.getOperatorController().getLeftYAxis();
 		double deltaPosition = joystickPosition * JOYSTICK_INCHES_PER_MS;
 		targetPositionInchesPID = targetPositionInchesPID + deltaPosition;
-		setPositionPID(targetPositionInchesPID);
+		setPositionPIDInternal(targetPositionInchesPID);
 	}
 	
 	private void controlManualWithJoystick() {

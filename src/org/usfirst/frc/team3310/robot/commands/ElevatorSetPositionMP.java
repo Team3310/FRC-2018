@@ -38,5 +38,7 @@ public class ElevatorSetPositionMP extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+    	Robot.elevator.setFinished(true);
+		Robot.elevator.setPositionPID(Robot.elevator.getPositionInches());
     }
 }

@@ -50,14 +50,14 @@ public class Robot extends TimedRobot {
     private Command autonomousCommand;
 
 	public static enum OperationMode { TEST, PRACTICE, COMPETITION };
-	public static OperationMode operationMode = OperationMode.PRACTICE;
+	public static OperationMode operationMode = OperationMode.TEST;
 
 	// PDP
 	public static final PowerDistributionPanel pdp = new PowerDistributionPanel();
 
 	@Override
 	public void robotInit() {
-//		setPeriod(periodMS/1000.0);
+		setPeriod(periodMS/1000.0);
 		
 		oi = OI.getInstance();
 		
@@ -67,9 +67,9 @@ public class Robot extends TimedRobot {
  
     	// Update default at competition!!!
     	operationModeChooser = new SendableChooser<OperationMode>();
-	    operationModeChooser.addDefault("Practice", OperationMode.PRACTICE);
+	    operationModeChooser.addObject("Practice", OperationMode.PRACTICE);
 	    operationModeChooser.addObject("Competition", OperationMode.COMPETITION);
-	    operationModeChooser.addObject("Test", OperationMode.TEST);
+	    operationModeChooser.addDefault("Test", OperationMode.TEST);
 		SmartDashboard.putData("Operation Mode", operationModeChooser);
 
 		updateStatus();
