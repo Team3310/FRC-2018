@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.usfirst.frc.team3310.utility.Path.Waypoint;
+import org.usfirst.frc.team3310.utility.geom.AffineTransform2D;
+import org.usfirst.frc.team3310.utility.geom.Point2D;
+import org.usfirst.frc.team3310.utility.geom.StraightLine2D;
 
 /**
  * A Path is a recording of the path that the robot takes. Path objects consist
@@ -18,6 +20,7 @@ import org.usfirst.frc.team3310.utility.Path.Waypoint;
  */
 public class Path {
     protected static final double kSegmentCompletePercentage = .99;
+    protected static final double kPointsPerUnit = 0.1;
 
     protected List<Waypoint> mWaypoints;
     protected List<PathSegment> mSegments;
@@ -26,27 +29,45 @@ public class Path {
     /**
      * A point along the Path, which consists of the location, the speed, and a
      * string marker (that future code can identify). Paths consist of a List of
-     * Waypoints.
+     * Waypoints.  A radius can be specified to add a fillet to neighboring segments.
      */
     public static class Waypoint {
         public final Translation2d position;
         public final double speed;
-        public final Optional<String> marker;
-
+        public final Double radius;
+        public final String marker;
+ 
         public Waypoint(Translation2d position, double speed) {
             this.position = position;
             this.speed = speed;
-            this.marker = Optional.empty();
+            this.radius = null;
+            this.marker = null;
+        }
+
+        public Waypoint(Translation2d position, double speed, double radius) {
+            this.position = position;
+            this.speed = speed;
+            this.radius = radius;
+            this.marker = null;
         }
 
         public Waypoint(Translation2d position, double speed, String marker) {
             this.position = position;
             this.speed = speed;
-            this.marker = Optional.of(marker);
+            this.radius = null;
+            this.marker = marker;
+        }
+
+        public Waypoint(Translation2d position, double speed, double radius, String marker) {
+            this.position = position;
+            this.speed = speed;
+            this.radius = radius;
+            this.marker = marker;
         }
     }
 
     public Path(List<Waypoint> waypoints) {
+    	waypoints = processFillets(waypoints);
         mMarkersCrossed = new HashSet<String>();
         mWaypoints = waypoints;
         mSegments = new ArrayList<PathSegment>();
@@ -57,11 +78,88 @@ public class Path {
         // The first waypoint is already complete
         if (mWaypoints.size() > 0) {
             Waypoint first_waypoint = mWaypoints.get(0);
-            if (first_waypoint.marker.isPresent()) {
-                mMarkersCrossed.add(first_waypoint.marker.get());
+            if (first_waypoint.marker != null) {
+                mMarkersCrossed.add(first_waypoint.marker);
             }
             mWaypoints.remove(0);
         }
+    }
+    
+    public static List<Waypoint> processFillets(List<Waypoint> waypoints) {
+        if (waypoints == null || waypoints.size() == 0) {
+        	return waypoints;
+        }
+
+        // Check for any radius values 
+    	boolean isRadius = false;
+        for (int i = 1; i < waypoints.size() - 1; i++) {
+            if (waypoints.get(i).radius != null) {
+            	isRadius = true;
+            	break;
+            }
+        }		
+        if (!isRadius) {
+        	return waypoints;
+        }
+
+        // Create fillets
+        List<Waypoint> filletedWayPoints = new ArrayList<Waypoint>();
+        filletedWayPoints.add(waypoints.get(0));
+        for (int i = 1; i < waypoints.size(); i++) {
+            if (waypoints.get(i).radius != null) {
+            	addFillet(filletedWayPoints, waypoints, i);
+            }
+            else {
+                filletedWayPoints.add(waypoints.get(i));
+            }
+        }		
+        
+    	return filletedWayPoints;
+    }
+    
+    private static void addFillet(List<Waypoint> filletedWayPoints, List<Waypoint> waypoints, int index) {
+    	if (index == waypoints.size() - 1) {
+    		System.out.println("Can't have a radius on the last point");
+    		return;
+    	}
+    	
+    	Waypoint currentWaypoint = waypoints.get(index);
+    	
+    	Translation2d previous = filletedWayPoints.get(filletedWayPoints.size() - 1).position;
+    	Translation2d current = currentWaypoint.position;
+    	Translation2d next = waypoints.get(index + 1).position;
+    	
+    	StraightLine2D firstLine = new StraightLine2D(previous.x_, previous.y_, current.x_ - previous.x_, current.y_ - previous.y_); 
+    	StraightLine2D secondLine = new StraightLine2D(current.x_, current.y_, next.x_ - current.x_, next.y_ - current.y_); 
+    	
+    	double deltaAngle = firstLine.horizontalAngle() - secondLine.horizontalAngle();
+    	StraightLine2D firstLineOffset = firstLine.parallel(Math.copySign(currentWaypoint.radius, deltaAngle));
+    	StraightLine2D secondLineOffset = secondLine.parallel(Math.copySign(currentWaypoint.radius, deltaAngle));
+    	
+    	Point2D center = firstLineOffset.intersection(secondLineOffset);
+    	Point2D startArc = firstLine.projectedPoint(center);
+    	
+    	filletedWayPoints.add(new Waypoint(new Translation2d(startArc.x(), startArc.y()), currentWaypoint.speed, currentWaypoint.marker));
+    	int numPoints = (int)Math.abs(kPointsPerUnit * (Math.PI - Math.abs(deltaAngle)) * (2 * Math.PI * currentWaypoint.radius));
+    	double angleInc = Math.copySign((Math.PI - Math.abs(deltaAngle)) / numPoints, -deltaAngle);
+    	StraightLine2D startLine = new StraightLine2D(center, startArc);
+//    	double horizAngle = startLine.horizontalAngle();
+//    	for (int i = 0; i < numPoints; i++) {
+//    		horizAngle += angleInc;  
+//    		double x = center.x()  + currentWaypoint.radius * Math.sin(horizAngle);
+//    		double y = center.y()  - currentWaypoint.radius * Math.cos(horizAngle);
+//        	filletedWayPoints.add(new Waypoint(new Translation2d(x, y), currentWaypoint.speed));
+//    	}
+    	double currentAngle = angleInc;
+    	for (int i = 0; i < numPoints; i++) {
+        	AffineTransform2D xform = AffineTransform2D.createRotation(center, currentAngle);
+			StraightLine2D xformedLine = startLine.transform(xform);
+			Point2D newPoint = xformedLine.point(1);
+	    	filletedWayPoints.add(new Waypoint(new Translation2d(newPoint.x(), newPoint.y()), currentWaypoint.speed));
+        	currentAngle += angleInc;  
+		}
+    	
+    	return;
     }
 
     /**
@@ -79,8 +177,8 @@ public class Path {
                 it.remove();
                 if (mWaypoints.size() > 0) {
                     Waypoint waypoint = mWaypoints.get(0);
-                    if (waypoint.marker.isPresent()) {
-                        mMarkersCrossed.add(waypoint.marker.get());
+                    if (waypoint.marker != null) {
+                        mMarkersCrossed.add(waypoint.marker);
                     }
                     mWaypoints.remove(0);
                 }
@@ -103,8 +201,8 @@ public class Path {
                         mSegments.remove(0);
                         if (mWaypoints.size() > 0) {
                             Waypoint waypoint = mWaypoints.get(0);
-                            if (waypoint.marker.isPresent()) {
-                                mMarkersCrossed.add(waypoint.marker.get());
+                            if (waypoint.marker != null) {
+                                mMarkersCrossed.add(waypoint.marker);
                             }
                             mWaypoints.remove(0);
                         }
@@ -246,15 +344,89 @@ public class Path {
     
 	public static void main(String[] args) {
 		
+//        List<Waypoint> waypoints = new ArrayList<>();
+//        waypoints.add(new Waypoint(new Translation2d(0, 0), 40.0));
+//        waypoints.add(new Waypoint(new Translation2d(-35, 0), 40.0));
+//        Path.addCircleArc(waypoints, 30.0, -45.0, 10, "hopperSensorOn");
+//        waypoints.add(new Waypoint(new Translation2d(-85, 30), 40.0));
+        
         List<Waypoint> waypoints = new ArrayList<>();
         waypoints.add(new Waypoint(new Translation2d(0, 0), 40.0));
-        waypoints.add(new Waypoint(new Translation2d(-35, 0), 40.0));
-        Path.addCircleArc(waypoints, 30.0, -45.0, 10, "hopperSensorOn");
-        waypoints.add(new Waypoint(new Translation2d(-85, 30), 40.0));
-        
+        waypoints.add(new Waypoint(new Translation2d(0, 10), 40.0, 5));
+        waypoints.add(new Waypoint(new Translation2d(10, 10), 40.0));
+        waypoints = processFillets(waypoints);
+
+    	System.out.println("Case 1 x");
         for (int i = 0; i < waypoints.size(); i++) {
         	Waypoint curPoint = waypoints.get(i);
-        	System.out.println("x = " + curPoint.position.x_ + ", y = " + curPoint.position.y_);
+        	System.out.println(curPoint.position.x_ );
         }
+    	System.out.println("");
+    	System.out.println("Case 1 y");
+        for (int i = 0; i < waypoints.size(); i++) {
+        	Waypoint curPoint = waypoints.get(i);
+        	System.out.println(curPoint.position.y_);
+        }
+    	System.out.println("");
+
+        waypoints = new ArrayList<>();
+        waypoints.add(new Waypoint(new Translation2d(0, 0), 40.0));
+        waypoints.add(new Waypoint(new Translation2d(0, 10), 40.0, 5));
+        waypoints.add(new Waypoint(new Translation2d(-10, 10), 40.0));
+        waypoints = processFillets(waypoints);
+
+    	System.out.println("Case 2 x");
+        for (int i = 0; i < waypoints.size(); i++) {
+        	Waypoint curPoint = waypoints.get(i);
+        	System.out.println(curPoint.position.x_ );
+        }
+    	System.out.println("");
+    	System.out.println("Case 2 y");
+        for (int i = 0; i < waypoints.size(); i++) {
+        	Waypoint curPoint = waypoints.get(i);
+        	System.out.println(curPoint.position.y_);
+        }
+    	System.out.println("");
+    	
+        waypoints = new ArrayList<>();
+        waypoints.add(new Waypoint(new Translation2d(0, 0), 40.0));
+        waypoints.add(new Waypoint(new Translation2d(0, 10), 40.0, 5));
+        waypoints.add(new Waypoint(new Translation2d(-10, 10), 40.0, 5));
+        waypoints.add(new Waypoint(new Translation2d(-10, 20), 40.0));
+        waypoints = processFillets(waypoints);
+
+    	System.out.println("Case 3 x");
+        for (int i = 0; i < waypoints.size(); i++) {
+        	Waypoint curPoint = waypoints.get(i);
+        	System.out.println(curPoint.position.x_ );
+        }
+    	System.out.println("");
+    	System.out.println("Case 3 y");
+        for (int i = 0; i < waypoints.size(); i++) {
+        	Waypoint curPoint = waypoints.get(i);
+        	System.out.println(curPoint.position.y_);
+        }
+    	System.out.println("");
+    	
+        waypoints = new ArrayList<>();
+        waypoints.add(new Waypoint(new Translation2d(0, 0), 40.0));
+        waypoints.add(new Waypoint(new Translation2d(0, 10), 40.0, 5));
+        waypoints.add(new Waypoint(new Translation2d(10, 10), 40.0, 5));
+        waypoints.add(new Waypoint(new Translation2d(10, 20), 40.0, 2));
+        waypoints.add(new Waypoint(new Translation2d(-10, 20), 40.0));
+        waypoints = processFillets(waypoints);
+
+    	System.out.println("Case 4 x");
+        for (int i = 0; i < waypoints.size(); i++) {
+        	Waypoint curPoint = waypoints.get(i);
+        	System.out.println(curPoint.position.x_ );
+        }
+    	System.out.println("");
+    	System.out.println("Case 4 y");
+        for (int i = 0; i < waypoints.size(); i++) {
+        	Waypoint curPoint = waypoints.get(i);
+        	System.out.println(curPoint.position.y_);
+        }
+    	System.out.println("");
 	}
 }
