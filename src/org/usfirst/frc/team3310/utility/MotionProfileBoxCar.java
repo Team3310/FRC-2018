@@ -171,7 +171,7 @@ public class MotionProfileBoxCar
 	public static void main(String[] args) {
 		long startTime = System.nanoTime();
 		
-		MotionProfileBoxCar mp = new MotionProfileBoxCar(13, 18, 120, 10, 600, 300);
+		MotionProfileBoxCar mp = new MotionProfileBoxCar(0, 72, 120, 10, 600, 300);
 		System.out.println("Time, Position, Velocity, Acceleration");
 		MotionProfilePoint point = new MotionProfilePoint();
 		while(mp.getNextPoint(point) != null) {

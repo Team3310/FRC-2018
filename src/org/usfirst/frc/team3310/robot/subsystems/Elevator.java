@@ -38,9 +38,10 @@ public class Elevator extends Subsystem implements ControlLoopable
 	
 	// Defined positions
 	public static final double ZERO_POSITION_INCHES = -0.25;
-	public static final double NEAR_ZERO_POSITION_INCHES = 3.0;
+	public static final double NEAR_ZERO_POSITION_INCHES = 0.0;
 	public static final double MIN_POSITION_INCHES = 0.0;
 	public static final double MAX_POSITION_INCHES = 83.0;
+	public static final double AFTER_INTAKE_POSITION_INCHES = 4.0;
 
 	public static final double SWITCH_POSITION_INCHES = 24.0;
 	public static final double SCALE_LOW_POSITION_INCHES = 56.0;
@@ -67,8 +68,8 @@ public class Elevator extends Subsystem implements ControlLoopable
 	public static int PID_SLOT = 0;
 	public static int MP_SLOT = 1;
 
-	private PIDParams mpPIDParams = new PIDParams(0.1, 0.0, 0.0, 0.0, 0.005, 0.0);  
-	private PIDParams pidPIDParams = new PIDParams(0.035, 0.0, 0.0, 0.0, 0.0, 0.0);  
+	private PIDParams mpPIDParams = new PIDParams(0.2, 0.0, 0.0, 0.0, 0.005, 0.0);  
+	private PIDParams pidPIDParams = new PIDParams(0.05, 0.0, 0.0, 0.0, 0.0, 0.0);  
 	public static final double KF_UP = 0.005;
 	public static final double KF_DOWN = 0.0;
 	public static final double PID_ERROR_INCHES = 1.0;
@@ -78,7 +79,7 @@ public class Elevator extends Subsystem implements ControlLoopable
 	private Solenoid speedShift;
 
 	// Misc
-	public static final double AUTO_ZERO_MOTOR_CURRENT = 7.0;	
+	public static final double AUTO_ZERO_MOTOR_CURRENT = 5.0;	
 	private boolean isFinished;
 	private ElevatorControlMode controlMode = ElevatorControlMode.JOYSTICK_MANUAL;
 	private double targetPositionInchesPID = 0;
@@ -140,6 +141,7 @@ public class Elevator extends Subsystem implements ControlLoopable
 	}
 		
 	public void setPositionPID(double targetPositionInches) {
+		mpController.setPIDSlot(PID_SLOT);
 		setPositionPIDInternal(targetPositionInches);
  		this.controlMode = ElevatorControlMode.JOYSTICK_PID;	
 	}

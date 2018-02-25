@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj.command.Command;
 public class ElevatorSetPositionMP extends Command {
 	
 	private double targetPositionInches;
+	private boolean isAtTarget;
+	private static final double MIN_DELTA_TARGET = 0.3;
 
     public ElevatorSetPositionMP(double targetPositionInches) {
     	this.targetPositionInches = targetPositionInches;
@@ -18,7 +20,13 @@ public class ElevatorSetPositionMP extends Command {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.elevator.setPositionMP(targetPositionInches);
+    	if (Math.abs(targetPositionInches - Robot.elevator.getPositionInches()) < MIN_DELTA_TARGET) {
+    		isAtTarget = true;
+    	}
+    	else {
+        	isAtTarget = false;
+        	Robot.elevator.setPositionMP(targetPositionInches);
+    	}
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -27,7 +35,7 @@ public class ElevatorSetPositionMP extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return Robot.elevator.isFinished();
+        return isAtTarget || Robot.elevator.isFinished();
     }
 
     // Called once after isFinished returns true

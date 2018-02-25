@@ -4,7 +4,6 @@
  * 
  * Distributed under the LGPL License.
  *
- * Created: 19 août 2010
  */
 package org.usfirst.frc.team3310.utility.geom;
 

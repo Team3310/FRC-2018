@@ -193,9 +193,9 @@ public class OI {
 		SmartDashboard.putData("Intake Off", intakeOff);
 		
 		Button driveMP = new InternalButton();
-		driveMP.whenPressed(new DriveStraightMP(70, Drive.MP_AUTON_MAX_STRAIGHT_VELOCITY_INCHES_PER_SEC, true, false, 0));
+		driveMP.whenPressed(new DriveStraightMP(72, Drive.MP_AUTON_MAX_STRAIGHT_VELOCITY_INCHES_PER_SEC, true, false, 0));
 		SmartDashboard.putData("Drive Straight MP", driveMP);
-		
+
 		// Center back around switch to scale
 //		List<Waypoint> waypoints = new ArrayList<>();
 //        waypoints.add(new Waypoint(new Translation2d(0, 0), 65.0));
@@ -207,18 +207,18 @@ public class OI {
 //        waypoints.add(new Waypoint(new Translation2d(130, 95), 65.0));
 //        waypoints.add(new Waypoint(new Translation2d(256, 80), 65.0));
 
-        // Center back around switch to scale
- 		List<Waypoint> waypoints = new ArrayList<>();
-		waypoints.add(new Waypoint(new Translation2d(0, 0), 65.0));
-		waypoints.add(new Waypoint(new Translation2d(10, 0), 65.0));
-		Path.addCircleArc(waypoints, 40.0, 45.0, 20, "hopperSensorOn");
-		waypoints.add(new Waypoint(new Translation2d(90, 90), 65.0));
-		waypoints.add(new Waypoint(new Translation2d(100, 95), 65.0));
-		waypoints.add(new Waypoint(new Translation2d(110, 97), 65.0));
-		waypoints.add(new Waypoint(new Translation2d(130, 95), 65.0));
-		waypoints.add(new Waypoint(new Translation2d(160, 95), 65.0));
-		waypoints.add(new Waypoint(new Translation2d(210, 40), 65.0));
-		waypoints.add(new Waypoint(new Translation2d(210, 0), 65.0));
+//        // Center back around switch to scale
+// 		List<Waypoint> waypoints = new ArrayList<>();
+//		waypoints.add(new Waypoint(new Translation2d(0, 0), 65.0));
+//		waypoints.add(new Waypoint(new Translation2d(10, 0), 65.0));
+//		Path.addCircleArc(waypoints, 40.0, 45.0, 20, "hopperSensorOn");
+//		waypoints.add(new Waypoint(new Translation2d(90, 90), 65.0));
+//		waypoints.add(new Waypoint(new Translation2d(100, 95), 65.0));
+//		waypoints.add(new Waypoint(new Translation2d(110, 97), 65.0));
+//		waypoints.add(new Waypoint(new Translation2d(130, 95), 65.0));
+//		waypoints.add(new Waypoint(new Translation2d(160, 95), 65.0));
+//		waypoints.add(new Waypoint(new Translation2d(210, 40), 65.0));
+//		waypoints.add(new Waypoint(new Translation2d(210, 0), 65.0));
 		
 //        List<Waypoint> waypoints = new ArrayList<>();
 //        waypoints.add(new Waypoint(new Translation2d(-96, 0), 50.0));
@@ -235,8 +235,16 @@ public class OI {
 //        Path.addCircleArc(waypoints, -30.0, 45.0, 10, null);
 //        waypoints.add(new Waypoint(new Translation2d(-68.6, -26.5), 40.0));
 		
+        // Center back around switch to scale
+ 		List<Waypoint> waypoints = new ArrayList<>();
+		waypoints.add(new Waypoint(new Translation2d(0, 0), 50.0));
+		waypoints.add(new Waypoint(new Translation2d(0, -30), 50.0, 30.0));
+		waypoints.add(new Waypoint(new Translation2d(100, -80), 50.0, 50.0));
+		waypoints.add(new Waypoint(new Translation2d(100, -160), 50.0, 20.0));
+		waypoints.add(new Waypoint(new Translation2d(85, -260), 50.0));
+
 		Button driveAP = new InternalButton();
-		driveAP.whenPressed(new DrivePathAdaptivePursuit(new Path(waypoints), false));
+		driveAP.whenPressed(new DrivePathAdaptivePursuit(new Path(waypoints), true));
 		SmartDashboard.putData("Drive Adaptive Pursuit", driveAP);
 
 		Button gyroReset = new InternalButton();

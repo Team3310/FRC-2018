@@ -8,6 +8,7 @@ import org.usfirst.frc.team3310.robot.OI;
 import org.usfirst.frc.team3310.robot.Robot;
 import org.usfirst.frc.team3310.robot.RobotMap;
 import org.usfirst.frc.team3310.utility.AdaptivePurePursuitController;
+import org.usfirst.frc.team3310.utility.BHRDifferentialDrive;
 import org.usfirst.frc.team3310.utility.BHRMathUtils;
 import org.usfirst.frc.team3310.utility.ControlLoopable;
 import org.usfirst.frc.team3310.utility.Kinematics;
@@ -79,7 +80,7 @@ public class Drive extends Subsystem implements ControlLoopable
 	private WPI_TalonSRX rightDrive2;
 	private WPI_TalonSRX rightDrive3;
 
-	private DifferentialDrive m_drive;
+	private BHRDifferentialDrive m_drive;
 	
 	private boolean isRed = true;
 	
@@ -122,7 +123,7 @@ public class Drive extends Subsystem implements ControlLoopable
 	
 	private MPTalonPIDController mpStraightController;
 //	private PIDParams mpStraightPIDParams = new PIDParams(0.1, 0, 0, 0.005, 0.03, 0.15);  // 4 colsons
-	private PIDParams mpStraightPIDParams = new PIDParams(0.1, 0, 0, 0.005, 0.03, 0.03);  // 4 omni
+	private PIDParams mpStraightPIDParams = new PIDParams(0.05, 0, 0, 0.0008, 0.004, 0.03);  // 4 omni
 	private PIDParams mpHoldPIDParams = new PIDParams(1, 0, 0, 0.0, 0.0, 0.0); 
 
 	private MMTalonPIDController mmStraightController;
@@ -169,7 +170,8 @@ public class Drive extends Subsystem implements ControlLoopable
 			gyroPigeon = new PigeonIMU(rightDrive2);
 			
 //			leftDrive1.clearStickyFaults(TalonSRXEncoder.TIMEOUT_MS);
-			leftDrive1.setSensorPhase(true);   // Encoder on ball shifter spins opposite direction due to gears
+			leftDrive1.setInverted(true);
+			leftDrive1.setSensorPhase(false);   // Encoder on ball shifter spins opposite direction due to gears
 //			leftDrive1.configClosedloopRamp(VOLTAGE_RAMP_RATE, TalonSRXEncoder.TIMEOUT_MS);
 			leftDrive1.setNeutralMode(NeutralMode.Brake);
 //			leftDrive1.configVoltageCompSaturation(12.0, TalonSRXEncoder.TIMEOUT_MS);
@@ -183,10 +185,12 @@ public class Drive extends Subsystem implements ControlLoopable
 //	            Driver.reportError("Could not detect left drive encoder encoder!", false);
 //	        }
 			
+			leftDrive2.setInverted(true);
 			leftDrive2.set(ControlMode.Follower, RobotMap.DRIVETRAIN_LEFT_MOTOR1_CAN_ID);
 			leftDrive2.setNeutralMode(NeutralMode.Brake);
 			leftDrive2.setSafetyEnabled(false);
 
+			leftDrive3.setInverted(true);
 			leftDrive3.set(ControlMode.Follower, RobotMap.DRIVETRAIN_LEFT_MOTOR1_CAN_ID);
 			leftDrive3.setNeutralMode(NeutralMode.Brake);
 			leftDrive3.setSafetyEnabled(false);
@@ -198,8 +202,10 @@ public class Drive extends Subsystem implements ControlLoopable
 //			rightDrive1.configNominalOutputReverse(0.0, TalonSRXEncoder.TIMEOUT_MS);
 //			rightDrive1.configPeakOutputForward(+1.0f, TalonSRXEncoder.TIMEOUT_MS);
 //			rightDrive1.configPeakOutputReverse(-1.0f, TalonSRXEncoder.TIMEOUT_MS);
+			rightDrive1.setSensorPhase(false);   // Encoder on ball shifter spins opposite direction due to gears
 			rightDrive1.setNeutralMode(NeutralMode.Brake);
 			rightDrive1.setSafetyEnabled(false);
+			rightDrive1.setInverted(false);
 //	        if (rightDrive1.isSensorPresent(CANTalon.FeedbackDevice.QuadEncoder) != CANTalon.FeedbackDeviceStatus.FeedbackStatusPresent) {
 //	            DriverStation.reportError("Could not detect right drive encoder encoder!", false);
 //	        }
@@ -217,7 +223,7 @@ public class Drive extends Subsystem implements ControlLoopable
 			motorControllers.add(leftDrive1);
 			motorControllers.add(rightDrive1);
 			
-			m_drive = new DifferentialDrive(leftDrive1, rightDrive1);
+			m_drive = new BHRDifferentialDrive(leftDrive1, rightDrive1);
 			m_drive.setSafetyEnabled(false);
 			
 			speedShift = new Solenoid(RobotMap.DRIVETRAIN_SPEEDSHIFT_PCM_ID);
@@ -428,7 +434,7 @@ public class Drive extends Subsystem implements ControlLoopable
 		}
 		else {
 			setControlMode(DriveControlMode.MANUAL);
-			rightDrive1.set(ControlMode.PercentOutput, -speed);
+			rightDrive1.set(ControlMode.PercentOutput, speed);
 			leftDrive1.set(ControlMode.PercentOutput, speed);
 		}
 	}
@@ -467,7 +473,7 @@ public class Drive extends Subsystem implements ControlLoopable
 			m_steerOutput = kPGyro * yawError;
 		}
 
-		m_drive.arcadeDrive(m_moveOutput, m_steerOutput);	
+		m_drive.arcadeDrive(-m_moveOutput, -m_steerOutput);	
 	}
 
 	private boolean inDeadZone(double input) {
