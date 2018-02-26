@@ -99,22 +99,25 @@ public class Path {
             	break;
             }
         }		
-        if (!isRadius) {
-        	return waypoints;
-        }
 
         // Create fillets
-        List<Waypoint> filletedWayPoints = new ArrayList<Waypoint>();
-        filletedWayPoints.add(waypoints.get(0));
-        for (int i = 1; i < waypoints.size(); i++) {
-            if (waypoints.get(i).radius != null) {
-            	addFillet(filletedWayPoints, waypoints, i);
-            }
-            else {
-                filletedWayPoints.add(waypoints.get(i));
-            }
-        }	
-        
+        List<Waypoint> filletedWayPoints = null;
+        if (isRadius) {
+	        filletedWayPoints = new ArrayList<Waypoint>();
+	        filletedWayPoints.add(waypoints.get(0));
+	        for (int i = 1; i < waypoints.size(); i++) {
+	            if (waypoints.get(i).radius != null) {
+	            	addFillet(filletedWayPoints, waypoints, i);
+	            }
+	            else {
+	                filletedWayPoints.add(waypoints.get(i));
+	            }
+	        }	
+        }
+        else {
+        	filletedWayPoints = waypoints;
+        }
+           
         for (int i = 0; i < filletedWayPoints.size(); i++) {
         	transformPoint(filletedWayPoints.get(i));
         }

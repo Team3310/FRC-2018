@@ -27,6 +27,7 @@ import org.usfirst.frc.team3310.robot.subsystems.Drive;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator.ElevatorControlMode;
 import org.usfirst.frc.team3310.robot.subsystems.Flipper.FlipperSide;
+import org.usfirst.frc.team3310.robot.subsystems.Flipper.FlipperState;
 import org.usfirst.frc.team3310.robot.subsystems.Intake;
 import org.usfirst.frc.team3310.robot.subsystems.Ramp.RampLatch;
 import org.usfirst.frc.team3310.robot.subsystems.Ramp.RampPull;
@@ -177,12 +178,20 @@ public class OI {
         SmartDashboard.putData("Elevator Down", elevatorButtonDown);
 
 		Button flipLeft = new InternalButton();
-		flipLeft.whenPressed(new FlipperFlip(FlipperSide.LEFT));
-		SmartDashboard.putData("Flip Cube Left", flipLeft);
+		flipLeft.whenPressed(new FlipperFlip(FlipperSide.LEFT, FlipperState.DEPLOYED));
+		SmartDashboard.putData("Flip Cube Left Deployed", flipLeft);
 		
 		Button flipRight = new InternalButton();
-		flipRight.whenPressed(new FlipperFlip(FlipperSide.RIGHT));
-		SmartDashboard.putData("Flip Cube Right", flipRight);
+		flipRight.whenPressed(new FlipperFlip(FlipperSide.RIGHT, FlipperState.DEPLOYED));
+		SmartDashboard.putData("Flip Cube Right Deployed", flipRight);
+		
+		Button flipRightRetract = new InternalButton();
+		flipRightRetract.whenPressed(new FlipperFlip(FlipperSide.RIGHT, FlipperState.RETRACTED));
+		SmartDashboard.putData("Flip Cube Right Retracted", flipRightRetract);
+		
+		Button flipLeftRetract = new InternalButton();
+		flipLeftRetract.whenPressed(new FlipperFlip(FlipperSide.LEFT, FlipperState.RETRACTED));
+		SmartDashboard.putData("Flip Cube Left Retracted", flipLeftRetract);
 		
 		Button intakeOn = new InternalButton();
 		intakeOn.whenPressed(new IntakeSetSpeed(Intake.INTAKE_LOAD_SPEED));

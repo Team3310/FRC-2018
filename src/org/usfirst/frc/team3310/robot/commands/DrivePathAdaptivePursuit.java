@@ -21,6 +21,7 @@ public class DrivePathAdaptivePursuit extends Command
 	protected void initialize() {
 //		Robot.drive.setShiftState(SpeedShiftState.HI);
 		Robot.drive.setPathAdaptivePursuit(path, reversed);
+		System.out.println("Adaptive Pursuit start");
 	}
 
 	protected void execute() {
@@ -31,6 +32,7 @@ public class DrivePathAdaptivePursuit extends Command
 	}
 
 	protected void end() {
+		System.out.println("Adaptive Pursuit finished");
 		Robot.drive.setControlMode(DriveControlMode.JOYSTICK);
 	}
 

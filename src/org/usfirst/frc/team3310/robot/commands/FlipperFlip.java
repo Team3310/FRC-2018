@@ -11,18 +11,19 @@ import edu.wpi.first.wpilibj.command.Command;
  */
 public class FlipperFlip extends Command {
 
-	private static double FLIP_TIMEOUT = 2.0;
 	private FlipperSide flipperSide;
+	private FlipperState state;
 	
-    public FlipperFlip(FlipperSide flipperSide) {
+    public FlipperFlip(FlipperSide flipperSide, FlipperState state) {
     	this.flipperSide = flipperSide;
+    	this.state = state;
         requires(Robot.flipper);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	Robot.flipper.setPosition(flipperSide, FlipperState.DEPLOYED);
-    	setTimeout(FLIP_TIMEOUT);
+    	System.out.println("Flipper flip start, time = " + System.currentTimeMillis());
+    	Robot.flipper.setPosition(flipperSide, state);
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -31,12 +32,11 @@ public class FlipperFlip extends Command {
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return isTimedOut();
+        return true;
     }
 
     // Called once after isFinished returns true
     protected void end() {
-    	Robot.flipper.setPosition(flipperSide, FlipperState.RETRACTED);
     }
 
     // Called when another command which requires one or more of the same

@@ -81,6 +81,7 @@ public class AdaptivePurePursuitController {
 
     public boolean isDone() {
         double remainingLength = mPath.getRemainingLength();
+//        System.out.println("Remaining Path = " + remainingLength);
         return remainingLength <= mPathCompletionTolerance;
     }
 

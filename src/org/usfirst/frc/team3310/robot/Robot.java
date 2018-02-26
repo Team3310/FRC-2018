@@ -8,6 +8,7 @@
 package org.usfirst.frc.team3310.robot;
 
 import org.usfirst.frc.team3310.robot.commands.ElevatorAutoZero;
+import org.usfirst.frc.team3310.robot.commands.auton.RightSideScaleAuton;
 import org.usfirst.frc.team3310.robot.subsystems.Drive;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator;
 import org.usfirst.frc.team3310.robot.subsystems.Flipper;
@@ -57,7 +58,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void robotInit() {
-//		setPeriod(periodMS/1000.0);
+		setPeriod(periodMS/1000.0);
 		
 		oi = OI.getInstance();
 		
@@ -71,6 +72,10 @@ public class Robot extends TimedRobot {
 	    operationModeChooser.addObject("Competition", OperationMode.COMPETITION);
 	    operationModeChooser.addDefault("Test", OperationMode.TEST);
 		SmartDashboard.putData("Operation Mode", operationModeChooser);
+
+		autonTaskChooser = new SendableChooser<Command>();
+		autonTaskChooser.addDefault("Right Side Scale", new RightSideScaleAuton());
+		SmartDashboard.putData("Auton Tasks", autonTaskChooser);
 
 		updateStatus();
 	}  
@@ -100,6 +105,7 @@ public class Robot extends TimedRobot {
     	drive.resetGyro();
     	drive.setIsRed(getAlliance().equals(Alliance.Red));
     	elevator.setShiftState(Elevator.SpeedShiftState.HI);
+    	elevator.resetZeroPosition(Elevator.ZERO_POSITION_INCHES);
 
 		if (autonomousCommand != null) {
 			autonomousCommand.start();

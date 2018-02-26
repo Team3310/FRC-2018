@@ -19,6 +19,7 @@ public class IntakeSetSpeedFrontSensorOff extends ExtraTimeoutCommand {
 
     // Called just before this Command runs the first time
     protected void initialize() {
+    	System.out.println("Intake sensor off started");
     	resetExtraTimer();
     	setTimeout(TIMEOUT);
 		cubeDetected = false;

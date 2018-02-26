@@ -334,7 +334,7 @@ public class Drive extends Subsystem implements ControlLoopable
         left_encoder_prev_distance_ = 0;
         right_encoder_prev_distance_ = 0;
         adaptivePursuitController.setPID(adaptivePursuitPIDParams);
-    	adaptivePursuitController.setPath(Constants.kPathFollowingLookahead, Constants.kPathFollowingMaxAccel, path, reversed, 0.25); 
+    	adaptivePursuitController.setPath(Constants.kPathFollowingLookahead, Constants.kPathFollowingMaxAccel, path, reversed, 2); 
 		setControlMode(DriveControlMode.ADAPTIVE_PURSUIT);
     }
 
@@ -355,6 +355,7 @@ public class Drive extends Subsystem implements ControlLoopable
         currentPose = generateOdometryFromSensors(left_distance - left_encoder_prev_distance_, right_distance - right_encoder_prev_distance_, gyro_angle);
         left_encoder_prev_distance_ = left_distance;
         right_encoder_prev_distance_ = right_distance;
+//        System.out.println("currentPose rot = " + currentPose.getRotation() + ", trans = " + currentPose.getTranslation().getX());
     }
     
     public RigidTransform2d generateOdometryFromSensors(double left_encoder_delta_distance, double right_encoder_delta_distance, Rotation2d current_gyro_angle) {
@@ -423,7 +424,11 @@ public class Drive extends Subsystem implements ControlLoopable
 			}
 			else if (controlMode == DriveControlMode.ADAPTIVE_PURSUIT) {
 				updatePose();
-				isFinished = adaptivePursuitController.controlLoopUpdate(currentPose); 
+				isFinished = adaptivePursuitController.controlLoopUpdate(currentPose);
+				System.out.println("isFinished = " + isFinished);
+				if (isFinished) {
+					System.out.println("Adaptive finished time = " + System.currentTimeMillis());
+				}
 			}
 		}
 	}

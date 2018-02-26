@@ -1,0 +1,16 @@
+package org.usfirst.frc.team3310.robot.commands;
+
+import org.usfirst.frc.team3310.robot.subsystems.Intake;
+
+import edu.wpi.first.wpilibj.command.CommandGroup;
+
+/**
+ *
+ */
+public class IntakeCubeAndLiftAbortDrive extends CommandGroup {
+
+    public IntakeCubeAndLiftAbortDrive() {
+        addSequential(new IntakeSetSpeedFrontSensorOff(Intake.INTAKE_LOAD_SPEED));
+        addSequential(new DriveSetFinished());
+    }
+}
