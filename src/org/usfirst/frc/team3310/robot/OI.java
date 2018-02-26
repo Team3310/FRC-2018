@@ -57,8 +57,8 @@ public class OI {
 		m_driverXbox = new XboxController(RobotMap.DRIVER_JOYSTICK_1_USB_ID);
 	
         JoystickButton shiftDrivetrain = new JoystickButton(m_driverXbox.getJoyStick(), XboxController.LEFT_BUMPER_BUTTON);
-        shiftDrivetrain.whenPressed(new DriveSpeedShift(Drive.SpeedShiftState.HI));
-        shiftDrivetrain.whenReleased(new DriveSpeedShift(Drive.SpeedShiftState.LO));
+        shiftDrivetrain.whenPressed(new DriveSpeedShift(Drive.DriveSpeedShiftState.HI));
+        shiftDrivetrain.whenReleased(new DriveSpeedShift(Drive.DriveSpeedShiftState.LO));
 
 		// Operator controller
 		m_operatorXbox = new XboxController(RobotMap.OPERATOR_JOYSTICK_1_USB_ID);
@@ -80,7 +80,7 @@ public class OI {
         intakeEjectSlow.whenReleased(new IntakeSetSpeed(0.0));
 		
         XBoxDPadTriggerButton elevatorShiftHi = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.UP);
-        elevatorShiftHi.whenPressed(new ElevatorSpeedShift(Elevator.SpeedShiftState.HI));
+        elevatorShiftHi.whenPressed(new ElevatorSpeedShift(Elevator.ElevatorSpeedShiftState.HI));
 
         XBoxDPadTriggerButton elevatorClimb = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.DOWN);
         elevatorClimb.whenPressed(new ElevatorClimb());
@@ -160,11 +160,11 @@ public class OI {
         SmartDashboard.putData("Elevator Max Position", elevatorMaxPositionSD);
         
         Button elevatorLo = new InternalButton();
-        elevatorLo.whenPressed(new ElevatorSpeedShift(Elevator.SpeedShiftState.LO));
+        elevatorLo.whenPressed(new ElevatorSpeedShift(Elevator.ElevatorSpeedShiftState.LO));
         SmartDashboard.putData("Elevator Lo Shift", elevatorLo);
         
         Button elevatorHi = new InternalButton();
-        elevatorHi.whenPressed(new ElevatorSpeedShift(Elevator.SpeedShiftState.HI));
+        elevatorHi.whenPressed(new ElevatorSpeedShift(Elevator.ElevatorSpeedShiftState.HI));
         SmartDashboard.putData("Elevator Hi Shift", elevatorHi);
         
         Button elevatorButtonUp = new InternalButton();
@@ -253,7 +253,7 @@ public class OI {
 		waypoints.add(new Waypoint(new Translation2d(85, -260), 50.0));
 
 		Button driveAP = new InternalButton();
-		driveAP.whenPressed(new DrivePathAdaptivePursuit(new Path(waypoints), true));
+		driveAP.whenPressed(new DrivePathAdaptivePursuit(new Path(waypoints, true)));
 		SmartDashboard.putData("Drive Adaptive Pursuit", driveAP);
 
 		Button gyroReset = new InternalButton();

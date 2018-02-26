@@ -1,7 +1,7 @@
 package org.usfirst.frc.team3310.robot.commands;
 
 import org.usfirst.frc.team3310.robot.Robot;
-import org.usfirst.frc.team3310.robot.subsystems.Drive.SpeedShiftState;
+import org.usfirst.frc.team3310.robot.subsystems.Drive.DriveSpeedShiftState;
 import org.usfirst.frc.team3310.robot.subsystems.Ramp.RampLatch;
 
 import edu.wpi.first.wpilibj.command.Command;

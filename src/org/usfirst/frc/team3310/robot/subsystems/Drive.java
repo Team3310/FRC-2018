@@ -34,7 +34,6 @@ import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Drive extends Subsystem implements ControlLoopable
@@ -42,7 +41,7 @@ public class Drive extends Subsystem implements ControlLoopable
 	private static Drive instance;
 
 	public static enum DriveControlMode { JOYSTICK, MP_STRAIGHT, MP_TURN, PID_TURN, HOLD, MANUAL, MP_PATH, MP_PATH_VELOCITY, MOTION_MAGIC, ADAPTIVE_PURSUIT };
-	public static enum SpeedShiftState { HI, LO };
+	public static enum DriveSpeedShiftState { HI, LO };
 	public static enum ClimberState { DEPLOYED, RETRACTED };
 
 	// One revolution of the wheel = Pi * D inches = 60/24 revs due to gears * 36/12 revs due mag encoder gear on ball shifter * 4096 ticks 
@@ -119,7 +118,7 @@ public class Drive extends Subsystem implements ControlLoopable
 	private double m_steerTrim = 0.0;
 
 	private boolean isFinished;
-	private DriveControlMode controlMode = DriveControlMode.JOYSTICK;
+	private DriveControlMode driveControlMode = DriveControlMode.JOYSTICK;
 	
 	private MPTalonPIDController mpStraightController;
 //	private PIDParams mpStraightPIDParams = new PIDParams(0.1, 0, 0, 0.005, 0.03, 0.15);  // 4 colsons
@@ -142,6 +141,8 @@ public class Drive extends Subsystem implements ControlLoopable
 
 	private AdaptivePurePursuitController adaptivePursuitController;
 	private PIDParams adaptivePursuitPIDParams = new PIDParams(0.1, 0.00, 1, 0.44); 
+	private static final double ADAPTIVE_PURSUIT_PATH_TOLERANCE_INCHES = 1.0;
+	private Path newPath = null;
 	
 	private RigidTransform2d zeroPose = new RigidTransform2d(new Translation2d(0,0), Rotation2d.fromDegrees(0));
 	private RigidTransform2d currentPose = zeroPose;
@@ -328,13 +329,8 @@ public class Drive extends Subsystem implements ControlLoopable
 //		setControlMode(DriveControlMode.MP_PATH_VELOCITY);
 //	}
 	
-    public void setPathAdaptivePursuit(Path path, boolean reversed) {
-    	currentPose = zeroPose;
-    	lastPose = zeroPose;
-        left_encoder_prev_distance_ = 0;
-        right_encoder_prev_distance_ = 0;
-        adaptivePursuitController.setPID(adaptivePursuitPIDParams);
-    	adaptivePursuitController.setPath(Constants.kPathFollowingLookahead, Constants.kPathFollowingMaxAccel, path, reversed, 2); 
+    public void setPathAdaptivePursuit(Path path) {
+    	newPath = path;
 		setControlMode(DriveControlMode.ADAPTIVE_PURSUIT);
     }
 
@@ -370,7 +366,7 @@ public class Drive extends Subsystem implements ControlLoopable
      * @return Set of Strings with Path Markers that the robot has crossed.
      */
     public synchronized Set<String> getPathMarkersCrossed() {
-        if (controlMode != DriveControlMode.ADAPTIVE_PURSUIT) {
+        if (getControlMode() != DriveControlMode.ADAPTIVE_PURSUIT) {
             return null;
         } else {
             return adaptivePursuitController.getMarkersCrossed();
@@ -378,57 +374,70 @@ public class Drive extends Subsystem implements ControlLoopable
     }
 
     public synchronized void setControlMode(DriveControlMode controlMode) {
- 		this.controlMode = controlMode;
-		if (controlMode == DriveControlMode.JOYSTICK) {
-//			leftDrive1.changeControlMode(ControlMode.PercentVbus);
-//			rightDrive1.changeControlMode(ControlMode.PercentVbus);
-		}
-		else if (controlMode == DriveControlMode.MANUAL) {
-//			leftDrive1.changeControlMode(ControlMode.PercentVbus);
-//			rightDrive1.changeControlMode(ControlMode.PercentVbus);
-		}
-		else if (controlMode == DriveControlMode.HOLD) {
+ 		this.driveControlMode = controlMode;
+ 		if (controlMode == DriveControlMode.HOLD) {
 			mpStraightController.setPID(mpHoldPIDParams, 0);
-//			leftDrive1.changeControlMode(ControlMode.Position);
 			leftDrive1.setPosition(0);
 			leftDrive1.set(ControlMode.Position, 0);
-//			rightDrive1.changeControlMode(ControlMode.Position);
 			rightDrive1.setPosition(0);
-			rightDrive1.set(0);
+			rightDrive1.set(ControlMode.Position, 0);
 		}
-		isFinished = false;
+		setFinished(false);
 	}
+    
+    public synchronized DriveControlMode getControlMode() {
+    	return driveControlMode;
+    }
 	
-	public synchronized void controlLoopUpdate() {
-		if (controlMode == DriveControlMode.JOYSTICK) {
-			driveWithJoystick();
-		}
-		else if (!isFinished) {
-			if (controlMode == DriveControlMode.MP_STRAIGHT) {
-				isFinished = mpStraightController.controlLoopUpdate(getGyroAngleDeg()); 
+	public void controlLoopUpdate() {
+		synchronized (Drive.this) {
+			DriveControlMode currentControlMode = getControlMode();
+			
+			if (currentControlMode == DriveControlMode.JOYSTICK) {
+				driveWithJoystick();
 			}
-			else if (controlMode == DriveControlMode.MP_TURN) {
-				isFinished = mpTurnController.controlLoopUpdate(getGyroAngleDeg()); 
+			else if (!isFinished()) {
+				switch (currentControlMode) {			
+					case MP_STRAIGHT :
+						setFinished(mpStraightController.controlLoopUpdate(getGyroAngleDeg())); 
+	                    break;
+					case MP_TURN:
+						setFinished(mpTurnController.controlLoopUpdate(getGyroAngleDeg())); 
+	                    break;
+					case PID_TURN:
+						setFinished(pidTurnController.controlLoopUpdate(getGyroAngleDeg())); 
+	                    break;
+					case MP_PATH:
+						setFinished(mpPathController.controlLoopUpdate(getGyroAngleDeg())); 
+	                    break;
+					case MOTION_MAGIC:
+						setFinished(mpStraightController.controlLoopUpdate(getGyroAngleDeg())); 
+	                    break;
+					case ADAPTIVE_PURSUIT:
+						if (newPath != null) {
+					    	currentPose = zeroPose;
+					    	lastPose = zeroPose;
+					        left_encoder_prev_distance_ = 0;
+					        right_encoder_prev_distance_ = 0;
+					        resetEncoders();
+					        adaptivePursuitController.setPID(adaptivePursuitPIDParams);
+					    	adaptivePursuitController.setPath(Constants.kPathFollowingLookahead, Constants.kPathFollowingMaxAccel, newPath, ADAPTIVE_PURSUIT_PATH_TOLERANCE_INCHES); 
+							newPath = null;
+						}
+						updatePose();
+						setFinished(adaptivePursuitController.controlLoopUpdate(currentPose));
+						System.out.println("isFinished = " + isFinished());
+						if (isFinished()) {
+							System.out.println("Adaptive finished time = " + System.currentTimeMillis());
+						}
+	                    break;
+	                default:
+	                    System.out.println("Unknown drive control mode: " + currentControlMode);
+	                    break;
+                }
 			}
-			else if (controlMode == DriveControlMode.PID_TURN) {
-				isFinished = pidTurnController.controlLoopUpdate(getGyroAngleDeg()); 
-			}
-			else if (controlMode == DriveControlMode.MP_PATH) {
-				isFinished = mpPathController.controlLoopUpdate(getGyroAngleDeg()); 
-			}
-//			else if (controlMode == DriveControlMode.MP_PATH_VELOCITY) {
-//				isFinished = mpPathVelocityController.controlLoopUpdate(getGyroAngleDeg()); 
-//			}
-			else if (controlMode == DriveControlMode.MOTION_MAGIC) {
-				isFinished = mpStraightController.controlLoopUpdate(getGyroAngleDeg()); 
-			}
-			else if (controlMode == DriveControlMode.ADAPTIVE_PURSUIT) {
-				updatePose();
-				isFinished = adaptivePursuitController.controlLoopUpdate(currentPose);
-				System.out.println("isFinished = " + isFinished);
-				if (isFinished) {
-					System.out.println("Adaptive finished time = " + System.currentTimeMillis());
-				}
+			else {
+				// hold in current state
 			}
 		}
 	}
@@ -532,11 +541,11 @@ public class Drive extends Subsystem implements ControlLoopable
 				/ Math.asin(steerNonLinearity);
 	}
 
-	public void setShiftState(SpeedShiftState state) {
-		if(state == SpeedShiftState.HI) {
+	public void setShiftState(DriveSpeedShiftState state) {
+		if(state == DriveSpeedShiftState.HI) {
 			speedShift.set(true);
 		}
-		else if(state == SpeedShiftState.LO) {
+		else if(state == DriveSpeedShiftState.LO) {
 			speedShift.set(false);
 		}
 	}

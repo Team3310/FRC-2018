@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class ElevatorClimb extends CommandGroup {
 
     public ElevatorClimb() {
-        addSequential(new ElevatorSpeedShift(Elevator.SpeedShiftState.LO));
+        addSequential(new ElevatorSpeedShift(Elevator.ElevatorSpeedShiftState.LO));
         addSequential(new RampSetLatchPosition(Ramp.RampLatch.DEPLOYED));
         addSequential(new ElevatorSetSpeed(Elevator.CLIMB_SPEED));
     }

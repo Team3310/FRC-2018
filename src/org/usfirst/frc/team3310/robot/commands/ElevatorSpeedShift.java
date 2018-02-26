@@ -1,15 +1,15 @@
 package org.usfirst.frc.team3310.robot.commands;
 
 import org.usfirst.frc.team3310.robot.Robot;
-import org.usfirst.frc.team3310.robot.subsystems.Elevator.SpeedShiftState;
+import org.usfirst.frc.team3310.robot.subsystems.Elevator.ElevatorSpeedShiftState;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 public class ElevatorSpeedShift extends Command
 {
-	private SpeedShiftState state;
+	private ElevatorSpeedShiftState state;
 	
-	public ElevatorSpeedShift(SpeedShiftState state) {
+	public ElevatorSpeedShift(ElevatorSpeedShiftState state) {
 		requires(Robot.elevator);
 		this.state = state;
 	}

@@ -49,7 +49,7 @@ public class RightSideScaleAuton extends CommandGroup {
 		waypoints.add(new Waypoint(new Translation2d(-15, -225), 10.0));
 		
     	addParallel(new RunAfterMarker("launchFlipper", 3.0, new FlipperFlip(FlipperSide.RIGHT, FlipperState.DEPLOYED)));
-    	addSequential(new DrivePathAdaptivePursuit(new Path(waypoints), true));
+    	addSequential(new DrivePathAdaptivePursuit(new Path(waypoints, true)));
 		addSequential(new FlipperFlip(FlipperSide.RIGHT, FlipperState.RETRACTED));
 
 		// Forward for first cube

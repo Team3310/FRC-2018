@@ -30,7 +30,6 @@ public class AdaptivePurePursuitController {
     double mLastTime;
     double mMaxAccel;
     double mDt;
-    boolean mReversed;
     double mPathCompletionTolerance;
 
 	protected ArrayList<TalonSRXEncoder> motorControllers;	
@@ -62,14 +61,12 @@ public class AdaptivePurePursuitController {
 		}
 	}
 	
-    public void setPath(double fixed_lookahead, double max_accel, Path path,
-            boolean reversed, double path_completion_tolerance) {
+    public void setPath(double fixed_lookahead, double max_accel, Path path, double path_completion_tolerance) {
         mFixedLookahead = fixed_lookahead;
         mMaxAccel = max_accel;
         mPath = path;
         mDt = periodMs;
         mLastCommand = null;
-        mReversed = reversed;
         mPathCompletionTolerance = path_completion_tolerance;
 
         // Set up the motion profile 
@@ -82,7 +79,7 @@ public class AdaptivePurePursuitController {
     public boolean isDone() {
         double remainingLength = mPath.getRemainingLength();
 //        System.out.println("Remaining Path = " + remainingLength);
-        return remainingLength <= mPathCompletionTolerance;
+        return Math.abs(remainingLength) <= mPathCompletionTolerance;
     }
 
 	public boolean controlLoopUpdate(RigidTransform2d robot_pose) {
@@ -113,7 +110,7 @@ public class AdaptivePurePursuitController {
 
 	public RigidTransform2d.Delta update(RigidTransform2d robot_pose, double now) {
         RigidTransform2d pose = robot_pose;
-        if (mReversed) {
+        if (mPath.isReversed()) {
             pose = new RigidTransform2d(robot_pose.getTranslation(),
                     robot_pose.getRotation().rotateBy(Rotation2d.fromRadians(Math.PI)));
         }
@@ -128,7 +125,7 @@ public class AdaptivePurePursuitController {
         Optional<Circle> circle = joinPath(pose, lookahead_point.translation);
 
         double speed = lookahead_point.speed;
-        if (mReversed) {
+        if (mPath.isReversed()) {
             speed *= -1;
         }
         // Ensure we don't accelerate too fast from the previous command

@@ -12,7 +12,6 @@ public class DriveStraightMPIntakeOff extends Command
 
 	public DriveStraightMPIntakeOff(double distanceInches, double maxVelocityInchesPerSec, boolean useGyroLock, boolean useAbsolute, double desiredAbsoluteAngle) {
 		requires(Robot.drive);
-		requires(Robot.intake);
 		this.distanceInches = distanceInches;
 		this.maxVelocityInchesPerSec = maxVelocityInchesPerSec;
 		this.desiredAbsoluteAngle = desiredAbsoluteAngle;
@@ -36,6 +35,7 @@ public class DriveStraightMPIntakeOff extends Command
 	}
 
 	protected void interrupted() {
+    	System.out.println("DriveStraightMPIntakeOff interrupted");
 		end();
 	}
 }

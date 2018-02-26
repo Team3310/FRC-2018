@@ -36,8 +36,8 @@ public class ElevatorAutoZero extends Command
 		double currentElevatorPosition = Robot.elevator.getPositionInches();
 		double elevatorPositionChange = lastElevatorPosition - currentElevatorPosition;
 		lastElevatorPosition = currentElevatorPosition;
-		boolean test = encoderCount > 2 && Math.abs(elevatorPositionChange) < MIN_ELEVATOR_POSITION_CHANGE && Robot.elevator.getMotorCurrent() > Elevator.AUTO_ZERO_MOTOR_CURRENT;
-		System.out.println("encoderCount = " + encoderCount + ", test = " + test + ", elevator change = " + elevatorPositionChange + ", current = " + Robot.elevator.getMotorCurrent());
+		boolean test = encoderCount > 2 && Math.abs(elevatorPositionChange) < MIN_ELEVATOR_POSITION_CHANGE && Robot.elevator.getAverageMotorCurrent() > Elevator.AUTO_ZERO_MOTOR_CURRENT;
+		System.out.println("encoderCount = " + encoderCount + ", test = " + test + ", elevator change = " + elevatorPositionChange + ", current = " + Robot.elevator.getAverageMotorCurrent());
 		
 		if (Math.abs(elevatorPositionChange) < MIN_ELEVATOR_POSITION_CHANGE) {
 			encoderCount++;

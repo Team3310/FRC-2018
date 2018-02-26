@@ -24,7 +24,7 @@ public class Elevator extends Subsystem implements ControlLoopable
 	private static Elevator instance;
 
 	public static enum ElevatorControlMode { MOTION_PROFILE, JOYSTICK_PID, JOYSTICK_MANUAL, MANUAL };
-	public static enum SpeedShiftState { HI, LO };
+	public static enum ElevatorSpeedShiftState { HI, LO };
 
 	// One revolution of the 30T Drive 1.880" PD pulley = Pi * PD inches = 36/24 revs due to pulleys * 34/24 revs due to gears * 36/12 revs due mag encoder gear on ball shifter * 4096 ticks 
 	public static final double ENCODER_TICKS_TO_INCHES = (36.0 / 12.0) * (36.0 / 24.0) * (34.0 / 24.0) * 4096.0 / (1.88 * Math.PI);   
@@ -34,7 +34,8 @@ public class Elevator extends Subsystem implements ControlLoopable
 	public static final double TEST_SPEED_UP = 0.3;
 	public static final double TEST_SPEED_DOWN = -0.3;
 	public static final double AUTO_ZERO_SPEED = -0.3;
-	public static final double JOYSTICK_INCHES_PER_MS = 0.75;
+	public static final double JOYSTICK_INCHES_PER_MS_HI = 0.75;
+	public static final double JOYSTICK_INCHES_PER_MS_LO = 0.3;
 	
 	// Defined positions
 	public static final double ZERO_POSITION_INCHES = -0.25;
@@ -77,13 +78,15 @@ public class Elevator extends Subsystem implements ControlLoopable
 
 	// Pneumatics
 	private Solenoid speedShift;
+	private ElevatorSpeedShiftState shiftState = ElevatorSpeedShiftState.LO;   // Default position
 
 	// Misc
 	public static final double AUTO_ZERO_MOTOR_CURRENT = 5.0;	
 	private boolean isFinished;
-	private ElevatorControlMode controlMode = ElevatorControlMode.JOYSTICK_MANUAL;
+	private ElevatorControlMode elevatorControlMode = ElevatorControlMode.JOYSTICK_MANUAL;
 	private double targetPositionInchesPID = 0;
 	private boolean firstMpPoint;
+	private double joystickInchesPerMs = JOYSTICK_INCHES_PER_MS_LO;
 	
 	private Elevator() {
 		try {
@@ -129,36 +132,44 @@ public class Elevator extends Subsystem implements ControlLoopable
 	public void resetZeroPosition(double position) {
 		mpController.resetZeroPosition(position);
 	}	
+	
+	private synchronized void setElevatorControlMode(ElevatorControlMode controlMode) {
+		this.elevatorControlMode = controlMode;
+	}
+	
+	private synchronized ElevatorControlMode getElevatorControlMode() {
+		return this.elevatorControlMode;
+	}
 
 	public void setSpeed(double speed) {
 		motor1.set(ControlMode.PercentOutput, speed);
-		this.controlMode = ElevatorControlMode.MANUAL;
+		setElevatorControlMode(ElevatorControlMode.MANUAL);
 	}
 		
 	public void setSpeedJoystick(double speed) {
 		motor1.set(ControlMode.PercentOutput, speed);
-		this.controlMode = ElevatorControlMode.JOYSTICK_MANUAL;
+		setElevatorControlMode(ElevatorControlMode.JOYSTICK_MANUAL);
 	}
 		
 	public void setPositionPID(double targetPositionInches) {
 		mpController.setPIDSlot(PID_SLOT);
-		setPositionPIDInternal(targetPositionInches);
- 		this.controlMode = ElevatorControlMode.JOYSTICK_PID;	
+		updatePositionPID(targetPositionInches);
+		setElevatorControlMode(ElevatorControlMode.JOYSTICK_PID);	
+		setFinished(false);
 	}
 	
-	public void setPositionPIDInternal(double targetPositionInches) {
+	public void updatePositionPID(double targetPositionInches) {
  		targetPositionInchesPID = limitPosition(targetPositionInches);
 		double startPositionInches = motor1.getPositionWorld();
 		mpController.setTarget(targetPositionInchesPID, targetPositionInchesPID > startPositionInches ? KF_UP : KF_DOWN); 
-		isFinished = false;
 	}
 	
 	public void setPositionMP(double targetPositionInches) {
 		double startPositionInches = motor1.getPositionWorld();
 		mpController.setMPTarget(startPositionInches, limitPosition(targetPositionInches), MP_MAX_VELOCITY_INCHES_PER_SEC, MP_T1, MP_T2); 
-		isFinished = false;
+		setFinished(false);
 		firstMpPoint = true;
- 		this.controlMode = ElevatorControlMode.MOTION_PROFILE;
+		setElevatorControlMode(ElevatorControlMode.MOTION_PROFILE);
  	}
 	
 	private double limitPosition(double targetPosition) {
@@ -173,35 +184,37 @@ public class Elevator extends Subsystem implements ControlLoopable
 	}
 	
 	public synchronized void controlLoopUpdate() {
-		switch( controlMode ) {
-			case JOYSTICK_PID: 
-				controlPidWithJoystick();
-				break;
-			case JOYSTICK_MANUAL:
-				controlManualWithJoystick();
-				break;
-			case MOTION_PROFILE: 
-				if (!isFinished) {
-					if (firstMpPoint) {
-						mpController.setPIDSlot(MP_SLOT);
-						firstMpPoint = false;
+		synchronized (Elevator.this) {
+			switch( getElevatorControlMode() ) {
+				case JOYSTICK_PID: 
+					controlPidWithJoystick();
+					break;
+				case JOYSTICK_MANUAL:
+					controlManualWithJoystick();
+					break;
+				case MOTION_PROFILE: 
+					if (!isFinished()) {
+						if (firstMpPoint) {
+							mpController.setPIDSlot(MP_SLOT);
+							firstMpPoint = false;
+						}
+						setFinished(mpController.controlLoopUpdate()); 
+						if (isFinished()) {
+							mpController.setPIDSlot(PID_SLOT);
+						}
 					}
-					isFinished = mpController.controlLoopUpdate(); 
-					if (isFinished) {
-						mpController.setPIDSlot(PID_SLOT);
-					}
-				}
-				break;
-			default:
-				break;
+					break;
+				default:
+					break;
+			}
 		}
 	}
 	
 	private void controlPidWithJoystick() {
 		double joystickPosition = -Robot.oi.getOperatorController().getLeftYAxis();
-		double deltaPosition = joystickPosition * JOYSTICK_INCHES_PER_MS;
+		double deltaPosition = joystickPosition * joystickInchesPerMs;
 		targetPositionInchesPID = targetPositionInchesPID + deltaPosition;
-		setPositionPIDInternal(targetPositionInchesPID);
+		updatePositionPID(targetPositionInchesPID);
 	}
 	
 	private void controlManualWithJoystick() {
@@ -209,20 +222,27 @@ public class Elevator extends Subsystem implements ControlLoopable
 		setSpeedJoystick(joyStickSpeed);
 	}
 	
-	public void setShiftState(SpeedShiftState state) {
-		if(state == SpeedShiftState.HI) {
+	public void setShiftState(ElevatorSpeedShiftState state) {
+		shiftState = state;
+		if(state == ElevatorSpeedShiftState.HI) {
+			joystickInchesPerMs = JOYSTICK_INCHES_PER_MS_HI;
 			speedShift.set(true);
 		}
-		else if(state == SpeedShiftState.LO) {
+		else if(state == ElevatorSpeedShiftState.LO) {
+			joystickInchesPerMs = JOYSTICK_INCHES_PER_MS_LO;
 			speedShift.set(false);
 		}
+	}
+	
+	public ElevatorSpeedShiftState getShiftState() {
+		return shiftState;
 	}
 
 	public double getPositionInches() {
 		return motor1.getPositionWorld();
 	}
 	
-	public double getMotorCurrent() {
+	public double getAverageMotorCurrent() {
 		return (Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_1_CAN_ID) + Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_2_CAN_ID) + Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_3_CAN_ID)) / 3;
 	}
 		
@@ -254,7 +274,7 @@ public class Elevator extends Subsystem implements ControlLoopable
 				SmartDashboard.putNumber("Elevator Motor 1 Amps", motor1.getOutputCurrent());
 				SmartDashboard.putNumber("Elevator Motor 2 Amps", motor1.getOutputCurrent());
 				SmartDashboard.putNumber("Elevator Motor 3 Amps", motor1.getOutputCurrent());
-				SmartDashboard.putNumber("Elevator Average Amps", getMotorCurrent());
+				SmartDashboard.putNumber("Elevator Average Amps", getAverageMotorCurrent());
 				SmartDashboard.putNumber("Elevator Motor 1 Amps PDP", Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_1_CAN_ID));
 				SmartDashboard.putNumber("Elevator Motor 2 Amps PDP", Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_2_CAN_ID));
 				SmartDashboard.putNumber("Elevator Motor 3 Amps PDP", Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_3_CAN_ID));

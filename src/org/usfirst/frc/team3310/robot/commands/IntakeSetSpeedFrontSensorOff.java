@@ -47,5 +47,6 @@ public class IntakeSetSpeedFrontSensorOff extends ExtraTimeoutCommand {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+    	System.out.println("IntakeSetSpeedFrontSensorOff interrupted");
     }
 }

@@ -35,6 +35,7 @@ public class DriveStraightMP extends Command
 	}
 
 	protected void interrupted() {
+    	System.out.println("ElevatorSetPositionMP interrupted");
 		end();
 	}
 }

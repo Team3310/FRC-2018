@@ -2,7 +2,7 @@ package org.usfirst.frc.team3310.robot.commands;
 
 import org.usfirst.frc.team3310.robot.Robot;
 import org.usfirst.frc.team3310.robot.subsystems.Drive.DriveControlMode;
-import org.usfirst.frc.team3310.robot.subsystems.Drive.SpeedShiftState;
+import org.usfirst.frc.team3310.robot.subsystems.Drive.DriveSpeedShiftState;
 import org.usfirst.frc.team3310.utility.Path;
 
 import edu.wpi.first.wpilibj.command.Command;
@@ -10,17 +10,15 @@ import edu.wpi.first.wpilibj.command.Command;
 public class DrivePathAdaptivePursuit extends Command
 {
 	private Path path;
-	private boolean reversed;
 
-	public DrivePathAdaptivePursuit(Path path, boolean reversed) {
+	public DrivePathAdaptivePursuit(Path path) {
 		requires(Robot.drive);
 		this.path = path;
-		this.reversed = reversed;
 	}
 
 	protected void initialize() {
 //		Robot.drive.setShiftState(SpeedShiftState.HI);
-		Robot.drive.setPathAdaptivePursuit(path, reversed);
+		Robot.drive.setPathAdaptivePursuit(path);
 		System.out.println("Adaptive Pursuit start");
 	}
 
@@ -37,6 +35,7 @@ public class DrivePathAdaptivePursuit extends Command
 	}
 
 	protected void interrupted() {
+    	System.out.println("DrivePathAdaptivePursuit interrupted");
 		end();
 	}
 }

@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -59,6 +60,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		setPeriod(periodMS/1000.0);
+		System.out.println("Main loop period = " + getPeriod());
 		
 		oi = OI.getInstance();
 		
@@ -76,23 +78,23 @@ public class Robot extends TimedRobot {
 		autonTaskChooser = new SendableChooser<Command>();
 		autonTaskChooser.addDefault("Right Side Scale", new RightSideScaleAuton());
 		SmartDashboard.putData("Auton Tasks", autonTaskChooser);
-
-		updateStatus();
+		
+		LiveWindow.setEnabled(false);
+		LiveWindow.disableAllTelemetry();
 	}  
 	
 	// Called every loop for all modes
 	public void robotPeriodic() {
+		updateStatus();
 	}
 
 	@Override
 	public void disabledInit() {
-		updateStatus();
 	}
 
 	@Override
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
-		updateStatus();
 	}
 
 	@Override
@@ -104,21 +106,17 @@ public class Robot extends TimedRobot {
     	drive.resetEncoders();
     	drive.resetGyro();
     	drive.setIsRed(getAlliance().equals(Alliance.Red));
-    	elevator.setShiftState(Elevator.SpeedShiftState.HI);
+    	elevator.setShiftState(Elevator.ElevatorSpeedShiftState.HI);
     	elevator.resetZeroPosition(Elevator.ZERO_POSITION_INCHES);
 
 		if (autonomousCommand != null) {
 			autonomousCommand.start();
 		}
-
-		updateStatus();
 	}
 
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
-
-		updateStatus();
 	}
 
 	@Override
@@ -132,20 +130,16 @@ public class Robot extends TimedRobot {
         controlLoop.start();
     	drive.resetEncoders();
     	drive.endGyroCalibration();
-    	elevator.setShiftState(Elevator.SpeedShiftState.HI);
+    	elevator.setShiftState(Elevator.ElevatorSpeedShiftState.HI);
     	
     	if (operationMode != OperationMode.COMPETITION) {
     		Scheduler.getInstance().add(new ElevatorAutoZero(false));
     	}
- 
-    	updateStatus();
 	}
 
 	@Override
 	public void teleopPeriodic() {
 		Scheduler.getInstance().run();
-		
-		updateStatus();
 	}
 	
     public Alliance getAlliance() {

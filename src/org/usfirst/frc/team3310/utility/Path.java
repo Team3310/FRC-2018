@@ -26,6 +26,7 @@ public class Path {
     protected List<Waypoint> mWaypoints;
     protected List<PathSegment> mSegments;
     protected Set<String> mMarkersCrossed;
+    protected boolean isReversed;
 
     /**
      * A point along the Path, which consists of the location, the speed, and a
@@ -67,7 +68,8 @@ public class Path {
         }
     }
 
-    public Path(List<Waypoint> waypoints) {
+    public Path(List<Waypoint> waypoints, boolean isReversed) {
+    	this.isReversed = isReversed;
     	waypoints = processFillets(waypoints);
         mMarkersCrossed = new HashSet<String>();
         mWaypoints = waypoints;
@@ -84,6 +86,10 @@ public class Path {
             }
             mWaypoints.remove(0);
         }
+    }
+    
+    public boolean isReversed() {
+    	return isReversed;
     }
     
     public static List<Waypoint> processFillets(List<Waypoint> waypoints) {
@@ -118,6 +124,9 @@ public class Path {
         	filletedWayPoints = waypoints;
         }
            
+        // The waypoints are input in cartesian coordinates +X to the right, +Y up/forward.  
+        // The robot controller expects +X up/forward, +Y to the right.  The transformPoint
+        // function makes the conversion.
         for (int i = 0; i < filletedWayPoints.size(); i++) {
         	transformPoint(filletedWayPoints.get(i));
         }
@@ -148,8 +157,6 @@ public class Path {
     	Point2D startArc = firstLine.projectedPoint(center);
     	
     	filletedWayPoints.add(new Waypoint(new Translation2d(startArc.x(), startArc.y()), currentWaypoint.speed, currentWaypoint.marker));
-//    	int numPoints = (int)Math.abs(kPointsPerUnit * (Math.PI - Math.abs(deltaAngle)) * (2 * Math.PI * currentWaypoint.radius));
-//    	double angleInc = Math.copySign((Math.PI - Math.abs(deltaAngle)) / numPoints, -deltaAngle);
     	int numPoints = (int)Math.abs(kPointsPerUnit * (Math.abs(deltaAngle)) * (2 * Math.PI * currentWaypoint.radius));
     	double angleInc = Math.copySign((Math.abs(deltaAngle)) / numPoints, -deltaAngle);
     	
