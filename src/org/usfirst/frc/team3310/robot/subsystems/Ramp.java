@@ -1,12 +1,12 @@
 package org.usfirst.frc.team3310.robot.subsystems;
 
 import org.usfirst.frc.team3310.robot.Robot;
+import org.usfirst.frc.team3310.robot.Robot.OperationMode;
 import org.usfirst.frc.team3310.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Ramp extends Subsystem
 {
@@ -19,6 +19,7 @@ public class Ramp extends Subsystem
 	private Solenoid pull;
 	
 	private double matchStartTimeSeconds;
+	private OperationMode operationMode;
 
 	private Ramp() {
 		try {
@@ -66,7 +67,15 @@ public class Ramp extends Subsystem
 	public void setTeleopStartTime() {
 		matchStartTimeSeconds = Timer.getFPGATimestamp();
 	}
-		
+	
+	public OperationMode getOperationMode() {
+		return operationMode;
+	}
+
+	public void setOperationMode(OperationMode operationMode) {
+		this.operationMode = operationMode;
+	}
+
 	public void updateStatus(Robot.OperationMode operationMode) {
 		if (operationMode == Robot.OperationMode.TEST) {
 			try {

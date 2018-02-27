@@ -6,6 +6,8 @@ import java.util.List;
 import org.usfirst.frc.team3310.buttons.XBoxDPadTriggerButton;
 import org.usfirst.frc.team3310.buttons.XBoxTriggerButton;
 import org.usfirst.frc.team3310.controller.XboxController;
+import org.usfirst.frc.team3310.paths.CenterTest;
+import org.usfirst.frc.team3310.paths.PathBuilder.Waypoint;
 import org.usfirst.frc.team3310.robot.commands.DriveGyroReset;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
 import org.usfirst.frc.team3310.robot.commands.DriveSpeedShift;
@@ -31,9 +33,8 @@ import org.usfirst.frc.team3310.robot.subsystems.Flipper.FlipperState;
 import org.usfirst.frc.team3310.robot.subsystems.Intake;
 import org.usfirst.frc.team3310.robot.subsystems.Ramp.RampLatch;
 import org.usfirst.frc.team3310.robot.subsystems.Ramp.RampPull;
-import org.usfirst.frc.team3310.utility.Path;
-import org.usfirst.frc.team3310.utility.Path.Waypoint;
-import org.usfirst.frc.team3310.utility.Translation2d;
+import org.usfirst.frc.team3310.utility.control.Path;
+import org.usfirst.frc.team3310.utility.math.Translation2d;
 
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.InternalButton;
@@ -245,15 +246,15 @@ public class OI {
 //        waypoints.add(new Waypoint(new Translation2d(-68.6, -26.5), 40.0));
 		
         // Center back around switch to scale
- 		List<Waypoint> waypoints = new ArrayList<>();
-		waypoints.add(new Waypoint(new Translation2d(0, 0), 50.0));
-		waypoints.add(new Waypoint(new Translation2d(0, -30), 50.0, 30.0));
-		waypoints.add(new Waypoint(new Translation2d(100, -80), 50.0, 50.0));
-		waypoints.add(new Waypoint(new Translation2d(100, -160), 50.0, 20.0));
-		waypoints.add(new Waypoint(new Translation2d(85, -260), 50.0));
+// 		List<Waypoint> waypoints = new ArrayList<>();
+//		waypoints.add(new Waypoint(new Translation2d(0, 0), 50.0));
+//		waypoints.add(new Waypoint(new Translation2d(0, -30), 50.0, 30.0));
+//		waypoints.add(new Waypoint(new Translation2d(100, -80), 50.0, 50.0));
+//		waypoints.add(new Waypoint(new Translation2d(100, -160), 50.0, 20.0));
+//		waypoints.add(new Waypoint(new Translation2d(85, -260), 50.0));
 
 		Button driveAP = new InternalButton();
-		driveAP.whenPressed(new DrivePathAdaptivePursuit(new Path(waypoints, true)));
+		driveAP.whenPressed(new DrivePathAdaptivePursuit(new CenterTest()));
 		SmartDashboard.putData("Drive Adaptive Pursuit", driveAP);
 
 		Button gyroReset = new InternalButton();

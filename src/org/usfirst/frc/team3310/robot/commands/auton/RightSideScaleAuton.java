@@ -1,25 +1,14 @@
 package org.usfirst.frc.team3310.robot.commands.auton;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
 import org.usfirst.frc.team3310.robot.commands.DriveStraightMP;
-import org.usfirst.frc.team3310.robot.commands.DriveStraightMPIntakeOff;
 import org.usfirst.frc.team3310.robot.commands.DriveStraightUntilCube;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetPositionMP;
 import org.usfirst.frc.team3310.robot.commands.FlipperFlip;
-import org.usfirst.frc.team3310.robot.commands.IntakeCubeAndLiftAbortDrive;
 import org.usfirst.frc.team3310.robot.commands.IntakeSetSpeed;
-import org.usfirst.frc.team3310.robot.commands.RunAfterMarker;
-import org.usfirst.frc.team3310.robot.subsystems.Drive;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator;
 import org.usfirst.frc.team3310.robot.subsystems.Flipper.FlipperSide;
 import org.usfirst.frc.team3310.robot.subsystems.Flipper.FlipperState;
 import org.usfirst.frc.team3310.robot.subsystems.Intake;
-import org.usfirst.frc.team3310.utility.Path;
-import org.usfirst.frc.team3310.utility.Path.Waypoint;
-import org.usfirst.frc.team3310.utility.Translation2d;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.command.WaitCommand;
@@ -32,7 +21,7 @@ public class RightSideScaleAuton extends CommandGroup {
     public RightSideScaleAuton() {
     	
     	//  SAVE!!!   Start right to scale
- 		List<Waypoint> waypoints = new ArrayList<>();
+// 		List<Waypoint> waypoints = new ArrayList<>();
 //		waypoints.add(new Waypoint(new Translation2d(0, 0), 50.0));
 //		waypoints.add(new Waypoint(new Translation2d(0, -80), 50.0, "launchFlipper"));
 //		waypoints.add(new Waypoint(new Translation2d(0, -170), 50.0, 30.0));
@@ -41,15 +30,15 @@ public class RightSideScaleAuton extends CommandGroup {
 //		waypoints.add(new Waypoint(new Translation2d(-21, -250), 10.0));
 		
 		//  Start right to scale
-		waypoints.add(new Waypoint(new Translation2d(0, 0), 30.0));
-		waypoints.add(new Waypoint(new Translation2d(0, -70), 40.0, "launchFlipper"));
-		waypoints.add(new Waypoint(new Translation2d(0, -170), 40.0, 30.0));
-		waypoints.add(new Waypoint(new Translation2d(-25, -220), 40.0, 50.0));
-		waypoints.add(new Waypoint(new Translation2d(-25, -226), 40.0));
-		waypoints.add(new Waypoint(new Translation2d(-23, -235), 15.0));
+//		waypoints.add(new Waypoint(new Translation2d(0, 0), 30.0));
+//		waypoints.add(new Waypoint(new Translation2d(0, -70), 40.0, "launchFlipper"));
+//		waypoints.add(new Waypoint(new Translation2d(0, -170), 40.0, 30.0));
+//		waypoints.add(new Waypoint(new Translation2d(-25, -220), 40.0, 50.0));
+//		waypoints.add(new Waypoint(new Translation2d(-25, -226), 40.0));
+//		waypoints.add(new Waypoint(new Translation2d(-23, -235), 15.0));
 		
-    	addParallel(new RunAfterMarker("launchFlipper", 3.0, new FlipperFlip(FlipperSide.RIGHT, FlipperState.DEPLOYED)));
-    	addSequential(new DrivePathAdaptivePursuit(new Path(waypoints, true)));
+//    	addParallel(new RunAfterMarker("launchFlipper", 3.0, new FlipperFlip(FlipperSide.RIGHT, FlipperState.DEPLOYED)));
+//    	addSequential(new DrivePathAdaptivePursuit(new Path(waypoints, true)));
 		addSequential(new FlipperFlip(FlipperSide.RIGHT, FlipperState.RETRACTED));
 
 		addSequential(new DriveStraightUntilCube());

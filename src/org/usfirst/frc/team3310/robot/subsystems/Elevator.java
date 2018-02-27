@@ -2,24 +2,25 @@ package org.usfirst.frc.team3310.robot.subsystems;
 
 import java.util.ArrayList;
 
+import org.usfirst.frc.team3310.robot.Constants;
 import org.usfirst.frc.team3310.robot.Robot;
 import org.usfirst.frc.team3310.robot.RobotMap;
-import org.usfirst.frc.team3310.utility.ControlLoopable;
+import org.usfirst.frc.team3310.utility.Loop;
 import org.usfirst.frc.team3310.utility.MPTalonPIDController;
 import org.usfirst.frc.team3310.utility.PIDParams;
 import org.usfirst.frc.team3310.utility.TalonSRXEncoder;
+import org.usfirst.frc.team3310.utility.TalonSRXFactory;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Elevator extends Subsystem implements ControlLoopable
+public class Elevator extends Subsystem implements Loop
 {
 	private static Elevator instance;
 
@@ -74,7 +75,7 @@ public class Elevator extends Subsystem implements ControlLoopable
 	public static final double KF_UP = 0.005;
 	public static final double KF_DOWN = 0.0;
 	public static final double PID_ERROR_INCHES = 1.0;
-	private double periodMs;
+	private long periodMs = (long)(Constants.kLooperDt * 1000.0);
 
 	// Pneumatics
 	private Solenoid speedShift;
@@ -90,32 +91,18 @@ public class Elevator extends Subsystem implements ControlLoopable
 	
 	private Elevator() {
 		try {
-			motor1 = new TalonSRXEncoder(RobotMap.ELEVATOR_MOTOR_1_CAN_ID, ENCODER_TICKS_TO_INCHES, false, FeedbackDevice.QuadEncoder);
-			motor2 = new TalonSRX(RobotMap.ELEVATOR_MOTOR_2_CAN_ID);
-			motor3 = new TalonSRX(RobotMap.ELEVATOR_MOTOR_3_CAN_ID);
+			motor1 = TalonSRXFactory.createTalonEncoder(RobotMap.ELEVATOR_MOTOR_1_CAN_ID, ENCODER_TICKS_TO_INCHES, false, FeedbackDevice.QuadEncoder);
+			motor2 = TalonSRXFactory.createPermanentSlaveTalon(RobotMap.ELEVATOR_MOTOR_2_CAN_ID, RobotMap.ELEVATOR_MOTOR_1_CAN_ID);
+			motor3 = TalonSRXFactory.createPermanentSlaveTalon(RobotMap.ELEVATOR_MOTOR_3_CAN_ID, RobotMap.ELEVATOR_MOTOR_1_CAN_ID);
 			
-//			motor1.setSensorPhase(true);
 			motor1.setInverted(true);
-			motor1.setNeutralMode(NeutralMode.Brake);
-//			motor1.configMaxIntegralAccumulator(arg0, arg1, arg2);
-//			motor1.configVoltageCompSaturation(12.0, TalonSRXEncoder.TIMEOUT_MS);
-//			motor1.enableVoltageCompensation(true);
-//			motor1.configNominalOutputForward(0.0, TalonSRXEncoder.TIMEOUT_MS);
-//			motor1.configNominalOutputReverse(0.0, TalonSRXEncoder.TIMEOUT_MS);
-//			motor1.configPeakOutputForward(+1.0f, TalonSRXEncoder.TIMEOUT_MS);
-//			motor1.configPeakOutputReverse(-1.0f, TalonSRXEncoder.TIMEOUT_MS);
+			motor2.setInverted(true);
+			motor3.setInverted(true);
+										
 //	        if (motor1.isSensorPresent(CANTalon.FeedbackDevice.QuadEncoder) != CANTalon.FeedbackDeviceStatus.FeedbackStatusPresent) {
 //	            Driver.reportError("Could not detect elevator motor 1 encoder encoder!", false);
 //	        }
 			
-			motor2.set(ControlMode.Follower, RobotMap.ELEVATOR_MOTOR_1_CAN_ID);
-			motor2.setNeutralMode(NeutralMode.Brake);
-			motor2.setInverted(true);
-
-			motor3.set(ControlMode.Follower, RobotMap.ELEVATOR_MOTOR_1_CAN_ID);
-			motor3.setNeutralMode(NeutralMode.Brake);
-			motor3.setInverted(true);
-										
 			motorControllers.add(motor1);
 			
 			speedShift = new Solenoid(RobotMap.ELEVATOR_SPEEDSHIFT_PCM_ID);
@@ -183,7 +170,22 @@ public class Elevator extends Subsystem implements ControlLoopable
 		return targetPosition;
 	}
 	
-	public synchronized void controlLoopUpdate() {
+	@Override
+	public void onStart(double timestamp) {
+		mpController = new MPTalonPIDController(periodMs, motorControllers);
+		mpController.setPID(mpPIDParams, MP_SLOT);
+		mpController.setPID(pidPIDParams, PID_SLOT);
+		mpController.setPIDSlot(PID_SLOT);
+	}
+
+	@Override
+	public void onStop(double timestamp) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onLoop(double timestamp) {
 		synchronized (Elevator.this) {
 			switch( getElevatorControlMode() ) {
 				case JOYSTICK_PID: 
@@ -257,16 +259,7 @@ public class Elevator extends Subsystem implements ControlLoopable
 	public synchronized void setFinished(boolean isFinished) {
 		this.isFinished = isFinished;
 	}
-	
-	@Override
-	public void setPeriodMs(long periodMs) {
-		mpController = new MPTalonPIDController(periodMs, motorControllers);
-		mpController.setPID(mpPIDParams, MP_SLOT);
-		mpController.setPID(pidPIDParams, PID_SLOT);
-		mpController.setPIDSlot(PID_SLOT);
-		this.periodMs = periodMs;
-	}
-	
+		
 	public double getPeriodMs() {
 		return periodMs;
 	}
@@ -295,5 +288,4 @@ public class Elevator extends Subsystem implements ControlLoopable
 		}
 		return instance;
 	}
-
 }

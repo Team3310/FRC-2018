@@ -1,14 +1,7 @@
 package org.usfirst.frc.team3310.robot.commands.auton;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.usfirst.frc.team3310.paths.CenterTest;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
-import org.usfirst.frc.team3310.robot.commands.DriveStraightMP;
-import org.usfirst.frc.team3310.robot.commands.DriveStraightUntilCube;
-import org.usfirst.frc.team3310.utility.Path;
-import org.usfirst.frc.team3310.utility.Path.Waypoint;
-import org.usfirst.frc.team3310.utility.Translation2d;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
@@ -47,20 +40,22 @@ public class TestAuton extends CommandGroup {
 //		addSequential(new IntakeSetSpeed(0));
 //		addSequential(new DriveGyroReset());
 //		addSequential(new DrivePathAdaptivePursuit(new Path(waypoints2), false));
-				
-		List<Waypoint> waypoints2 = new ArrayList<>();
-		waypoints2.add(new Waypoint(new Translation2d(0, 0), 15.0));
-		waypoints2.add(new Waypoint(new Translation2d(0, -100), 15.0));
 		
-//    	addSequential(new DriveStraightMP(-100, 50, true, true, 0));
-		addSequential(new DrivePathAdaptivePursuit(new Path(waypoints2, true)));
-    	addSequential(new DriveStraightUntilCube());
-
-		List<Waypoint> waypoints3 = new ArrayList<>();
-		waypoints3.add(new Waypoint(new Translation2d(0, 0), 15.0));
-		waypoints3.add(new Waypoint(new Translation2d(0, -100), 15.0));
-   	
-		addSequential(new DrivePathAdaptivePursuit(new Path(waypoints3, true)));
-//    	addSequential(new DriveStraightMP(-100, 50, true, true, 0));
+    	
+    	//Worked
+//		List<Waypoint> waypoints2 = new ArrayList<>();
+//		waypoints2.add(new Waypoint(new Translation2d(0, 0), 15.0));
+//		waypoints2.add(new Waypoint(new Translation2d(0, -100), 15.0));
+//		
+//		addSequential(new DrivePathAdaptivePursuit(new Path(waypoints2, true)));
+//    	addSequential(new DriveStraightUntilCube());
+//
+//		List<Waypoint> waypoints3 = new ArrayList<>();
+//		waypoints3.add(new Waypoint(new Translation2d(0, 0), 15.0));
+//		waypoints3.add(new Waypoint(new Translation2d(0, -100), 15.0));
+//   	
+//		addSequential(new DrivePathAdaptivePursuit(new Path(waypoints3, true)));
+    	
+    	addSequential(new DrivePathAdaptivePursuit(new CenterTest()));
      }
 }

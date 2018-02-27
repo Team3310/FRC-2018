@@ -1,24 +1,25 @@
 package org.usfirst.frc.team3310.robot.commands;
 
+import org.usfirst.frc.team3310.paths.PathContainer;
 import org.usfirst.frc.team3310.robot.Robot;
 import org.usfirst.frc.team3310.robot.subsystems.Drive.DriveControlMode;
-import org.usfirst.frc.team3310.robot.subsystems.Drive.DriveSpeedShiftState;
-import org.usfirst.frc.team3310.utility.Path;
+import org.usfirst.frc.team3310.utility.control.Path;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 public class DrivePathAdaptivePursuit extends Command
 {
 	private Path path;
+	private PathContainer pathContainer;
 
-	public DrivePathAdaptivePursuit(Path path) {
+	public DrivePathAdaptivePursuit(PathContainer p) {
+        this.pathContainer = p;
+        this.path = this.pathContainer.buildPath();
 		requires(Robot.drive);
-		this.path = path;
 	}
 
 	protected void initialize() {
-//		Robot.drive.setShiftState(SpeedShiftState.HI);
-		Robot.drive.setPathAdaptivePursuit(path);
+		Robot.drive.setWantDrivePath(path, pathContainer.isReversed());
 		System.out.println("Adaptive Pursuit start");
 	}
 
@@ -26,7 +27,7 @@ public class DrivePathAdaptivePursuit extends Command
 	}
 
 	protected boolean isFinished() {
-		return Robot.drive.isFinished(); 
+		return Robot.drive.isDoneWithPath(); 
 	}
 
 	protected void end() {

@@ -15,11 +15,14 @@ import org.usfirst.frc.team3310.robot.subsystems.Elevator;
 import org.usfirst.frc.team3310.robot.subsystems.Flipper;
 import org.usfirst.frc.team3310.robot.subsystems.Intake;
 import org.usfirst.frc.team3310.robot.subsystems.Ramp;
-import org.usfirst.frc.team3310.utility.ControlLooper;
+import org.usfirst.frc.team3310.utility.Looper;
+import org.usfirst.frc.team3310.utility.control.RobotState;
+import org.usfirst.frc.team3310.utility.math.RigidTransform2d;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -44,8 +47,7 @@ public class Robot extends TimedRobot {
 	public static final Ramp ramp = Ramp.getInstance();
 	
 	// Control looper
-	public static final long periodMS = 10;
-	public static final ControlLooper controlLoop = new ControlLooper("Main control loop", periodMS);
+	public static final Looper controlLoop = new Looper();
 	
 	// Choosers
 	private SendableChooser<OperationMode> operationModeChooser;
@@ -57,16 +59,19 @@ public class Robot extends TimedRobot {
 
 	// PDP
 	public static final PowerDistributionPanel pdp = new PowerDistributionPanel();
+	
+	// State
+    private RobotState mRobotState = RobotState.getInstance();
 
 	@Override
 	public void robotInit() {
-		setPeriod(periodMS/1000.0);
+		setPeriod(Constants.kLooperDt * 2);
 		System.out.println("Main loop period = " + getPeriod());
 		
 		oi = OI.getInstance();
 		
-    	controlLoop.addLoopable(drive);
-    	controlLoop.addLoopable(elevator);
+    	controlLoop.register(drive);
+    	controlLoop.register(elevator);
     	controlLoop.start();
  
     	// Update default at competition!!!
@@ -83,6 +88,8 @@ public class Robot extends TimedRobot {
 		
 		LiveWindow.setEnabled(false);
 		LiveWindow.disableAllTelemetry();
+
+		mRobotState.reset(Timer.getFPGATimestamp(), new RigidTransform2d());
 	}  
 	
 	// Called every loop for all modes
@@ -107,6 +114,7 @@ public class Robot extends TimedRobot {
     	drive.endGyroCalibration();
     	drive.resetEncoders();
     	drive.resetGyro();
+        mRobotState.reset(Timer.getFPGATimestamp(), new RigidTransform2d());
     	drive.setIsRed(getAlliance().equals(Alliance.Red));
     	elevator.setShiftState(Elevator.ElevatorSpeedShiftState.HI);
     	elevator.resetZeroPosition(Elevator.ZERO_POSITION_INCHES);
@@ -131,7 +139,9 @@ public class Robot extends TimedRobot {
 		
         controlLoop.start();
     	ramp.setTeleopStartTime();
+    	ramp.setOperationMode(operationMode);
     	drive.resetEncoders();
+        mRobotState.reset(Timer.getFPGATimestamp(), new RigidTransform2d());
     	drive.endGyroCalibration();
     	elevator.setShiftState(Elevator.ElevatorSpeedShiftState.HI);
     	

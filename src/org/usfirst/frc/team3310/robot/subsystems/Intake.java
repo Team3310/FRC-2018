@@ -2,6 +2,7 @@ package org.usfirst.frc.team3310.robot.subsystems;
 
 import org.usfirst.frc.team3310.robot.Robot;
 import org.usfirst.frc.team3310.robot.RobotMap;
+import org.usfirst.frc.team3310.utility.TalonSRXFactory;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -32,11 +33,11 @@ public class Intake extends Subsystem
 	
 	private Intake() {
 		try {
-			leftArm = new TalonSRX(RobotMap.INTAKE_LEFT);
+			leftArm = TalonSRXFactory.createDefaultTalon(RobotMap.INTAKE_LEFT);
 			leftArm.setNeutralMode(NeutralMode.Brake);
 			leftArm.setInverted(true);
 			
-			rightArm = new TalonSRX(RobotMap.INTAKE_RIGHT);
+			rightArm = TalonSRXFactory.createDefaultTalon(RobotMap.INTAKE_RIGHT);
 			rightArm.setNeutralMode(NeutralMode.Brake);
 
 			frontIRIntakeSensor = new DigitalInput(RobotMap.INTAKE_FRONT_IR_SENSOR_DIO_ID);

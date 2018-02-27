@@ -5,7 +5,6 @@ import org.usfirst.frc.team3310.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Flipper extends Subsystem
 {

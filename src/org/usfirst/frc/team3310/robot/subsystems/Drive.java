@@ -1,34 +1,33 @@
 package org.usfirst.frc.team3310.robot.subsystems;
 
 import java.util.ArrayList;
-import java.util.Set;
 
 import org.usfirst.frc.team3310.robot.Constants;
 import org.usfirst.frc.team3310.robot.OI;
 import org.usfirst.frc.team3310.robot.Robot;
 import org.usfirst.frc.team3310.robot.RobotMap;
-import org.usfirst.frc.team3310.utility.AdaptivePurePursuitController;
 import org.usfirst.frc.team3310.utility.BHRDifferentialDrive;
 import org.usfirst.frc.team3310.utility.BHRMathUtils;
-import org.usfirst.frc.team3310.utility.ControlLoopable;
-import org.usfirst.frc.team3310.utility.Kinematics;
-import org.usfirst.frc.team3310.utility.MMTalonPIDController;
+import org.usfirst.frc.team3310.utility.Loop;
 import org.usfirst.frc.team3310.utility.MPSoftwarePIDController;
 import org.usfirst.frc.team3310.utility.MPSoftwarePIDController.MPSoftwareTurnType;
 import org.usfirst.frc.team3310.utility.MPTalonPIDController;
-import org.usfirst.frc.team3310.utility.MPTalonPIDPathController;
 import org.usfirst.frc.team3310.utility.PIDParams;
-import org.usfirst.frc.team3310.utility.Path;
-import org.usfirst.frc.team3310.utility.RigidTransform2d;
-import org.usfirst.frc.team3310.utility.Rotation2d;
 import org.usfirst.frc.team3310.utility.SoftwarePIDController;
 import org.usfirst.frc.team3310.utility.TalonSRXEncoder;
-import org.usfirst.frc.team3310.utility.Translation2d;
+import org.usfirst.frc.team3310.utility.TalonSRXFactory;
+import org.usfirst.frc.team3310.utility.control.Kinematics;
+import org.usfirst.frc.team3310.utility.control.Lookahead;
+import org.usfirst.frc.team3310.utility.control.Path;
+import org.usfirst.frc.team3310.utility.control.PathFollower;
+import org.usfirst.frc.team3310.utility.control.RobotState;
+import org.usfirst.frc.team3310.utility.math.RigidTransform2d;
+import org.usfirst.frc.team3310.utility.math.Twist2d;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
@@ -36,11 +35,11 @@ import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-public class Drive extends Subsystem implements ControlLoopable
+public class Drive extends Subsystem implements Loop
 {
 	private static Drive instance;
 
-	public static enum DriveControlMode { JOYSTICK, MP_STRAIGHT, MP_TURN, PID_TURN, HOLD, MANUAL, MP_PATH, MP_PATH_VELOCITY, MOTION_MAGIC, ADAPTIVE_PURSUIT };
+	public static enum DriveControlMode { JOYSTICK, MP_STRAIGHT, MP_TURN, PID_TURN, HOLD, MANUAL, ADAPTIVE_PURSUIT, VELOCITY_SETPOINT };
 	public static enum DriveSpeedShiftState { HI, LO };
 	public static enum ClimberState { DEPLOYED, RETRACTED };
 
@@ -48,8 +47,6 @@ public class Drive extends Subsystem implements ControlLoopable
 	public static final double ENCODER_TICKS_TO_INCHES = (36.0 / 12.0) * (60.0 / 24.0) * 4096.0 / (5.7 * Math.PI);  
 	public static final double TRACK_WIDTH_INCHES = 24.56;  // 26.937;
 	
-	public static final double VOLTAGE_RAMP_RATE = 150;  // Volts per second
-
 	// Motion profile max velocities and accel times
 	public static final double MAX_TURN_RATE_DEG_PER_SEC = 320;
 	public static final double MP_AUTON_MAX_STRAIGHT_VELOCITY_INCHES_PER_SEC =  120;  //72;
@@ -72,18 +69,19 @@ public class Drive extends Subsystem implements ControlLoopable
 	private ArrayList<TalonSRXEncoder> motorControllers = new ArrayList<TalonSRXEncoder>();	
 
 	private TalonSRXEncoder leftDrive1;
-	private WPI_TalonSRX leftDrive2;
-	private WPI_TalonSRX leftDrive3;
+	private TalonSRX leftDrive2;
+	private TalonSRX leftDrive3;
 
 	private TalonSRXEncoder rightDrive1;
-	private WPI_TalonSRX rightDrive2;
-	private WPI_TalonSRX rightDrive3;
+	private TalonSRX rightDrive2;
+	private TalonSRX rightDrive3;
 
 	private BHRDifferentialDrive m_drive;
 	
 	private boolean isRed = true;
+    private boolean mIsBrakeMode;
 	
-	private double periodMs;
+	private long periodMs = (long)(Constants.kLooperDt * 1000.0);
 
 	// Pneumatics
 	private Solenoid speedShift;
@@ -120,14 +118,15 @@ public class Drive extends Subsystem implements ControlLoopable
 	private boolean isFinished;
 	private DriveControlMode driveControlMode = DriveControlMode.JOYSTICK;
 	
-	private MPTalonPIDController mpStraightController;
+    private static final int kLowGearPositionControlSlot = 0;
+    private static final int kLowGearVelocityControlSlot = 1;
+    private static final int kHighGearVelocityControlSlot = 2;
+
+    private MPTalonPIDController mpStraightController;
 //	private PIDParams mpStraightPIDParams = new PIDParams(0.1, 0, 0, 0.005, 0.03, 0.15);  // 4 colsons
 	private PIDParams mpStraightPIDParams = new PIDParams(0.05, 0, 0, 0.0008, 0.004, 0.03);  // 4 omni
 	private PIDParams mpHoldPIDParams = new PIDParams(1, 0, 0, 0.0, 0.0, 0.0); 
 
-	private MMTalonPIDController mmStraightController;
-	private PIDParams mmStraightPIDParams = new PIDParams(0, 0, 0, 0.24);  
-	
 	private MPSoftwarePIDController mpTurnController; // p    i   d     a      v      g    izone
 //	private PIDParams mpTurnPIDParams = new PIDParams(0.07, 0.00002, 0.5, 0.00025, 0.008, 0.0, 100);  // 4 colson wheels
 	private PIDParams mpTurnPIDParams = new PIDParams(0.03, 0.00002, 0.4, 0.0004, 0.0030, 0.0, 100);  // 4 omni
@@ -135,21 +134,11 @@ public class Drive extends Subsystem implements ControlLoopable
 	private SoftwarePIDController pidTurnController;
 	private PIDParams pidTurnPIDParams = new PIDParams(0.04, 0.001, 0.4, 0, 0, 0.0, 100); //i=0.0008
 
-	private MPTalonPIDPathController mpPathController;
-	private PIDParams mpPathPIDParams = new PIDParams(0.1, 0, 0, 0.005, 0.03, 0.28, 100);  // 4 omni   g=.3
-
-
-	private AdaptivePurePursuitController adaptivePursuitController;
-	private PIDParams adaptivePursuitPIDParams = new PIDParams(0.1, 0.00, 1, 0.44); 
-	private static final double ADAPTIVE_PURSUIT_PATH_TOLERANCE_INCHES = 1.0;
-	private Path newPath = null;
+//	private PIDParams adaptivePursuitPIDParams = new PIDParams(0.1, 0.00, 1, 0.44); 
+    private PathFollower mPathFollower;
+    private Path mCurrentPath = null;
+    private RobotState mRobotState = RobotState.getInstance();
 	
-	private RigidTransform2d zeroPose = new RigidTransform2d(new Translation2d(0,0), Rotation2d.fromDegrees(0));
-	private RigidTransform2d currentPose = zeroPose;
-	private RigidTransform2d lastPose = zeroPose;
-    private double left_encoder_prev_distance_ = 0;
-    private double right_encoder_prev_distance_ = 0;
-
 	private PigeonIMU gyroPigeon;
 	private double[] yprPigeon = new double[3];
 	private boolean useGyroLock;
@@ -158,51 +147,54 @@ public class Drive extends Subsystem implements ControlLoopable
 	private boolean isCalibrating = false;
 	private double gyroOffsetDeg = 0;
 
-	private Drive() {
-		try {
-			leftDrive1 = new TalonSRXEncoder(RobotMap.DRIVETRAIN_LEFT_MOTOR1_CAN_ID, ENCODER_TICKS_TO_INCHES, false, FeedbackDevice.QuadEncoder);
-			leftDrive2 = new WPI_TalonSRX(RobotMap.DRIVETRAIN_LEFT_MOTOR2_CAN_ID);
-			leftDrive3 = new WPI_TalonSRX(RobotMap.DRIVETRAIN_LEFT_MOTOR3_CAN_ID);
+    /**
+     * Check if the drive talons are configured for velocity control
+     */
+    protected static boolean usesTalonVelocityControl(DriveControlMode state) {
+        if (state == DriveControlMode.VELOCITY_SETPOINT || state == DriveControlMode.ADAPTIVE_PURSUIT) {
+            return true;
+        }
+        return false;
+    }
 
-			rightDrive1 = new TalonSRXEncoder(RobotMap.DRIVETRAIN_RIGHT_MOTOR1_CAN_ID, ENCODER_TICKS_TO_INCHES, true, FeedbackDevice.QuadEncoder);
-			rightDrive2 = new WPI_TalonSRX(RobotMap.DRIVETRAIN_RIGHT_MOTOR2_CAN_ID);
-			rightDrive3 = new WPI_TalonSRX(RobotMap.DRIVETRAIN_RIGHT_MOTOR3_CAN_ID);
+    /**
+     * Check if the drive talons are configured for position control
+     */
+    protected static boolean usesTalonPositionControl(DriveControlMode state) {
+        if (state == DriveControlMode.MP_STRAIGHT ||
+                state == DriveControlMode.MP_TURN ||
+                state == DriveControlMode.HOLD) {
+            return true;
+        }
+        return false;
+    }
+
+    private Drive() {
+		try {
+			leftDrive1 = TalonSRXFactory.createTalonEncoder(RobotMap.DRIVETRAIN_LEFT_MOTOR1_CAN_ID, ENCODER_TICKS_TO_INCHES, false, FeedbackDevice.QuadEncoder);
+			leftDrive2 = TalonSRXFactory.createPermanentSlaveTalon(RobotMap.DRIVETRAIN_LEFT_MOTOR2_CAN_ID, RobotMap.DRIVETRAIN_LEFT_MOTOR1_CAN_ID);
+			leftDrive3 = TalonSRXFactory.createPermanentSlaveTalon(RobotMap.DRIVETRAIN_LEFT_MOTOR3_CAN_ID, RobotMap.DRIVETRAIN_LEFT_MOTOR1_CAN_ID);
+
+			rightDrive1 = TalonSRXFactory.createTalonEncoder(RobotMap.DRIVETRAIN_RIGHT_MOTOR1_CAN_ID, ENCODER_TICKS_TO_INCHES, true, FeedbackDevice.QuadEncoder);
+			rightDrive2 = TalonSRXFactory.createPermanentSlaveTalon(RobotMap.DRIVETRAIN_RIGHT_MOTOR2_CAN_ID, RobotMap.DRIVETRAIN_RIGHT_MOTOR1_CAN_ID);
+			rightDrive3 = TalonSRXFactory.createPermanentSlaveTalon(RobotMap.DRIVETRAIN_RIGHT_MOTOR3_CAN_ID, RobotMap.DRIVETRAIN_RIGHT_MOTOR1_CAN_ID);
 			
 			gyroPigeon = new PigeonIMU(rightDrive2);
 			
-//			leftDrive1.clearStickyFaults(TalonSRXEncoder.TIMEOUT_MS);
 			leftDrive1.setInverted(true);
 			leftDrive1.setSensorPhase(false);   // Encoder on ball shifter spins opposite direction due to gears
 //			leftDrive1.configClosedloopRamp(VOLTAGE_RAMP_RATE, TalonSRXEncoder.TIMEOUT_MS);
 			leftDrive1.setNeutralMode(NeutralMode.Brake);
-//			leftDrive1.configVoltageCompSaturation(12.0, TalonSRXEncoder.TIMEOUT_MS);
-//			leftDrive1.enableVoltageCompensation(true);
-//			leftDrive1.configNominalOutputForward(0.0, TalonSRXEncoder.TIMEOUT_MS);
-//			leftDrive1.configNominalOutputReverse(0.0, TalonSRXEncoder.TIMEOUT_MS);
-//			leftDrive1.configPeakOutputForward(+1.0f, TalonSRXEncoder.TIMEOUT_MS);
-//			leftDrive1.configPeakOutputReverse(-1.0f, TalonSRXEncoder.TIMEOUT_MS);
 			leftDrive1.setSafetyEnabled(false);
 //	        if (leftDrive1.isSensorPresent(CANTalon.FeedbackDevice.QuadEncoder) != CANTalon.FeedbackDeviceStatus.FeedbackStatusPresent) {
 //	            Driver.reportError("Could not detect left drive encoder encoder!", false);
 //	        }
 			
 			leftDrive2.setInverted(true);
-			leftDrive2.set(ControlMode.Follower, RobotMap.DRIVETRAIN_LEFT_MOTOR1_CAN_ID);
-			leftDrive2.setNeutralMode(NeutralMode.Brake);
-			leftDrive2.setSafetyEnabled(false);
-
 			leftDrive3.setInverted(true);
-			leftDrive3.set(ControlMode.Follower, RobotMap.DRIVETRAIN_LEFT_MOTOR1_CAN_ID);
-			leftDrive3.setNeutralMode(NeutralMode.Brake);
-			leftDrive3.setSafetyEnabled(false);
 			
-//			rightDrive1.clearStickyFaults(TalonSRXEncoder.TIMEOUT_MS);
 //			rightDrive1.configVoltageCompSaturation(12.0, TalonSRXEncoder.TIMEOUT_MS);
 //			rightDrive1.enableVoltageCompensation(true);
-//			rightDrive1.configNominalOutputForward(0.0, TalonSRXEncoder.TIMEOUT_MS);
-//			rightDrive1.configNominalOutputReverse(0.0, TalonSRXEncoder.TIMEOUT_MS);
-//			rightDrive1.configPeakOutputForward(+1.0f, TalonSRXEncoder.TIMEOUT_MS);
-//			rightDrive1.configPeakOutputReverse(-1.0f, TalonSRXEncoder.TIMEOUT_MS);
 			rightDrive1.setSensorPhase(false);   // Encoder on ball shifter spins opposite direction due to gears
 			rightDrive1.setNeutralMode(NeutralMode.Brake);
 			rightDrive1.setSafetyEnabled(false);
@@ -211,21 +203,16 @@ public class Drive extends Subsystem implements ControlLoopable
 //	            DriverStation.reportError("Could not detect right drive encoder encoder!", false);
 //	        }
 			
-			rightDrive2.set(ControlMode.Follower, RobotMap.DRIVETRAIN_RIGHT_MOTOR1_CAN_ID);
 			rightDrive2.setInverted(false);
-			rightDrive2.setNeutralMode(NeutralMode.Brake);
-			rightDrive2.setSafetyEnabled(false);
-
-			rightDrive3.set(ControlMode.Follower, RobotMap.DRIVETRAIN_RIGHT_MOTOR1_CAN_ID);
 			rightDrive3.setInverted(false);
-			rightDrive3.setNeutralMode(NeutralMode.Brake);
-			rightDrive3.setSafetyEnabled(false);
 							
 			motorControllers.add(leftDrive1);
 			motorControllers.add(rightDrive1);
 			
 			m_drive = new BHRDifferentialDrive(leftDrive1, rightDrive1);
 			m_drive.setSafetyEnabled(false);
+			
+			loadGains();
 			
 			speedShift = new Solenoid(RobotMap.DRIVETRAIN_SPEEDSHIFT_PCM_ID);
 		}
@@ -234,7 +221,37 @@ public class Drive extends Subsystem implements ControlLoopable
 		}
 	}
 
-	@Override
+    public synchronized void loadGains() {
+        leftDrive1.setPIDFIZone(kLowGearVelocityControlSlot, 
+        		Constants.kDriveLowGearVelocityKp, 
+        		Constants.kDriveLowGearVelocityKi,
+                Constants.kDriveLowGearVelocityKd, 
+                Constants.kDriveLowGearVelocityKf,
+                Constants.kDriveLowGearVelocityIZone);
+        
+        rightDrive1.setPIDFIZone(kLowGearVelocityControlSlot, 
+        		Constants.kDriveLowGearVelocityKp, 
+        		Constants.kDriveLowGearVelocityKi,
+                Constants.kDriveLowGearVelocityKd, 
+                Constants.kDriveLowGearVelocityKf,
+                Constants.kDriveLowGearVelocityIZone);
+        
+        leftDrive1.setPIDFIZone(kHighGearVelocityControlSlot, 
+        		Constants.kDriveHighGearVelocityKp, 
+        		Constants.kDriveHighGearVelocityKi,
+                Constants.kDriveHighGearVelocityKd, 
+                Constants.kDriveHighGearVelocityKf,
+                Constants.kDriveHighGearVelocityIZone);
+        
+        rightDrive1.setPIDFIZone(kHighGearVelocityControlSlot, 
+        		Constants.kDriveHighGearVelocityKp, 
+        		Constants.kDriveHighGearVelocityKi,
+                Constants.kDriveHighGearVelocityKd, 
+                Constants.kDriveHighGearVelocityKf,
+                Constants.kDriveHighGearVelocityIZone);        
+    }
+
+    @Override
 	public void initDefaultCommand() {
 	}
 	
@@ -249,7 +266,12 @@ public class Drive extends Subsystem implements ControlLoopable
 			
 	public void resetGyro() {
 		gyroPigeon.setYaw(0, TalonSRXEncoder.TIMEOUT_MS);
-		gyroPigeon.addFusedHeading(0, TalonSRXEncoder.TIMEOUT_MS);
+		gyroPigeon.setFusedHeading(0, TalonSRXEncoder.TIMEOUT_MS);
+	}
+	
+	public void resetGyro(double value) {
+		gyroPigeon.setYaw(value, TalonSRXEncoder.TIMEOUT_MS);
+		gyroPigeon.setFusedHeading(value, TalonSRXEncoder.TIMEOUT_MS);
 	}
 	
 	public void resetEncoders() {
@@ -269,39 +291,19 @@ public class Drive extends Subsystem implements ControlLoopable
 	public void setGyroOffset(double offsetDeg) {
 		gyroOffsetDeg = offsetDeg;
 	}
-	
-
-	public void setStraightMM(double distanceInches, double maxVelocity, double maxAcceleration, boolean useGyroLock, boolean useAbsolute, double desiredAbsoluteAngle) {
-		double yawAngle = useAbsolute ? BHRMathUtils.adjustAccumAngleToDesired(getGyroAngleDeg(), desiredAbsoluteAngle) : getGyroAngleDeg();
-		mmStraightController.setPID(mmStraightPIDParams);
-		mmStraightController.setMMStraightTarget(0, distanceInches, maxVelocity, maxAcceleration, useGyroLock, yawAngle, true); 
-		setControlMode(DriveControlMode.MOTION_MAGIC);
-	}
-	
+		
 	public void setStraightMP(double distanceInches, double maxVelocity, boolean useGyroLock, boolean useAbsolute, double desiredAbsoluteAngle) {
 		double yawAngle = useAbsolute ? BHRMathUtils.adjustAccumAngleToDesired(getGyroAngleDeg(), desiredAbsoluteAngle) : getGyroAngleDeg();
-		mpStraightController.setPID(mpStraightPIDParams, 0);
+		mpStraightController.setPID(mpStraightPIDParams, kLowGearPositionControlSlot);
 		mpStraightController.setMPStraightTarget(0, distanceInches, maxVelocity, MP_STRAIGHT_T1, MP_STRAIGHT_T2, useGyroLock, yawAngle, true); 
 		setControlMode(DriveControlMode.MP_STRAIGHT);
 	}
-	
-	public void setStraightMPCached(String key, boolean useGyroLock, boolean useAbsolute, double desiredAbsoluteAngle) {
-		double yawAngle = useAbsolute ? BHRMathUtils.adjustAccumAngleToDesired(getGyroAngleDeg(), desiredAbsoluteAngle) : getGyroAngleDeg();
-		mpStraightController.setPID(mpStraightPIDParams, 0);
-		mpStraightController.setMPStraightTarget(key, useGyroLock, yawAngle, true); 
-		setControlMode(DriveControlMode.MP_STRAIGHT);
-	}
-	
+		
 	public void setRelativeTurnMP(double relativeTurnAngleDeg, double turnRateDegPerSec, MPSoftwareTurnType turnType) {
 		mpTurnController.setMPTurnTarget(getGyroAngleDeg(), relativeTurnAngleDeg + getGyroAngleDeg(), turnRateDegPerSec, MP_TURN_T1, MP_TURN_T2, turnType, TRACK_WIDTH_INCHES);
 		setControlMode(DriveControlMode.MP_TURN);
 	}
-	
-	public void setRelativeTurnMPCached(String key, MPSoftwareTurnType turnType) {
-		mpTurnController.setMPTurnTarget(key, turnType, TRACK_WIDTH_INCHES);
-		setControlMode(DriveControlMode.MP_TURN);
-	}
-	
+		
 	public void setRelativeMaxTurnMP(double relativeTurnAngleDeg, double turnRateDegPerSec, MPSoftwareTurnType turnType) {
 		mpTurnController.setMPTurnTarget(getGyroAngleDeg(), relativeTurnAngleDeg + getGyroAngleDeg(), turnRateDegPerSec, MP_MAX_TURN_T1, MP_MAX_TURN_T2, turnType, TRACK_WIDTH_INCHES);
 		setControlMode(DriveControlMode.MP_TURN);
@@ -312,28 +314,6 @@ public class Drive extends Subsystem implements ControlLoopable
 		setControlMode(DriveControlMode.MP_TURN);
 	}
 	
-	public void setAbsoluteTurnMPCached(String key, MPSoftwareTurnType turnType) {
-		mpTurnController.setMPTurnTarget(key, turnType, TRACK_WIDTH_INCHES);
-		setControlMode(DriveControlMode.MP_TURN);
-	}
-		
-//	public void setPathMP(PathGenerator path) {
-//		mpPathController.setPID(mpPathPIDParams);
-//		mpPathController.setMPPathTarget(path); 
-//		setControlMode(DriveControlMode.MP_PATH);
-//	}
-	
-//	public void setPathVelocityMP(PathGenerator path) {
-//		mpPathVelocityController.setPID(mpPathPIDParams);
-//		mpPathVelocityController.setMPPathTarget(path); 
-//		setControlMode(DriveControlMode.MP_PATH_VELOCITY);
-//	}
-	
-    public void setPathAdaptivePursuit(Path path) {
-    	newPath = path;
-		setControlMode(DriveControlMode.ADAPTIVE_PURSUIT);
-    }
-
     public void setDriveHold(boolean status) {
 		if (status) {
 			setControlMode(DriveControlMode.HOLD);
@@ -343,40 +323,10 @@ public class Drive extends Subsystem implements ControlLoopable
 		}
 	}
     
-    public void updatePose() {
-        double left_distance = leftDrive1.getPositionWorld();
-        double right_distance = rightDrive1.getPositionWorld();
-        Rotation2d gyro_angle = Rotation2d.fromDegrees(-getGyroAngleDeg());
-        lastPose = currentPose;
-        currentPose = generateOdometryFromSensors(left_distance - left_encoder_prev_distance_, right_distance - right_encoder_prev_distance_, gyro_angle);
-        left_encoder_prev_distance_ = left_distance;
-        right_encoder_prev_distance_ = right_distance;
-//        System.out.println("currentPose rot = " + currentPose.getRotation() + ", trans = " + currentPose.getTranslation().getX());
-    }
-    
-    public RigidTransform2d generateOdometryFromSensors(double left_encoder_delta_distance, double right_encoder_delta_distance, Rotation2d current_gyro_angle) {
-        return Kinematics.integrateForwardKinematics(lastPose, left_encoder_delta_distance, right_encoder_delta_distance, current_gyro_angle);
-    }
-	
-    /**
-     * Path Markers are an optional functionality that name the various
-     * Waypoints in a Path with a String. This can make defining set locations
-     * much easier.
-     * 
-     * @return Set of Strings with Path Markers that the robot has crossed.
-     */
-    public synchronized Set<String> getPathMarkersCrossed() {
-        if (getControlMode() != DriveControlMode.ADAPTIVE_PURSUIT) {
-            return null;
-        } else {
-            return adaptivePursuitController.getMarkersCrossed();
-        }
-    }
-
     public synchronized void setControlMode(DriveControlMode controlMode) {
  		this.driveControlMode = controlMode;
  		if (controlMode == DriveControlMode.HOLD) {
-			mpStraightController.setPID(mpHoldPIDParams, 0);
+			mpStraightController.setPID(mpHoldPIDParams, kLowGearPositionControlSlot);
 			leftDrive1.setPosition(0);
 			leftDrive1.set(ControlMode.Position, 0);
 			rightDrive1.setPosition(0);
@@ -389,7 +339,22 @@ public class Drive extends Subsystem implements ControlLoopable
     	return driveControlMode;
     }
 	
-	public void controlLoopUpdate() {
+	@Override
+	public void onStart(double timestamp) {
+		mpStraightController = new MPTalonPIDController(periodMs, motorControllers);
+		mpStraightController.setPID(mpStraightPIDParams, kLowGearPositionControlSlot);
+		mpTurnController = new MPSoftwarePIDController(periodMs, mpTurnPIDParams, motorControllers);
+		pidTurnController = new SoftwarePIDController(pidTurnPIDParams, motorControllers);
+	}
+
+	@Override
+	public void onStop(double timestamp) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onLoop(double timestamp) {
 		synchronized (Drive.this) {
 			DriveControlMode currentControlMode = getControlMode();
 			
@@ -407,29 +372,11 @@ public class Drive extends Subsystem implements ControlLoopable
 					case PID_TURN:
 						setFinished(pidTurnController.controlLoopUpdate(getGyroAngleDeg())); 
 	                    break;
-					case MP_PATH:
-						setFinished(mpPathController.controlLoopUpdate(getGyroAngleDeg())); 
-	                    break;
-					case MOTION_MAGIC:
-						setFinished(mpStraightController.controlLoopUpdate(getGyroAngleDeg())); 
-	                    break;
 					case ADAPTIVE_PURSUIT:
-						if (newPath != null) {
-					    	currentPose = zeroPose;
-					    	lastPose = zeroPose;
-					        left_encoder_prev_distance_ = 0;
-					        right_encoder_prev_distance_ = 0;
-					        resetEncoders();
-					        adaptivePursuitController.setPID(adaptivePursuitPIDParams);
-					    	adaptivePursuitController.setPath(Constants.kPathFollowingLookahead, Constants.kPathFollowingMaxAccel, newPath, ADAPTIVE_PURSUIT_PATH_TOLERANCE_INCHES); 
-							newPath = null;
-						}
-						updatePose();
-						setFinished(adaptivePursuitController.controlLoopUpdate(currentPose));
-						if (isFinished()) {
-							System.out.println("Adaptive finished time = " + System.currentTimeMillis());
-						}
-	                    break;
+	                    if (mPathFollower != null) {
+	                        updatePathFollower(timestamp);
+	                    }
+	                    return;
 	                default:
 	                    System.out.println("Unknown drive control mode: " + currentControlMode);
 	                    break;
@@ -462,7 +409,151 @@ public class Drive extends Subsystem implements ControlLoopable
 		this.useGyroLock = useGyroLock;
 	}
 
-	public void driveWithJoystick() {
+    /**
+     * Called periodically when the robot is in path following mode. Updates the path follower with the robots latest
+     * pose, distance driven, and velocity, the updates the wheel velocity setpoints.
+     */
+    private void updatePathFollower(double timestamp) {
+        RigidTransform2d robot_pose = mRobotState.getLatestFieldToVehicle().getValue();
+        Twist2d command = mPathFollower.update(timestamp, robot_pose,
+                RobotState.getInstance().getDistanceDriven(), RobotState.getInstance().getPredictedVelocity().dx);
+        if (!mPathFollower.isFinished()) {
+            Kinematics.DriveVelocity setpoint = Kinematics.inverseKinematics(command);
+            updateVelocitySetpoint(setpoint.left, setpoint.right);
+        } else {
+            updateVelocitySetpoint(0, 0);
+        }
+    }
+
+    /**
+     * Configures the drivebase to drive a path. Used for autonomous driving
+     * 
+     * @see Path
+     */
+    public synchronized void setWantDrivePath(Path path, boolean reversed) {
+        if (mCurrentPath != path || driveControlMode != DriveControlMode.ADAPTIVE_PURSUIT) {
+            configureTalonsForSpeedControl();
+            RobotState.getInstance().resetDistanceDriven();
+            mPathFollower = new PathFollower(path, reversed,
+                    new PathFollower.Parameters(
+                            new Lookahead(Constants.kMinLookAhead, Constants.kMaxLookAhead,
+                                    Constants.kMinLookAheadSpeed, Constants.kMaxLookAheadSpeed),
+                            Constants.kInertiaSteeringGain, Constants.kPathFollowingProfileKp,
+                            Constants.kPathFollowingProfileKi, Constants.kPathFollowingProfileKv,
+                            Constants.kPathFollowingProfileKffv, Constants.kPathFollowingProfileKffa,
+                            Constants.kPathFollowingMaxVel, Constants.kPathFollowingMaxAccel,
+                            Constants.kPathFollowingGoalPosTolerance, Constants.kPathFollowingGoalVelTolerance,
+                            Constants.kPathStopSteeringDistance));
+            driveControlMode = DriveControlMode.ADAPTIVE_PURSUIT;
+            mCurrentPath = path;
+        } else {
+            setVelocitySetpoint(0, 0);
+        }
+    }
+
+    /**
+     * Start up velocity mode. This sets the drive train in high gear as well.
+     * 
+     * @param left_inches_per_sec
+     * @param right_inches_per_sec
+     */
+    public synchronized void setVelocitySetpoint(double left_inches_per_sec, double right_inches_per_sec) {
+        configureTalonsForSpeedControl();
+        driveControlMode = DriveControlMode.VELOCITY_SETPOINT;
+        updateVelocitySetpoint(left_inches_per_sec, right_inches_per_sec);
+    }
+
+    /**
+     * Adjust Velocity setpoint (if already in velocity mode)
+     * 
+     * @param left_inches_per_sec
+     * @param right_inches_per_sec
+     */
+    private synchronized void updateVelocitySetpoint(double left_inches_per_sec, double right_inches_per_sec) {
+        if (usesTalonVelocityControl(driveControlMode)) {
+            final double max_desired = Math.max(Math.abs(left_inches_per_sec), Math.abs(right_inches_per_sec));
+            final double scale = max_desired > Constants.kDriveHighGearMaxSetpoint
+                    ? Constants.kDriveHighGearMaxSetpoint / max_desired : 1.0;
+            leftDrive1.setVelocityWorld(left_inches_per_sec * scale);
+            rightDrive1.setVelocityWorld(right_inches_per_sec * scale);
+        } else {
+            System.out.println("Hit a bad velocity control state");
+            leftDrive1.set(ControlMode.Velocity, 0);
+            rightDrive1.set(ControlMode.Velocity, 0);
+        }
+    }
+
+    /**
+     * Configures talons for velocity control
+     */
+    private void configureTalonsForSpeedControl() {
+        if (!usesTalonVelocityControl(driveControlMode)) {
+            // We entered a velocity control state.
+        	leftDrive1.enableVoltageCompensation(true);
+        	leftDrive1.configVoltageCompSaturation(12.0, TalonSRXEncoder.TIMEOUT_MS);
+        	leftDrive1.selectProfileSlot(kHighGearVelocityControlSlot, TalonSRXEncoder.PID_IDX);
+        	leftDrive1.configNominalOutputForward(Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
+        	leftDrive1.configNominalOutputReverse(-Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
+        	leftDrive1.configPeakOutputForward(+1.0f, TalonSRXEncoder.TIMEOUT_MS);
+        	leftDrive1.configPeakOutputReverse(-1.0f, TalonSRXEncoder.TIMEOUT_MS);
+            leftDrive1.configClosedloopRamp(Constants.kDriveHighGearVelocityRampRate, TalonSRXEncoder.TIMEOUT_MS);
+        	    	
+        	rightDrive1.enableVoltageCompensation(true);
+        	rightDrive1.configVoltageCompSaturation(12.0, TalonSRXEncoder.TIMEOUT_MS);
+        	rightDrive1.selectProfileSlot(kHighGearVelocityControlSlot, TalonSRXEncoder.PID_IDX);
+        	rightDrive1.configNominalOutputForward(Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
+        	rightDrive1.configNominalOutputReverse(-Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
+        	rightDrive1.configPeakOutputForward(+1.0f, TalonSRXEncoder.TIMEOUT_MS);
+        	rightDrive1.configPeakOutputReverse(-1.0f, TalonSRXEncoder.TIMEOUT_MS);
+        	rightDrive1.configClosedloopRamp(Constants.kDriveHighGearVelocityRampRate, TalonSRXEncoder.TIMEOUT_MS);
+
+        	setBrakeMode(true);
+        }
+    }
+
+    public synchronized boolean isDoneWithPath() {
+        if (driveControlMode != DriveControlMode.ADAPTIVE_PURSUIT && mPathFollower != null) {
+            return mPathFollower.isFinished();
+        } else {
+            System.out.println("Robot is not in path following mode");
+            return true;
+        }
+    }
+
+    public synchronized void forceDoneWithPath() {
+        if (driveControlMode != DriveControlMode.ADAPTIVE_PURSUIT && mPathFollower != null) {
+            mPathFollower.forceFinish();
+        } else {
+            System.out.println("Robot is not in path following mode");
+        }
+    }
+
+    public synchronized boolean hasPassedMarker(String marker) {
+        if (driveControlMode != DriveControlMode.ADAPTIVE_PURSUIT && mPathFollower != null) {
+            return mPathFollower.hasPassedMarker(marker);
+        } else {
+            System.out.println("Robot is not in path following mode");
+            return false;
+        }
+    }
+
+    public boolean isBrakeMode() {
+        return mIsBrakeMode;
+    }
+
+    public synchronized void setBrakeMode(boolean on) {
+        if (mIsBrakeMode != on) {
+            mIsBrakeMode = on;
+            rightDrive1.setNeutralMode(NeutralMode.Brake);
+            rightDrive2.setNeutralMode(NeutralMode.Brake);
+            rightDrive3.setNeutralMode(NeutralMode.Brake);
+            leftDrive1.setNeutralMode(NeutralMode.Brake);
+            leftDrive2.setNeutralMode(NeutralMode.Brake);
+            leftDrive3.setNeutralMode(NeutralMode.Brake);
+        }
+    }
+
+    public void driveWithJoystick() {
 		if(m_drive == null) return;
 
 		m_moveInput = OI.getInstance().getDriverController().getLeftYAxis();
@@ -555,18 +646,6 @@ public class Drive extends Subsystem implements ControlLoopable
 	
 	public synchronized void setFinished(boolean isFinished) {
 		this.isFinished = isFinished;
-	}
-	
-	@Override
-	public void setPeriodMs(long periodMs) {
-		mmStraightController = new MMTalonPIDController(periodMs, mmStraightPIDParams, motorControllers);
-		mpStraightController = new MPTalonPIDController(periodMs, motorControllers);
-		mpStraightController.setPID(mpStraightPIDParams, 0);
-		mpTurnController = new MPSoftwarePIDController(periodMs, mpTurnPIDParams, motorControllers);
-		pidTurnController = new SoftwarePIDController(pidTurnPIDParams, motorControllers);
-		mpPathController = new MPTalonPIDPathController(periodMs, mpPathPIDParams, motorControllers);
-		adaptivePursuitController = new AdaptivePurePursuitController(periodMs, adaptivePursuitPIDParams, motorControllers);
-		this.periodMs = periodMs;
 	}
 	
 	public double getPeriodMs() {

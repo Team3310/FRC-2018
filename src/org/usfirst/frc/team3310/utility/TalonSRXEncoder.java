@@ -42,6 +42,14 @@ public class TalonSRXEncoder extends WPI_TalonSRX
 		this.config_kF(slotId, kF, TIMEOUT_MS);
 	}
 	
+	public void setPIDFIZone(int slotId, double kP, double kI, double kD, double kF, int iZone) {
+		this.config_kP(slotId, kP, TIMEOUT_MS);
+		this.config_kI(slotId, kI, TIMEOUT_MS);
+		this.config_kD(slotId, kD, TIMEOUT_MS);
+		this.config_kF(slotId, kF, TIMEOUT_MS);
+		this.config_IntegralZone(slotId, iZone, TIMEOUT_MS);
+	}
+	
 	public double convertEncoderTicksToWorld(double encoderTicks) {
     	return encoderTicks / encoderTicksToWorld;
     }

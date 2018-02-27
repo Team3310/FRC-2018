@@ -1,23 +1,28 @@
 package org.usfirst.frc.team3310.utility;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-
 /**
  * ConstantsBase
  * 
- * Base class for storing robot constants. Anything stored as a public static
- * field will be reflected and be able to set externally
+ * Base class for storing robot constants. Anything stored as a public static field will be reflected and be able to set
+ * externally
  */
 public abstract class ConstantsBase {
     HashMap<String, Boolean> modifiedKeys = new HashMap<String, Boolean>();
@@ -51,6 +56,18 @@ public abstract class ConstantsBase {
         return new File(filePath);
     }
 
+    public boolean truncateUserConstants() {
+        try {
+            Files.write(getFile().toPath(), new byte[0], StandardOpenOption.TRUNCATE_EXISTING);
+            loadFromFile();
+            return true;
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public boolean setConstant(String name, Double value) {
         return setConstantRaw(name, value);
     }
@@ -74,6 +91,9 @@ public abstract class ConstantsBase {
                     success = true;
                     if (!value.equals(current)) {
                         modifiedKeys.put(name, true);
+                        System.out.println("Constant Modified:" + field.getName());
+                    } else {
+                        System.out.println("Constant Not Modified:" + field.getName());
                     }
                 } catch (IllegalArgumentException | IllegalAccessException e) {
                     System.out.println("Could not set field: " + name);
@@ -113,7 +133,7 @@ public abstract class ConstantsBase {
 
     public Collection<Constant> getConstants() {
         List<Constant> constants = (List<Constant>) getAllConstants();
-        int stop = constants.size() - 1;
+        int stop = constants.size();
         for (int i = 0; i < constants.size(); ++i) {
             Constant c = constants.get(i);
             if ("kEndEditableArea".equals(c.name)) {
@@ -140,5 +160,57 @@ public abstract class ConstantsBase {
         return constants;
     }
 
- 
+    public JSONObject getJSONObjectFromFile() throws IOException, ParseException {
+        File file = getFile();
+        if (file == null || !file.exists()) {
+            return new JSONObject();
+        }
+        FileReader reader;
+        reader = new FileReader(file);
+        JSONParser jsonParser = new JSONParser();
+        return (JSONObject) jsonParser.parse(reader);
+    }
+
+    public void loadFromFile() {
+        try {
+            JSONObject jsonObject = getJSONObjectFromFile();
+            Set<?> keys = jsonObject.keySet();
+            for (Object o : keys) {
+                String key = (String) o;
+                Object value = jsonObject.get(o);
+                if (value instanceof Long && getConstant(key).type.equals(int.class)) {
+                    value = new BigDecimal((Long) value).intValueExact();
+                }
+                setConstantRaw(key, value);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void saveToFile() {
+        File file = getFile();
+        if (file == null) {
+            return;
+        }
+        try {
+            JSONObject json = getJSONObjectFromFile();
+            FileWriter writer = new FileWriter(file);
+            for (String key : modifiedKeys.keySet()) {
+                try {
+                    Object value = getValueForConstant(key);
+                    json.put(key, value);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            writer.write(json.toJSONString());
+            writer.close();
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
