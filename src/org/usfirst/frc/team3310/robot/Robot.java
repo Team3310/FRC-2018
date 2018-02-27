@@ -9,6 +9,7 @@ package org.usfirst.frc.team3310.robot;
 
 import org.usfirst.frc.team3310.robot.commands.ElevatorAutoZero;
 import org.usfirst.frc.team3310.robot.commands.auton.RightSideScaleAuton;
+import org.usfirst.frc.team3310.robot.commands.auton.TestAuton;
 import org.usfirst.frc.team3310.robot.subsystems.Drive;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator;
 import org.usfirst.frc.team3310.robot.subsystems.Flipper;
@@ -70,13 +71,14 @@ public class Robot extends TimedRobot {
  
     	// Update default at competition!!!
     	operationModeChooser = new SendableChooser<OperationMode>();
-	    operationModeChooser.addObject("Practice", OperationMode.PRACTICE);
+	    operationModeChooser.addDefault("Practice", OperationMode.PRACTICE);
 	    operationModeChooser.addObject("Competition", OperationMode.COMPETITION);
-	    operationModeChooser.addDefault("Test", OperationMode.TEST);
+	    operationModeChooser.addObject("Test", OperationMode.TEST);
 		SmartDashboard.putData("Operation Mode", operationModeChooser);
 
 		autonTaskChooser = new SendableChooser<Command>();
-		autonTaskChooser.addDefault("Right Side Scale", new RightSideScaleAuton());
+		autonTaskChooser.addDefault("Test", new TestAuton());
+		autonTaskChooser.addObject("Right Side Scale", new RightSideScaleAuton());
 		SmartDashboard.putData("Auton Tasks", autonTaskChooser);
 		
 		LiveWindow.setEnabled(false);
@@ -128,6 +130,7 @@ public class Robot extends TimedRobot {
 		operationMode = operationModeChooser.getSelected();
 		
         controlLoop.start();
+    	ramp.setTeleopStartTime();
     	drive.resetEncoders();
     	drive.endGyroCalibration();
     	elevator.setShiftState(Elevator.ElevatorSpeedShiftState.HI);
@@ -144,6 +147,10 @@ public class Robot extends TimedRobot {
 	
     public Alliance getAlliance() {
     	return m_ds.getAlliance();
+    }
+    
+    public double getMatchTime() {
+    	return m_ds.getMatchTime();
     }
     
     public void updateStatus() {

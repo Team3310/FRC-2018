@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.usfirst.frc.team3310.robot.Constants;
+import org.usfirst.frc.team3310.robot.Robot;
 
 //import com.ctre.CANTalon.TalonControlMode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -104,6 +105,7 @@ public class AdaptivePurePursuitController {
 				motorController.setVelocityWorld(setpoint.left);
 			}
 		}
+		System.out.println("Adaptive velocity right = " + setpoint.right + ", left = " + setpoint.left + ", remaining = " + mPath.getRemainingLength() + ", Drive encoder left = " + Robot.drive.getLeftDriveEncoder());
 		
 		return isDone();
 	}
@@ -169,7 +171,7 @@ public class AdaptivePurePursuitController {
     }
 
     public Set<String> getMarkersCrossed() {
-        return mPath.getMarkersCrossed();
+        return mPath == null ? null : mPath.getMarkersCrossed();
     }
 
     public static class Circle {

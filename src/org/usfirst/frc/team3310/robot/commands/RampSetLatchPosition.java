@@ -17,7 +17,9 @@ public class RampSetLatchPosition extends Command
 
 	@Override
 	protected void initialize() {
-		Robot.ramp.setLatchPosition(state);
+		if (Robot.ramp.getRemainingTeleopSeconds() < 30) {
+			Robot.ramp.setLatchPosition(state);
+		}
 	}
 
 	@Override

@@ -81,7 +81,7 @@ public class Elevator extends Subsystem implements ControlLoopable
 	private ElevatorSpeedShiftState shiftState = ElevatorSpeedShiftState.LO;   // Default position
 
 	// Misc
-	public static final double AUTO_ZERO_MOTOR_CURRENT = 5.0;	
+	public static final double AUTO_ZERO_MOTOR_CURRENT = 4.0;	
 	private boolean isFinished;
 	private ElevatorControlMode elevatorControlMode = ElevatorControlMode.JOYSTICK_MANUAL;
 	private double targetPositionInchesPID = 0;
@@ -242,8 +242,12 @@ public class Elevator extends Subsystem implements ControlLoopable
 		return motor1.getPositionWorld();
 	}
 	
+//	public double getAverageMotorCurrent() {
+//		return (Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_1_CAN_ID) + Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_2_CAN_ID) + Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_3_CAN_ID)) / 3;
+//	}
+		
 	public double getAverageMotorCurrent() {
-		return (Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_1_CAN_ID) + Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_2_CAN_ID) + Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_3_CAN_ID)) / 3;
+		return (motor1.getOutputCurrent() + motor2.getOutputCurrent() + motor3.getOutputCurrent()) / 3;
 	}
 		
 	public synchronized boolean isFinished() {
@@ -272,12 +276,12 @@ public class Elevator extends Subsystem implements ControlLoopable
 			try {
 				SmartDashboard.putNumber("Elevator Position Inches", motor1.getPositionWorld());
 				SmartDashboard.putNumber("Elevator Motor 1 Amps", motor1.getOutputCurrent());
-				SmartDashboard.putNumber("Elevator Motor 2 Amps", motor1.getOutputCurrent());
-				SmartDashboard.putNumber("Elevator Motor 3 Amps", motor1.getOutputCurrent());
+				SmartDashboard.putNumber("Elevator Motor 2 Amps", motor2.getOutputCurrent());
+				SmartDashboard.putNumber("Elevator Motor 3 Amps", motor3.getOutputCurrent());
 				SmartDashboard.putNumber("Elevator Average Amps", getAverageMotorCurrent());
-				SmartDashboard.putNumber("Elevator Motor 1 Amps PDP", Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_1_CAN_ID));
-				SmartDashboard.putNumber("Elevator Motor 2 Amps PDP", Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_2_CAN_ID));
-				SmartDashboard.putNumber("Elevator Motor 3 Amps PDP", Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_3_CAN_ID));
+//				SmartDashboard.putNumber("Elevator Motor 1 Amps PDP", Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_1_CAN_ID));
+//				SmartDashboard.putNumber("Elevator Motor 2 Amps PDP", Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_2_CAN_ID));
+//				SmartDashboard.putNumber("Elevator Motor 3 Amps PDP", Robot.pdp.getCurrent(RobotMap.ELEVATOR_MOTOR_3_CAN_ID));
 				SmartDashboard.putNumber("Elevator Target PID Position", targetPositionInchesPID);
 			}
 			catch (Exception e) {

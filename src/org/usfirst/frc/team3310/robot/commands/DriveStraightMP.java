@@ -21,6 +21,7 @@ public class DriveStraightMP extends Command
 
 	protected void initialize() {
 		Robot.drive.setStraightMP(distanceInches, maxVelocityInchesPerSec, useGyroLock, useAbsolute, desiredAbsoluteAngle);
+		System.out.println("Drive straight MP initialized");
 	}
 
 	protected void execute() {
@@ -31,11 +32,12 @@ public class DriveStraightMP extends Command
 	}
 
 	protected void end() {
+		System.out.println("Drive straight MP end");
 		Robot.drive.setControlMode(DriveControlMode.JOYSTICK);
 	}
 
 	protected void interrupted() {
-    	System.out.println("ElevatorSetPositionMP interrupted");
+    	System.out.println("Drive Straight MP interrupted");
 		end();
 	}
 }

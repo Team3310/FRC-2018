@@ -21,7 +21,7 @@ import org.usfirst.frc.team3310.utility.geom.StraightLine2D;
  */
 public class Path {
     protected static final double kSegmentCompletePercentage = .99;
-    protected static final double kPointsPerUnit = 0.04;
+    protected static final double kPointsPerUnit = 0.02;
 
     protected List<Waypoint> mWaypoints;
     protected List<PathSegment> mSegments;
@@ -203,12 +203,15 @@ public class Path {
                     if (waypoint.marker != null) {
                         mMarkersCrossed.add(waypoint.marker);
                     }
+                    Waypoint point = mWaypoints.get(0);
+                    System.out.println("kSegmentCompletePercentage waypoint size = " + mWaypoints.size() + ", point.y = " + point.position.y_);
                     mWaypoints.remove(0);
                 }
             } else {
                 if (closest_point_report.index > 0.0) {
                     // Can shorten this segment
                     segment.updateStart(closest_point_report.closest_point);
+                    System.out.println("closest_point_report.index > 0.0");
                 }
                 // We are done
                 rv = closest_point_report.distance;
@@ -228,6 +231,11 @@ public class Path {
                                 mMarkersCrossed.add(waypoint.marker);
                             }
                             mWaypoints.remove(0);
+                            Waypoint point = mWaypoints.get(0);
+                            System.out.println("next_closest_point_report.index > 0 waypoint size = " + mWaypoints.size() + ", point.x,y = " + point.position.x_ + "," + point.position.y_ );
+                        }
+                        else {
+                        	System.out.println("path done");
                         }
                     }
                 }
@@ -462,11 +470,12 @@ public class Path {
     	
     	System.out.println("Case 4 x");
         waypoints = new ArrayList<>();
-		waypoints.add(new Waypoint(new Translation2d(0, 0), 50.0));
-		waypoints.add(new Waypoint(new Translation2d(0, -30), 50.0, 40.0));
-		waypoints.add(new Waypoint(new Translation2d(100, -90), 50.0, 70.0));
-		waypoints.add(new Waypoint(new Translation2d(100, -160), 50.0, 20.0));
-		waypoints.add(new Waypoint(new Translation2d(85, -260), 50.0));
+		waypoints.add(new Waypoint(new Translation2d(0, 0), 30.0));
+		waypoints.add(new Waypoint(new Translation2d(0, -70), 40.0, "launchFlipper"));
+		waypoints.add(new Waypoint(new Translation2d(0, -170), 40.0, 30.0));
+		waypoints.add(new Waypoint(new Translation2d(-25, -220), 40.0, 50.0));
+		waypoints.add(new Waypoint(new Translation2d(-25, -226), 40.0));
+		waypoints.add(new Waypoint(new Translation2d(-23, -235), 15.0));
 		waypoints = processFillets(waypoints);
 		
         for (int i = 0; i < waypoints.size(); i++) {

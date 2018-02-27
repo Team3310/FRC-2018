@@ -27,6 +27,7 @@ public class ElevatorSetPositionMP extends Command {
         	isAtTarget = false;
         	Robot.elevator.setPositionMP(targetPositionInches);
     	}
+    	System.out.println("Elevator set MP initialized");
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -41,6 +42,7 @@ public class ElevatorSetPositionMP extends Command {
     // Called once after isFinished returns true
     protected void end() {
 		Robot.elevator.setPositionPID(Robot.elevator.getPositionInches());
+    	System.out.println("Elevator set MP end");
     }
 
     // Called when another command which requires one or more of the same

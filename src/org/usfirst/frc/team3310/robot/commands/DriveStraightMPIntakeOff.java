@@ -27,7 +27,7 @@ public class DriveStraightMPIntakeOff extends Command
 	}
 
 	protected boolean isFinished() {
-		return Robot.intake.getFrontIntakeSensor() || Robot.drive.isFinished(); 
+		return Robot.intake.getFrontVEXIntakeSensor() || Robot.intake.getFrontIRIntakeSensor() || Robot.drive.isFinished(); 
 	}
 
 	protected void end() {
