@@ -429,6 +429,7 @@ public class Drive extends Subsystem implements Loop
      */
     private void updatePathFollower(double timestamp) {
         RigidTransform2d robot_pose = mRobotState.getLatestFieldToVehicle().getValue();
+        System.out.println("Robot pose = " + robot_pose);
         Twist2d command = mPathFollower.update(timestamp, robot_pose,
                 RobotState.getInstance().getDistanceDriven(), RobotState.getInstance().getPredictedVelocity().dx);
         if (!mPathFollower.isFinished()) {
@@ -462,6 +463,7 @@ public class Drive extends Subsystem implements Loop
             mCurrentPath = path;
         } else {
             setVelocitySetpoint(0, 0);
+            System.out.println("Oh NOOOO in velocity set point");
         }
     }
 
@@ -488,11 +490,13 @@ public class Drive extends Subsystem implements Loop
             final double max_desired = Math.max(Math.abs(left_inches_per_sec), Math.abs(right_inches_per_sec));
             final double scale = max_desired > Constants.kDriveHighGearMaxSetpoint
                     ? Constants.kDriveHighGearMaxSetpoint / max_desired : 1.0;
-//            leftDrive1.setVelocityWorld(left_inches_per_sec * scale);
-//            rightDrive1.setVelocityWorld(right_inches_per_sec * scale);
-            leftDrive1.set(inchesPerSecondToRpm(left_inches_per_sec * scale));
-            rightDrive1.set(inchesPerSecondToRpm(right_inches_per_sec * scale));
-            System.out.println("left vel = " + inchesPerSecondToRpm(left_inches_per_sec * scale) + ", right vel = " + inchesPerSecondToRpm(right_inches_per_sec * scale) + ", scale = " + scale);
+            
+            double command = leftDrive1.convertEncoderWorldToTicks(left_inches_per_sec * scale) * 0.1;
+            leftDrive1.setVelocityWorld(left_inches_per_sec * scale);
+            rightDrive1.setVelocityWorld(right_inches_per_sec * scale);
+ //           leftDrive1.set(ControlMode.Velocity, inchesPerSecondToRpm(left_inches_per_sec * scale));
+ //           rightDrive1.set(ControlMode.Velocity, inchesPerSecondToRpm(right_inches_per_sec * scale));
+            System.out.println("vel Com u/s = " + command + ", vel com in/sec= " + left_inches_per_sec * scale + ", scale = " + scale + ", left pos in = " + getLeftPositionInches()  + ", right pos in = " + getRightPositionInches() + ", left vel in/sec = " + getLeftVelocityInchesPerSec() + ", left vel u/s = " + leftDrive1.getSelectedSensorVelocity(0));
         } else {
             System.out.println("Hit a bad velocity control state");
             leftDrive1.set(ControlMode.Velocity, 0);
@@ -506,22 +510,22 @@ public class Drive extends Subsystem implements Loop
     private void configureTalonsForSpeedControl() {
         if (!usesTalonVelocityControl(driveControlMode)) {
             // We entered a velocity control state.
-//        	leftDrive1.enableVoltageCompensation(true);
-//        	leftDrive1.configVoltageCompSaturation(12.0, TalonSRXEncoder.TIMEOUT_MS);
+        	leftDrive1.enableVoltageCompensation(true);
+        	leftDrive1.configVoltageCompSaturation(12.0, TalonSRXEncoder.TIMEOUT_MS);
         	leftDrive1.selectProfileSlot(kHighGearVelocityControlSlot, TalonSRXEncoder.PID_IDX);
-//        	leftDrive1.configNominalOutputForward(Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
-//        	leftDrive1.configNominalOutputReverse(-Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
-//        	leftDrive1.configPeakOutputForward(+1.0f, TalonSRXEncoder.TIMEOUT_MS);
-//        	leftDrive1.configPeakOutputReverse(-1.0f, TalonSRXEncoder.TIMEOUT_MS);
+        	leftDrive1.configNominalOutputForward(Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
+        	leftDrive1.configNominalOutputReverse(-Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
+        	leftDrive1.configPeakOutputForward(+1.0f, TalonSRXEncoder.TIMEOUT_MS);
+        	leftDrive1.configPeakOutputReverse(-1.0f, TalonSRXEncoder.TIMEOUT_MS);
             leftDrive1.configClosedloopRamp(Constants.kDriveHighGearVelocityRampRate, TalonSRXEncoder.TIMEOUT_MS);
         	    	
-//        	rightDrive1.enableVoltageCompensation(true);
-//        	rightDrive1.configVoltageCompSaturation(12.0, TalonSRXEncoder.TIMEOUT_MS);
+        	rightDrive1.enableVoltageCompensation(true);
+        	rightDrive1.configVoltageCompSaturation(12.0, TalonSRXEncoder.TIMEOUT_MS);
         	rightDrive1.selectProfileSlot(kHighGearVelocityControlSlot, TalonSRXEncoder.PID_IDX);
-//        	rightDrive1.configNominalOutputForward(Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
-//        	rightDrive1.configNominalOutputReverse(-Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
-//        	rightDrive1.configPeakOutputForward(+1.0f, TalonSRXEncoder.TIMEOUT_MS);
-//        	rightDrive1.configPeakOutputReverse(-1.0f, TalonSRXEncoder.TIMEOUT_MS);
+        	rightDrive1.configNominalOutputForward(Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
+        	rightDrive1.configNominalOutputReverse(-Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
+        	rightDrive1.configPeakOutputForward(+1.0f, TalonSRXEncoder.TIMEOUT_MS);
+        	rightDrive1.configPeakOutputReverse(-1.0f, TalonSRXEncoder.TIMEOUT_MS);
         	rightDrive1.configClosedloopRamp(Constants.kDriveHighGearVelocityRampRate, TalonSRXEncoder.TIMEOUT_MS);
 
         	setBrakeMode(true);

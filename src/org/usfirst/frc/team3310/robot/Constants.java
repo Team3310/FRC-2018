@@ -33,14 +33,14 @@ public class Constants extends ConstantsBase {
 
     // PID gains for drive velocity loop (HIGH GEAR)
     // Units: setpoint, error, and output are in inches per second.
-    public static double kDriveHighGearVelocityKp = 0.0; //1.2;
+    public static double kDriveHighGearVelocityKp = 0.02; //1.2;
     public static double kDriveHighGearVelocityKi = 0.0;
-    public static double kDriveHighGearVelocityKd = 0.0;//6.0;
-    public static double kDriveHighGearVelocityKf = 0.0;//.15;
-    public static int kDriveHighGearVelocityIZone = 0;
-    public static double kDriveHighGearVelocityRampRate = 240.0;
+    public static double kDriveHighGearVelocityKd = 0.01;//6.0;
+    public static double kDriveHighGearVelocityKf = 0.06;//.15;
+    public static int kDriveHighGearVelocityIZone =200;
+    public static double kDriveHighGearVelocityRampRate = 0.05;
     public static double kDriveHighGearNominalOutput = 0.5/12.0;
-    public static double kDriveHighGearMaxSetpoint = 2.0;// 17.0 * 12.0; // 17 fps
+    public static double kDriveHighGearMaxSetpoint = 17.0 * 12.0; // 17 fps
 
     // PID gains for drive velocity loop (LOW GEAR)
     // Units: setpoint, error, and output are in inches per second.
@@ -49,7 +49,7 @@ public class Constants extends ConstantsBase {
     public static double kDriveLowGearVelocityKd = 6.0;
     public static double kDriveLowGearVelocityKf = .15;
     public static int kDriveLowGearVelocityIZone = 0;
-    public static double kDriveLowGearVelocityRampRate = 240.0;
+    public static double kDriveLowGearVelocityRampRate = 0.05;
     public static double kDriveLowGearNominalOutput = 0.5/12.0;
     public static double kDriveLowGearMaxSetpoint = 8.0 * 12.0; // 17 fps
 

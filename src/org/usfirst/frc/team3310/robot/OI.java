@@ -4,7 +4,7 @@ import org.usfirst.frc.team3310.buttons.XBoxDPadTriggerButton;
 import org.usfirst.frc.team3310.buttons.XBoxTriggerButton;
 import org.usfirst.frc.team3310.controller.XboxController;
 import org.usfirst.frc.team3310.paths.CenterTest;
-import org.usfirst.frc.team3310.robot.commands.DriveGyroReset;
+import org.usfirst.frc.team3310.robot.commands.DriveResetGyro;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
 import org.usfirst.frc.team3310.robot.commands.DriveSpeedShift;
 import org.usfirst.frc.team3310.robot.commands.DriveStraightMP;
@@ -252,7 +252,7 @@ public class OI {
 		SmartDashboard.putData("Drive Adaptive Pursuit", driveAP);
 
 		Button gyroReset = new InternalButton();
-		gyroReset.whenPressed(new DriveGyroReset());
+		gyroReset.whenPressed(new DriveResetGyro());
 		SmartDashboard.putData("Gyro Reset", gyroReset);
 
 		m_driverXbox.getLeftBumperButton();
