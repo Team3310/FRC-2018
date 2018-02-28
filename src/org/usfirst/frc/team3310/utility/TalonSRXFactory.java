@@ -67,13 +67,13 @@ public class TalonSRXFactory {
 
     public static TalonSRXEncoder createTalonEncoder(int id, double encoderTicksToWorld, FeedbackDevice feedbackDevice) {
     	TalonSRXEncoder talon = new TalonSRXEncoder(id, encoderTicksToWorld, feedbackDevice);
-        initializeTalon(talon, kDefaultConfiguration);
+//        initializeTalon(talon, kDefaultConfiguration);
         return talon;
     }
 
     public static TalonSRXEncoder createTalonEncoder(int id, double encoderTicksToWorld, boolean isRight, FeedbackDevice feedbackDevice) {
     	TalonSRXEncoder talon = new TalonSRXEncoder(id, encoderTicksToWorld, isRight, feedbackDevice);
-        initializeTalon(talon, kDefaultConfiguration);
+//        initializeTalon(talon, kDefaultConfiguration);
         return talon;
     }
 
@@ -85,12 +85,12 @@ public class TalonSRXFactory {
 
     public static TalonSRX createTalon(int id, Configuration config) {
         TalonSRX talon = new TalonSRX(id);
-        initializeTalon(talon, config);
+//        initializeTalon(talon, config);
         return talon;
     }
     
     public static void initializeTalon(TalonSRX talon, Configuration config) {
-        talon.setControlFramePeriod(config.CONTROL_FRAME_PERIOD_MS, TalonSRXEncoder.TIMEOUT_MS);
+//        talon.setControlFramePeriod(config.CONTROL_FRAME_PERIOD_MS, TalonSRXEncoder.TIMEOUT_MS);
         talon.changeMotionControlFramePeriod(config.MOTION_CONTROL_FRAME_PERIOD_MS);
         talon.setIntegralAccumulator(0, TalonSRXEncoder.PID_IDX, TalonSRXEncoder.TIMEOUT_MS);
         talon.clearMotionProfileHasUnderrun(TalonSRXEncoder.TIMEOUT_MS);

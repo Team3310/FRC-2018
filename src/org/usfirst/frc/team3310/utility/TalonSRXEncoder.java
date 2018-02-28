@@ -6,7 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 public class TalonSRXEncoder extends WPI_TalonSRX
 {
-	public static int TIMEOUT_MS = 10;
+	public static int TIMEOUT_MS = 20;
 	public static int PID_IDX = 0;
 
 	private double encoderTicksToWorld;

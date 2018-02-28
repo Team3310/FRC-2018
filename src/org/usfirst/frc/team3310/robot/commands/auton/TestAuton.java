@@ -57,5 +57,6 @@ public class TestAuton extends CommandGroup {
 //		addSequential(new DrivePathAdaptivePursuit(new Path(waypoints3, true)));
     	
     	addSequential(new DrivePathAdaptivePursuit(new CenterTest()));
+//		addSequential(new DriveStraightMP(-70, Drive.MP_AUTON_MAX_LO_GEAR_STRAIGHT_VELOCITY_INCHES_PER_SEC, true, true, 0));
      }
 }

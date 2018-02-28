@@ -1,13 +1,9 @@
 package org.usfirst.frc.team3310.robot;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.usfirst.frc.team3310.buttons.XBoxDPadTriggerButton;
 import org.usfirst.frc.team3310.buttons.XBoxTriggerButton;
 import org.usfirst.frc.team3310.controller.XboxController;
 import org.usfirst.frc.team3310.paths.CenterTest;
-import org.usfirst.frc.team3310.paths.PathBuilder.Waypoint;
 import org.usfirst.frc.team3310.robot.commands.DriveGyroReset;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
 import org.usfirst.frc.team3310.robot.commands.DriveSpeedShift;
@@ -33,8 +29,6 @@ import org.usfirst.frc.team3310.robot.subsystems.Flipper.FlipperState;
 import org.usfirst.frc.team3310.robot.subsystems.Intake;
 import org.usfirst.frc.team3310.robot.subsystems.Ramp.RampLatch;
 import org.usfirst.frc.team3310.robot.subsystems.Ramp.RampPull;
-import org.usfirst.frc.team3310.utility.control.Path;
-import org.usfirst.frc.team3310.utility.math.Translation2d;
 
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.InternalButton;

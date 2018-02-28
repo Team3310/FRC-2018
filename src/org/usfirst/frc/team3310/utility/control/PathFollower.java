@@ -4,9 +4,9 @@ import org.usfirst.frc.team3310.utility.math.RigidTransform2d;
 import org.usfirst.frc.team3310.utility.math.Twist2d;
 import org.usfirst.frc.team3310.utility.motion.MotionProfileConstraints;
 import org.usfirst.frc.team3310.utility.motion.MotionProfileGoal;
+import org.usfirst.frc.team3310.utility.motion.MotionProfileGoal.CompletionBehavior;
 import org.usfirst.frc.team3310.utility.motion.MotionState;
 import org.usfirst.frc.team3310.utility.motion.ProfileFollower;
-import org.usfirst.frc.team3310.utility.motion.MotionProfileGoal.CompletionBehavior;
 
 /**
  * A PathFollower follows a predefined path using a combination of feedforward and feedback control. It uses an

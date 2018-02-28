@@ -5,18 +5,13 @@ import java.net.SocketException;
 import java.util.Enumeration;
 
 import org.usfirst.frc.team3310.utility.ConstantsBase;
-import org.usfirst.frc.team3310.utility.math.InterpolatingDouble;
-import org.usfirst.frc.team3310.utility.math.InterpolatingTreeMap;
-import org.usfirst.frc.team3310.utility.math.PolynomialRegression;
-
-import edu.wpi.first.wpilibj.Solenoid;
 
 /**
  * A list of constants used by the rest of the robot code. This include physics constants as well as constants
  * determined through calibrations.
  */
 public class Constants extends ConstantsBase {
-    public static double kLooperDt = 0.005;
+    public static double kLooperDt = 0.01;
 
     /* ROBOT PHYSICAL CONSTANTS */
 
@@ -38,14 +33,14 @@ public class Constants extends ConstantsBase {
 
     // PID gains for drive velocity loop (HIGH GEAR)
     // Units: setpoint, error, and output are in inches per second.
-    public static double kDriveHighGearVelocityKp = 1.2;
+    public static double kDriveHighGearVelocityKp = 0.0; //1.2;
     public static double kDriveHighGearVelocityKi = 0.0;
-    public static double kDriveHighGearVelocityKd = 6.0;
-    public static double kDriveHighGearVelocityKf = .15;
+    public static double kDriveHighGearVelocityKd = 0.0;//6.0;
+    public static double kDriveHighGearVelocityKf = 0.0;//.15;
     public static int kDriveHighGearVelocityIZone = 0;
     public static double kDriveHighGearVelocityRampRate = 240.0;
     public static double kDriveHighGearNominalOutput = 0.5/12.0;
-    public static double kDriveHighGearMaxSetpoint = 17.0 * 12.0; // 17 fps
+    public static double kDriveHighGearMaxSetpoint = 2.0;// 17.0 * 12.0; // 17 fps
 
     // PID gains for drive velocity loop (LOW GEAR)
     // Units: setpoint, error, and output are in inches per second.

@@ -22,6 +22,7 @@ import org.usfirst.frc.team3310.utility.control.Path;
 import org.usfirst.frc.team3310.utility.control.PathFollower;
 import org.usfirst.frc.team3310.utility.control.RobotState;
 import org.usfirst.frc.team3310.utility.math.RigidTransform2d;
+import org.usfirst.frc.team3310.utility.math.Rotation2d;
 import org.usfirst.frc.team3310.utility.math.Twist2d;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -32,6 +33,7 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -82,6 +84,8 @@ public class Drive extends Subsystem implements Loop
     private boolean mIsBrakeMode;
 	
 	private long periodMs = (long)(Constants.kLooperDt * 1000.0);
+	
+    protected Rotation2d mAngleAdjustment = Rotation2d.identity();
 
 	// Pneumatics
 	private Solenoid speedShift;
@@ -119,8 +123,8 @@ public class Drive extends Subsystem implements Loop
 	private DriveControlMode driveControlMode = DriveControlMode.JOYSTICK;
 	
     private static final int kLowGearPositionControlSlot = 0;
-    private static final int kLowGearVelocityControlSlot = 1;
-    private static final int kHighGearVelocityControlSlot = 2;
+    private static final int kHighGearVelocityControlSlot = 1;
+    private static final int kLowGearVelocityControlSlot = 2;
 
     private MPTalonPIDController mpStraightController;
 //	private PIDParams mpStraightPIDParams = new PIDParams(0.1, 0, 0, 0.005, 0.03, 0.15);  // 4 colsons
@@ -274,6 +278,15 @@ public class Drive extends Subsystem implements Loop
 		gyroPigeon.setFusedHeading(value, TalonSRXEncoder.TIMEOUT_MS);
 	}
 	
+    public synchronized Rotation2d getGyroAngle() {
+        return mAngleAdjustment.rotateBy(Rotation2d.fromDegrees(getGyroAngleDeg()));
+    }
+
+    public synchronized void setGyroAngle(Rotation2d adjustment) {
+    	resetGyro();
+        mAngleAdjustment = adjustment;
+    }
+
 	public void resetEncoders() {
 		mpStraightController.resetZeroPosition();
 	}
@@ -295,6 +308,7 @@ public class Drive extends Subsystem implements Loop
 	public void setStraightMP(double distanceInches, double maxVelocity, boolean useGyroLock, boolean useAbsolute, double desiredAbsoluteAngle) {
 		double yawAngle = useAbsolute ? BHRMathUtils.adjustAccumAngleToDesired(getGyroAngleDeg(), desiredAbsoluteAngle) : getGyroAngleDeg();
 		mpStraightController.setPID(mpStraightPIDParams, kLowGearPositionControlSlot);
+		mpStraightController.setPIDSlot(kLowGearPositionControlSlot);
 		mpStraightController.setMPStraightTarget(0, distanceInches, maxVelocity, MP_STRAIGHT_T1, MP_STRAIGHT_T2, useGyroLock, yawAngle, true); 
 		setControlMode(DriveControlMode.MP_STRAIGHT);
 	}
@@ -357,7 +371,7 @@ public class Drive extends Subsystem implements Loop
 	public void onLoop(double timestamp) {
 		synchronized (Drive.this) {
 			DriveControlMode currentControlMode = getControlMode();
-			
+
 			if (currentControlMode == DriveControlMode.JOYSTICK) {
 				driveWithJoystick();
 			}
@@ -474,8 +488,11 @@ public class Drive extends Subsystem implements Loop
             final double max_desired = Math.max(Math.abs(left_inches_per_sec), Math.abs(right_inches_per_sec));
             final double scale = max_desired > Constants.kDriveHighGearMaxSetpoint
                     ? Constants.kDriveHighGearMaxSetpoint / max_desired : 1.0;
-            leftDrive1.setVelocityWorld(left_inches_per_sec * scale);
-            rightDrive1.setVelocityWorld(right_inches_per_sec * scale);
+//            leftDrive1.setVelocityWorld(left_inches_per_sec * scale);
+//            rightDrive1.setVelocityWorld(right_inches_per_sec * scale);
+            leftDrive1.set(inchesPerSecondToRpm(left_inches_per_sec * scale));
+            rightDrive1.set(inchesPerSecondToRpm(right_inches_per_sec * scale));
+            System.out.println("left vel = " + inchesPerSecondToRpm(left_inches_per_sec * scale) + ", right vel = " + inchesPerSecondToRpm(right_inches_per_sec * scale) + ", scale = " + scale);
         } else {
             System.out.println("Hit a bad velocity control state");
             leftDrive1.set(ControlMode.Velocity, 0);
@@ -489,22 +506,22 @@ public class Drive extends Subsystem implements Loop
     private void configureTalonsForSpeedControl() {
         if (!usesTalonVelocityControl(driveControlMode)) {
             // We entered a velocity control state.
-        	leftDrive1.enableVoltageCompensation(true);
-        	leftDrive1.configVoltageCompSaturation(12.0, TalonSRXEncoder.TIMEOUT_MS);
+//        	leftDrive1.enableVoltageCompensation(true);
+//        	leftDrive1.configVoltageCompSaturation(12.0, TalonSRXEncoder.TIMEOUT_MS);
         	leftDrive1.selectProfileSlot(kHighGearVelocityControlSlot, TalonSRXEncoder.PID_IDX);
-        	leftDrive1.configNominalOutputForward(Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
-        	leftDrive1.configNominalOutputReverse(-Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
-        	leftDrive1.configPeakOutputForward(+1.0f, TalonSRXEncoder.TIMEOUT_MS);
-        	leftDrive1.configPeakOutputReverse(-1.0f, TalonSRXEncoder.TIMEOUT_MS);
+//        	leftDrive1.configNominalOutputForward(Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
+//        	leftDrive1.configNominalOutputReverse(-Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
+//        	leftDrive1.configPeakOutputForward(+1.0f, TalonSRXEncoder.TIMEOUT_MS);
+//        	leftDrive1.configPeakOutputReverse(-1.0f, TalonSRXEncoder.TIMEOUT_MS);
             leftDrive1.configClosedloopRamp(Constants.kDriveHighGearVelocityRampRate, TalonSRXEncoder.TIMEOUT_MS);
         	    	
-        	rightDrive1.enableVoltageCompensation(true);
-        	rightDrive1.configVoltageCompSaturation(12.0, TalonSRXEncoder.TIMEOUT_MS);
+//        	rightDrive1.enableVoltageCompensation(true);
+//        	rightDrive1.configVoltageCompSaturation(12.0, TalonSRXEncoder.TIMEOUT_MS);
         	rightDrive1.selectProfileSlot(kHighGearVelocityControlSlot, TalonSRXEncoder.PID_IDX);
-        	rightDrive1.configNominalOutputForward(Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
-        	rightDrive1.configNominalOutputReverse(-Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
-        	rightDrive1.configPeakOutputForward(+1.0f, TalonSRXEncoder.TIMEOUT_MS);
-        	rightDrive1.configPeakOutputReverse(-1.0f, TalonSRXEncoder.TIMEOUT_MS);
+//        	rightDrive1.configNominalOutputForward(Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
+//        	rightDrive1.configNominalOutputReverse(-Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
+//        	rightDrive1.configPeakOutputForward(+1.0f, TalonSRXEncoder.TIMEOUT_MS);
+//        	rightDrive1.configPeakOutputReverse(-1.0f, TalonSRXEncoder.TIMEOUT_MS);
         	rightDrive1.configClosedloopRamp(Constants.kDriveHighGearVelocityRampRate, TalonSRXEncoder.TIMEOUT_MS);
 
         	setBrakeMode(true);
@@ -512,7 +529,7 @@ public class Drive extends Subsystem implements Loop
     }
 
     public synchronized boolean isDoneWithPath() {
-        if (driveControlMode != DriveControlMode.ADAPTIVE_PURSUIT && mPathFollower != null) {
+        if (driveControlMode == DriveControlMode.ADAPTIVE_PURSUIT && mPathFollower != null) {
             return mPathFollower.isFinished();
         } else {
             System.out.println("Robot is not in path following mode");
@@ -676,12 +693,20 @@ public class Drive extends Subsystem implements Loop
         return inchesToRotations(inches_per_second) * 60;
     }
     
-    public double getRightDriveEncoder() {
+    public double getRightPositionInches() {
     	return rightDrive1.getPositionWorld();
     }
 
-    public double getLeftDriveEncoder() {
+    public double getLeftPositionInches() {
     	return leftDrive1.getPositionWorld();
+    }
+
+    public double getRightVelocityInchesPerSec() {
+    	return rightDrive1.getVelocityWorld();
+    }
+
+    public double getLeftVelocityInchesPerSec() {
+    	return leftDrive1.getVelocityWorld();
     }
 
 	public void updateStatus(Robot.OperationMode operationMode) {

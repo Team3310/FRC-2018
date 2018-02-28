@@ -5,6 +5,8 @@ import java.util.ArrayList;
 //import com.ctre.CANTalon.TalonControlMode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
+import edu.wpi.first.wpilibj.Timer;
+
 public class MPTalonPIDController
 {	
 	protected static enum MPControlMode { STRAIGHT, TURN };
@@ -172,6 +174,7 @@ public class MPTalonPIDController
 				if (motorController.isRight()) {
 					motorController.config_kF(0, KfRight, TalonSRXEncoder.TIMEOUT_MS);
 					motorController.setWorld(ControlMode.Position, mpPoint.position);
+					System.out.println("Right position = " + mpPoint.position + ", time = " + Timer.getFPGATimestamp());
 				}
 				else {
 					motorController.config_kF(0, KfLeft, TalonSRXEncoder.TIMEOUT_MS);

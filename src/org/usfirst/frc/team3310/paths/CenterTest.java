@@ -13,8 +13,8 @@ public class CenterTest implements PathContainer {
     @Override
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-        sWaypoints.add(new Waypoint(16, 160, 0, 0));
-        sWaypoints.add(new Waypoint(89, 160, 0, 40));
+        sWaypoints.add(new Waypoint(16, 160, 0, 20));
+        sWaypoints.add(new Waypoint(89, 160, 0, 20));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }

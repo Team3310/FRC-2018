@@ -17,6 +17,7 @@ import org.usfirst.frc.team3310.robot.subsystems.Intake;
 import org.usfirst.frc.team3310.robot.subsystems.Ramp;
 import org.usfirst.frc.team3310.utility.Looper;
 import org.usfirst.frc.team3310.utility.control.RobotState;
+import org.usfirst.frc.team3310.utility.control.RobotStateEstimator;
 import org.usfirst.frc.team3310.utility.math.RigidTransform2d;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -72,7 +73,8 @@ public class Robot extends TimedRobot {
 		
     	controlLoop.register(drive);
     	controlLoop.register(elevator);
-    	controlLoop.start();
+    	controlLoop.register(RobotStateEstimator.getInstance());
+        controlLoop.start();
  
     	// Update default at competition!!!
     	operationModeChooser = new SendableChooser<OperationMode>();
