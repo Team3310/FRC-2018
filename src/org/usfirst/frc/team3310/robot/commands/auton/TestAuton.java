@@ -1,6 +1,6 @@
 package org.usfirst.frc.team3310.robot.commands.auton;
 
-import org.usfirst.frc.team3310.paths.CenterTest;
+import org.usfirst.frc.team3310.paths.LeftTurn;
 import org.usfirst.frc.team3310.paths.PathContainer;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
 import org.usfirst.frc.team3310.robot.commands.DriveResetEncoders;
@@ -59,7 +59,8 @@ public class TestAuton extends CommandGroup {
 //   	
 //		addSequential(new DrivePathAdaptivePursuit(new Path(waypoints3, true)));
     	
-        PathContainer centerTest = new CenterTest();
+//        PathContainer centerTest = new CenterTest();
+        PathContainer centerTest = new LeftTurn();
         addSequential(new DriveResetEncoders());
         addSequential(new DriveResetPoseFromPath(centerTest));
     	addSequential(new DrivePathAdaptivePursuit(centerTest));
