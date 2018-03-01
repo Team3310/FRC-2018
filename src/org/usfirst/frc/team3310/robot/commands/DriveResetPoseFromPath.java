@@ -20,6 +20,7 @@ public class DriveResetPoseFromPath extends Command
 	@Override
 	protected void initialize() {
         RigidTransform2d startPose = pathContainer.getStartPose();
+        Robot.drive.setGyroAngle(startPose.getRotation());
         RobotState.getInstance().reset(Timer.getFPGATimestamp(), startPose);
         Robot.drive.setGyroAngle(startPose.getRotation());
 	}

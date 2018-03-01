@@ -1,8 +1,11 @@
 package org.usfirst.frc.team3310.robot.commands.auton;
 
 import org.usfirst.frc.team3310.paths.LeftTurnRadius;
+import org.usfirst.frc.team3310.paths.LeftTurnRadiusReversed;
 import org.usfirst.frc.team3310.paths.LeftTurnReversed;
 import org.usfirst.frc.team3310.paths.PathContainer;
+import org.usfirst.frc.team3310.paths.RightTurnRadiusStart90;
+import org.usfirst.frc.team3310.paths.SCurveReversed;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
 import org.usfirst.frc.team3310.robot.commands.DriveResetEncoders;
 import org.usfirst.frc.team3310.robot.commands.DriveResetPoseFromPath;
@@ -60,11 +63,17 @@ public class TestAuton extends CommandGroup {
 //   	
 //		addSequential(new DrivePathAdaptivePursuit(new Path(waypoints3, true)));
     	
-//        PathContainer centerTest = new CenterTest();
-        PathContainer centerTest = new LeftTurnReversed();
+    	// Two paths
+//    	PathContainer path = new LeftTurnRadiusReversed();
+//        addSequential(new DriveResetEncoders());
+//        addSequential(new DriveResetPoseFromPath(path));
+//    	addSequential(new DrivePathAdaptivePursuit(path));
+//    	addSequential(new DrivePathAdaptivePursuit(new RightTurnRadiusStart90()));
+ 
+    	// S curve
+    	PathContainer path = new SCurveReversed();
         addSequential(new DriveResetEncoders());
-        addSequential(new DriveResetPoseFromPath(centerTest));
-    	addSequential(new DrivePathAdaptivePursuit(centerTest));
-//		addSequential(new DriveStraightMP(-70, Drive.MP_AUTON_MAX_LO_GEAR_STRAIGHT_VELOCITY_INCHES_PER_SEC, true, true, 0));
+        addSequential(new DriveResetPoseFromPath(path));
+    	addSequential(new DrivePathAdaptivePursuit(path));
      }
 }

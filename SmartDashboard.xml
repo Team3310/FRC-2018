@@ -1,0 +1,144 @@
+<xml version="1.0">
+<dashboard>
+	<widget field="Flip Cube Left Deployed" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="226" y="234"/>
+	</widget>
+	<widget field="Ramp Pull Retract" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="257" y="208"/>
+	</widget>
+	<widget field="Elevator Down" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="257" y="182"/>
+	</widget>
+	<widget field="Ramp Latch Close" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="260" y="156"/>
+	</widget>
+	<widget field="Elevator Scale High Position" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="260" y="130"/>
+	</widget>
+	<widget field="Elevator Hi Shift" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="250" y="104"/>
+	</widget>
+	<widget field="Flip Cube Left Retracted" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="268" y="78"/>
+	</widget>
+	<widget field="Flip Cube Right Retracted" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="268" y="52"/>
+	</widget>
+	<widget field="Auton Tasks" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="507" y="11"/>
+	</widget>
+	<widget field="Intake On" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="226" y="26"/>
+	</widget>
+	<widget field="Elevator Min Position" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="226" y="0"/>
+	</widget>
+	<widget field="Elevator Auto Zero" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="21" y="792"/>
+	</widget>
+	<widget field="Operation Mode" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="662" y="7"/>
+	</widget>
+	<widget field="Elevator Up" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="0" y="766"/>
+	</widget>
+	<widget field="Drive Straight MP" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="0" y="740"/>
+	</widget>
+	<widget field="Flip Cube Right Deployed" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="0" y="714"/>
+	</widget>
+	<widget field="Elevator Lo Shift" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="0" y="688"/>
+	</widget>
+	<widget field="Intake Off" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="0" y="662"/>
+	</widget>
+	<widget field="Drive Adaptive Pursuit" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="0" y="636"/>
+	</widget>
+	<widget field="Elevator Max Position" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="0" y="610"/>
+	</widget>
+	<widget field="Intake Cube" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="0" y="584"/>
+	</widget>
+	<widget field="Elevator Scale Low Position" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="0" y="558"/>
+	</widget>
+	<widget field="Elevator Switch Position" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="0" y="532"/>
+	</widget>
+	<widget field="Gyro Reset" type="Button" class="edu.wpi.first.smartdashboard.gui.elements.Button">
+		<location x="0" y="506"/>
+	</widget>
+	<widget field="Drive Left 2 Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="483"/>
+	</widget>
+	<widget field="Intake Back Sensor" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="460"/>
+	</widget>
+	<widget field="Elevator Motor 3 Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="437"/>
+	</widget>
+	<widget field="Elevator Target PID Position" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="414"/>
+	</widget>
+	<widget field="Elevator Position Inches" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="391"/>
+	</widget>
+	<widget field="Pose Rot" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="525" y="238"/>
+	</widget>
+	<widget field="Intake Front IR Sensor" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="345"/>
+	</widget>
+	<widget field="Elevator Motor 1 Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="322"/>
+	</widget>
+	<widget field="Pose Y" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="536" y="212"/>
+	</widget>
+	<widget field="Pose X" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="534" y="187"/>
+	</widget>
+	<widget field="Drive Left 3 Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="253"/>
+	</widget>
+	<widget field="Drive Right 2 Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="230"/>
+	</widget>
+	<widget field="Intake Front VEX Sensor" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="207"/>
+	</widget>
+	<widget field="Drive Left 1 Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="184"/>
+	</widget>
+	<widget field="Elevator Motor 2 Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="161"/>
+	</widget>
+	<widget field="Drive Left Position Inches" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="721" y="214"/>
+	</widget>
+	<widget field="Elevator Average Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="115"/>
+	</widget>
+	<widget field="Yaw Angle Deg" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="92"/>
+	</widget>
+	<widget field="Drive Right Position Inches" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="714" y="188"/>
+	</widget>
+	<widget field="Drive Right 3 Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="46"/>
+	</widget>
+	<widget field="Drive Right 1 Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="23"/>
+	</widget>
+	<widget field="Distance Driven" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="486" y="265"/>
+	</widget>
+</dashboard>
+<live-window>
+</live-window>
+</xml>

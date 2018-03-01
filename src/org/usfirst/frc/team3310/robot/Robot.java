@@ -64,6 +64,12 @@ public class Robot extends TimedRobot {
 	// State
     private RobotState mRobotState = RobotState.getInstance();
 
+    public void zeroAllSensors() {
+        drive.zeroSensors();
+        mRobotState.reset(Timer.getFPGATimestamp(), new RigidTransform2d());
+        drive.zeroSensors();
+    }
+
 	@Override
 	public void robotInit() {
 		setPeriod(Constants.kLooperDt * 2);
@@ -74,7 +80,6 @@ public class Robot extends TimedRobot {
     	controlLoop.register(drive);
     	controlLoop.register(elevator);
     	controlLoop.register(RobotStateEstimator.getInstance());
-        controlLoop.start();
  
     	// Update default at competition!!!
     	operationModeChooser = new SendableChooser<OperationMode>();
@@ -91,7 +96,7 @@ public class Robot extends TimedRobot {
 		LiveWindow.setEnabled(false);
 		LiveWindow.disableAllTelemetry();
 
-		mRobotState.reset(Timer.getFPGATimestamp(), new RigidTransform2d());
+		zeroAllSensors();
 	}  
 	
 	// Called every loop for all modes
@@ -106,6 +111,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void disabledPeriodic() {
 		Scheduler.getInstance().run();
+        zeroAllSensors();
 	}
 
 	@Override
@@ -113,13 +119,10 @@ public class Robot extends TimedRobot {
 		autonomousCommand = autonTaskChooser.getSelected();
 
     	controlLoop.start();
-    	drive.endGyroCalibration();
-    	drive.resetEncoders();
-    	drive.resetGyro();
-        mRobotState.reset(Timer.getFPGATimestamp(), new RigidTransform2d());
     	drive.setIsRed(getAlliance().equals(Alliance.Red));
     	elevator.setShiftState(Elevator.ElevatorSpeedShiftState.HI);
     	elevator.resetZeroPosition(Elevator.ZERO_POSITION_INCHES);
+        zeroAllSensors();
 
 		if (autonomousCommand != null) {
 			autonomousCommand.start();
@@ -143,10 +146,8 @@ public class Robot extends TimedRobot {
     	ramp.setTeleopStartTime();
     	ramp.setOperationMode(operationMode);
     	drive.endGyroCalibration();
-    	drive.resetGyro();
-    	drive.resetEncoders();
-        mRobotState.reset(Timer.getFPGATimestamp(), new RigidTransform2d());
     	elevator.setShiftState(Elevator.ElevatorSpeedShiftState.HI);
+        zeroAllSensors();
     	
     	if (operationMode != OperationMode.COMPETITION) {
     		Scheduler.getInstance().add(new ElevatorAutoZero(false));

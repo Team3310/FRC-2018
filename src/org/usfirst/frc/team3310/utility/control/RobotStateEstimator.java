@@ -45,7 +45,6 @@ public class RobotStateEstimator implements Loop {
         robot_state_.addObservations(timestamp, odometry_velocity, predicted_velocity);
         left_encoder_prev_distance_ = left_distance;
         right_encoder_prev_distance_ = right_distance;
-//        System.out.println("left encoder = " + left_encoder_prev_distance_ + ", " + "right encoder = " + right_encoder_prev_distance_);
         updateStatus(timestamp);
     }
     

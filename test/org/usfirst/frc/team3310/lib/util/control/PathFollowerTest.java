@@ -9,13 +9,12 @@ import org.usfirst.frc.team3310.paths.LeftTurnRadiusReversed;
 import org.usfirst.frc.team3310.paths.LeftTurnRadiusStart90;
 import org.usfirst.frc.team3310.paths.LeftTurnReversed;
 import org.usfirst.frc.team3310.paths.PathContainer;
+import org.usfirst.frc.team3310.paths.SCurveReversed;
 import org.usfirst.frc.team3310.robot.Constants;
 import org.usfirst.frc.team3310.utility.ReflectingCSVWriter;
 import org.usfirst.frc.team3310.utility.control.Lookahead;
 import org.usfirst.frc.team3310.utility.control.PathFollower;
 import org.usfirst.frc.team3310.utility.math.RigidTransform2d;
-import org.usfirst.frc.team3310.utility.math.Rotation2d;
-import org.usfirst.frc.team3310.utility.math.Translation2d;
 import org.usfirst.frc.team3310.utility.math.Twist2d;
 
 public class PathFollowerTest {
@@ -185,6 +184,42 @@ public class PathFollowerTest {
 
         ReflectingCSVWriter<PathFollower.DebugOutput> writer = new ReflectingCSVWriter<PathFollower.DebugOutput>(
                 "testLeftTurnRadiusReversed.csv", PathFollower.DebugOutput.class);
+
+        final double dt = 0.01;
+
+        RigidTransform2d robot_pose = container.getStartPose();
+        double t = 0;
+        double displacement = 0.0;
+        double velocity = 0.0;
+        while (!controller.isFinished() && t < 25.0) {
+            // Follow the path
+            Twist2d command = controller.update(t, robot_pose, displacement, velocity);
+            writer.add(controller.getDebug());
+            robot_pose = robot_pose.transformBy(RigidTransform2d.exp(command.scaled(dt)));
+
+            t += dt;
+            final double prev_vel = velocity;
+            velocity = command.dx;
+            displacement += velocity * dt;
+
+            System.out.println("t = " + t + ", displacement " + displacement + ", lin vel " + command.dx + ", lin acc "
+                    + (velocity - prev_vel) / dt + ", ang vel " + command.dtheta + ", pose " + robot_pose + ", CTE "
+                    + controller.getCrossTrackError() + ", ATE " + controller.getAlongTrackError());
+        }
+        writer.flush();
+        System.out.println(robot_pose);
+        assertTrue(controller.isFinished());
+        assertTrue(controller.getAlongTrackError() < 1.0);
+        assertTrue(controller.getCrossTrackError() < 1.0);
+    }
+
+    @Test
+    public void testSCurveReversed() {
+        PathContainer container = new SCurveReversed();
+        PathFollower controller = new PathFollower(container.buildPath(), container.isReversed(), kParameters);
+
+        ReflectingCSVWriter<PathFollower.DebugOutput> writer = new ReflectingCSVWriter<PathFollower.DebugOutput>(
+                "testSCurveReversed.csv", PathFollower.DebugOutput.class);
 
         final double dt = 0.01;
 

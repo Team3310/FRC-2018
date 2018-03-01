@@ -13,7 +13,6 @@ import org.usfirst.frc.team3310.utility.MPSoftwarePIDController;
 import org.usfirst.frc.team3310.utility.MPSoftwarePIDController.MPSoftwareTurnType;
 import org.usfirst.frc.team3310.utility.MPTalonPIDController;
 import org.usfirst.frc.team3310.utility.PIDParams;
-import org.usfirst.frc.team3310.utility.ReflectingCSVWriter;
 import org.usfirst.frc.team3310.utility.SoftwarePIDController;
 import org.usfirst.frc.team3310.utility.TalonSRXEncoder;
 import org.usfirst.frc.team3310.utility.TalonSRXFactory;
@@ -34,7 +33,6 @@ import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -153,8 +151,6 @@ public class Drive extends Subsystem implements Loop
 	private boolean isCalibrating = false;
 	private double gyroOffsetDeg = 0;
 	
-	private ReflectingCSVWriter<PathFollower.DebugOutput> writer;
-
     /**
      * Check if the drive talons are configured for velocity control
      */
@@ -253,23 +249,14 @@ public class Drive extends Subsystem implements Loop
 	public void initDefaultCommand() {
 	}
 	
-	public double getGyroAngleDeg() {
-		return getGyroPigeonAngleDeg();
-	}
-	
-	public double getGyroPigeonAngleDeg() {
+	public synchronized double getGyroAngleDeg() {
 		gyroPigeon.getYawPitchRoll(yprPigeon);
 		return -yprPigeon[0] + gyroOffsetDeg;
 	}
 			
-	public void resetGyro() {
+	public synchronized void resetGyro() {
 		gyroPigeon.setYaw(0, TalonSRXEncoder.TIMEOUT_MS);
 		gyroPigeon.setFusedHeading(0, TalonSRXEncoder.TIMEOUT_MS);
-	}
-	
-	public void resetGyro(double value) {
-		gyroPigeon.setYaw(value, TalonSRXEncoder.TIMEOUT_MS);
-		gyroPigeon.setFusedHeading(value, TalonSRXEncoder.TIMEOUT_MS);
 	}
 	
     public synchronized Rotation2d getGyroAngle() {
@@ -281,11 +268,17 @@ public class Drive extends Subsystem implements Loop
         mAngleAdjustment = adjustment;
     }
 
-	public void resetEncoders() {
-		mpStraightController.resetZeroPosition();
+	public synchronized void resetEncoders() {
+		rightDrive1.setPosition(0);
+		leftDrive1.setPosition(0);
 	}
 	
-	public void calibrateGyro() {
+    public void zeroSensors() {
+        resetEncoders();
+        resetGyro();
+    }
+
+    public void calibrateGyro() {
 		gyroPigeon.enterCalibrationMode(CalibrationMode.Temperature, TalonSRXEncoder.TIMEOUT_MS);
 	}
 	
@@ -349,10 +342,12 @@ public class Drive extends Subsystem implements Loop
 	
 	@Override
 	public void onStart(double timestamp) {
-		mpStraightController = new MPTalonPIDController(periodMs, motorControllers);
-		mpStraightController.setPID(mpStraightPIDParams, kLowGearPositionControlSlot);
-		mpTurnController = new MPSoftwarePIDController(periodMs, mpTurnPIDParams, motorControllers);
-		pidTurnController = new SoftwarePIDController(pidTurnPIDParams, motorControllers);
+        synchronized (Drive.this) {
+			mpStraightController = new MPTalonPIDController(periodMs, motorControllers);
+			mpStraightController.setPID(mpStraightPIDParams, kLowGearPositionControlSlot);
+			mpTurnController = new MPSoftwarePIDController(periodMs, mpTurnPIDParams, motorControllers);
+			pidTurnController = new SoftwarePIDController(pidTurnPIDParams, motorControllers);
+        }
 	}
 
 	@Override
@@ -396,7 +391,7 @@ public class Drive extends Subsystem implements Loop
 		}
 	}
 	
-	public void setSpeed(double speed) {
+	public synchronized void setSpeed(double speed) {
 		if (speed == 0) {
 			setControlMode(DriveControlMode.JOYSTICK);
 		}
@@ -407,7 +402,7 @@ public class Drive extends Subsystem implements Loop
 		}
 	}
 	
-	public void setGyroLock(boolean useGyroLock, boolean snapToAbsolute0or180) {
+	public synchronized void setGyroLock(boolean useGyroLock, boolean snapToAbsolute0or180) {
 		if (snapToAbsolute0or180) {
 			gyroLockAngleDeg = BHRMathUtils.adjustAccumAngleToClosest180(getGyroAngleDeg());
 		}
@@ -423,16 +418,12 @@ public class Drive extends Subsystem implements Loop
      */
     private void updatePathFollower(double timestamp) {
         RigidTransform2d robot_pose = mRobotState.getLatestFieldToVehicle().getValue();
-        System.out.println("Robot pose = " + robot_pose);
         Twist2d command = mPathFollower.update(timestamp, robot_pose,
                 RobotState.getInstance().getDistanceDriven(), RobotState.getInstance().getPredictedVelocity().dx);
-        	writer.add(mPathFollower.getDebug());
         if (!mPathFollower.isFinished()) {
             Kinematics.DriveVelocity setpoint = Kinematics.inverseKinematics(command);
             updateVelocitySetpoint(setpoint.left, setpoint.right);
         } else {
-            writer.flush();
-            System.out.println("Path follower finished");
             updateVelocitySetpoint(0, 0);
         }
     }
@@ -456,8 +447,6 @@ public class Drive extends Subsystem implements Loop
                             Constants.kPathFollowingMaxVel, Constants.kPathFollowingMaxAccel,
                             Constants.kPathFollowingGoalPosTolerance, Constants.kPathFollowingGoalVelTolerance,
                             Constants.kPathStopSteeringDistance));
-            writer = new ReflectingCSVWriter<PathFollower.DebugOutput>(
-                    "setWantDrivePath.csv", PathFollower.DebugOutput.class);
 
             driveControlMode = DriveControlMode.ADAPTIVE_PURSUIT;
             mCurrentPath = path;
@@ -491,16 +480,10 @@ public class Drive extends Subsystem implements Loop
             final double scale = max_desired > Constants.kDriveHighGearMaxSetpoint
                     ? Constants.kDriveHighGearMaxSetpoint / max_desired : 1.0;
             
-            double command = leftDrive1.convertEncoderWorldToTicks(left_inches_per_sec * scale) * 0.1;
             leftDrive1.setVelocityWorld(left_inches_per_sec * scale);
             rightDrive1.setVelocityWorld(right_inches_per_sec * scale);
- //           leftDrive1.set(ControlMode.Velocity, inchesPerSecondToRpm(left_inches_per_sec * scale));
- //           rightDrive1.set(ControlMode.Velocity, inchesPerSecondToRpm(right_inches_per_sec * scale));
-            System.out.println("vel Com u/s = " + command + ", vel com in/sec= " + left_inches_per_sec * scale + ", scale = " + scale + ", left pos in = " + getLeftPositionInches()  + ", right pos in = " + getRightPositionInches() + ", left vel in/sec = " + getLeftVelocityInchesPerSec() + ", left vel u/s = " + leftDrive1.getSelectedSensorVelocity(0));
-        	SmartDashboard.putNumber("Left command in/sec", left_inches_per_sec * scale);
-        	SmartDashboard.putNumber("Right command in/sec", right_inches_per_sec * scale);
-        	SmartDashboard.putNumber("Left actual in/sec", getLeftPositionInches());
-        	SmartDashboard.putNumber("Right actual in/sec", getRightPositionInches());
+//            double command = leftDrive1.convertEncoderWorldToTicks(left_inches_per_sec * scale) * 0.1;
+//            System.out.println("vel Com u/s = " + command + ", vel com in/sec= " + left_inches_per_sec * scale + ", scale = " + scale + ", left pos in = " + getLeftPositionInches()  + ", right pos in = " + getRightPositionInches() + ", left vel in/sec = " + getLeftVelocityInchesPerSec() + ", left vel u/s = " + leftDrive1.getSelectedSensorVelocity(0));
         } else {
             System.out.println("Hit a bad velocity control state");
             leftDrive1.set(ControlMode.Velocity, 0);
@@ -590,7 +573,7 @@ public class Drive extends Subsystem implements Loop
         }
     }
 
-    public void driveWithJoystick() {
+    public synchronized void driveWithJoystick() {
 		if(m_drive == null) return;
 
 		m_moveInput = OI.getInstance().getDriverController().getLeftYAxis();
@@ -737,13 +720,20 @@ public class Drive extends Subsystem implements Loop
 			try {
 				SmartDashboard.putNumber("Drive Right Position Inches", rightDrive1.getPositionWorld());
 				SmartDashboard.putNumber("Drive Left Position Inches", leftDrive1.getPositionWorld());
+				SmartDashboard.putNumber("Drive Left 1 Amps", leftDrive1.getOutputCurrent());
+				SmartDashboard.putNumber("Drive Left 2 Amps", leftDrive1.getOutputCurrent());
+				SmartDashboard.putNumber("Drive Left 3 Amps", leftDrive1.getOutputCurrent());
+				SmartDashboard.putNumber("Drive Right 1 Amps", rightDrive1.getOutputCurrent());
+				SmartDashboard.putNumber("Drive Right 2 Amps", rightDrive2.getOutputCurrent());
+				SmartDashboard.putNumber("Drive Right 3 Amps", rightDrive3.getOutputCurrent());
+				SmartDashboard.putNumber("Yaw Angle Deg", getGyroAngleDeg());
+
 //				SmartDashboard.putNumber("Drive Left 1 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_LEFT_MOTOR1_CAN_ID));
 //				SmartDashboard.putNumber("Drive Left 2 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_LEFT_MOTOR2_CAN_ID));
 //				SmartDashboard.putNumber("Drive Left 3 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_LEFT_MOTOR3_CAN_ID));
 //				SmartDashboard.putNumber("Drive Right 1 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_RIGHT_MOTOR1_CAN_ID));
 //				SmartDashboard.putNumber("Drive Right 2 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_RIGHT_MOTOR2_CAN_ID));
 //				SmartDashboard.putNumber("Drive Right 3 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_RIGHT_MOTOR3_CAN_ID));
-				SmartDashboard.putNumber("Yaw Angle Pigeon Deg", getGyroPigeonAngleDeg());
 			}
 			catch (Exception e) {
 			}
