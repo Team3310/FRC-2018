@@ -14,11 +14,11 @@ public class DrivePathAdaptivePursuit extends Command
 
 	public DrivePathAdaptivePursuit(PathContainer p) {
         this.pathContainer = p;
-        this.path = this.pathContainer.buildPath();
 		requires(Robot.drive);
 	}
 
 	protected void initialize() {
+        this.path = this.pathContainer.buildPath();
 		Robot.drive.setWantDrivePath(path, pathContainer.isReversed());
 		System.out.println("Adaptive Pursuit start");
 	}

@@ -2,8 +2,11 @@ package org.usfirst.frc.team3310.utility.control;
 
 import org.usfirst.frc.team3310.robot.subsystems.Drive;
 import org.usfirst.frc.team3310.utility.Loop;
+import org.usfirst.frc.team3310.utility.math.RigidTransform2d;
 import org.usfirst.frc.team3310.utility.math.Rotation2d;
 import org.usfirst.frc.team3310.utility.math.Twist2d;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Periodically estimates the state of the robot using the robot's distance traveled (compares two waypoints), gyroscope
@@ -43,6 +46,15 @@ public class RobotStateEstimator implements Loop {
         left_encoder_prev_distance_ = left_distance;
         right_encoder_prev_distance_ = right_distance;
 //        System.out.println("left encoder = " + left_encoder_prev_distance_ + ", " + "right encoder = " + right_encoder_prev_distance_);
+        updateStatus(timestamp);
+    }
+    
+    public void updateStatus(double timestamp) {
+    	SmartDashboard.putNumber("Distance Driven", robot_state_.getDistanceDriven());
+    	RigidTransform2d pose = robot_state_.getFieldToVehicle(timestamp);
+    	SmartDashboard.putNumber("Pose X", pose.getTranslation().x());
+    	SmartDashboard.putNumber("Pose Y", pose.getTranslation().y());
+    	SmartDashboard.putNumber("Pose Rot", pose.getRotation().getDegrees());
     }
 
     @Override

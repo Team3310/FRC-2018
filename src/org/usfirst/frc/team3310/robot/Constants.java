@@ -37,18 +37,18 @@ public class Constants extends ConstantsBase {
     public static double kDriveHighGearVelocityKi = 0.0;
     public static double kDriveHighGearVelocityKd = 0.01;//6.0;
     public static double kDriveHighGearVelocityKf = 0.06;//.15;
-    public static int kDriveHighGearVelocityIZone =200;
+    public static int kDriveHighGearVelocityIZone = 200;
     public static double kDriveHighGearVelocityRampRate = 0.05;
     public static double kDriveHighGearNominalOutput = 0.5/12.0;
     public static double kDriveHighGearMaxSetpoint = 17.0 * 12.0; // 17 fps
 
     // PID gains for drive velocity loop (LOW GEAR)
     // Units: setpoint, error, and output are in inches per second.
-    public static double kDriveLowGearVelocityKp = 1.2;
+    public static double kDriveLowGearVelocityKp = 0.05; //.02
     public static double kDriveLowGearVelocityKi = 0.0;
-    public static double kDriveLowGearVelocityKd = 6.0;
-    public static double kDriveLowGearVelocityKf = .15;
-    public static int kDriveLowGearVelocityIZone = 0;
+    public static double kDriveLowGearVelocityKd = 0.00; // .01
+    public static double kDriveLowGearVelocityKf = 0.07;  // .06
+    public static int kDriveLowGearVelocityIZone = 200;
     public static double kDriveLowGearVelocityRampRate = 0.05;
     public static double kDriveLowGearNominalOutput = 0.5/12.0;
     public static double kDriveLowGearMaxSetpoint = 8.0 * 12.0; // 17 fps
@@ -88,18 +88,31 @@ public class Constants extends ConstantsBase {
     public static double kInertiaSteeringGain = 0.0; // angular velocity command is multiplied by this gain *
                                                      // our speed
                                                      // in inches per sec
+//    public static double kSegmentCompletionTolerance = 0.1; // inches
+//    public static double kPathFollowingMaxAccel = 120.0; // inches per second^2
+//    public static double kPathFollowingMaxVel = 120.0; // inches per second
+//    public static double kPathFollowingProfileKp = 0.05;  //5.0
+//    public static double kPathFollowingProfileKi = 0.03;
+//    public static double kPathFollowingProfileKv = 0.02;
+//    public static double kPathFollowingProfileKffv = 1.0;
+//    public static double kPathFollowingProfileKffa = 0.05;
+//    public static double kPathFollowingGoalPosTolerance = 0.75;
+//    public static double kPathFollowingGoalVelTolerance = 12.0;
+//    public static double kPathStopSteeringDistance = 9.0;
+
     public static double kSegmentCompletionTolerance = 0.1; // inches
     public static double kPathFollowingMaxAccel = 120.0; // inches per second^2
     public static double kPathFollowingMaxVel = 120.0; // inches per second
-    public static double kPathFollowingProfileKp = 5.00;
+    public static double kPathFollowingProfileKp = 5.0;  //5.0
     public static double kPathFollowingProfileKi = 0.03;
     public static double kPathFollowingProfileKv = 0.02;
-    public static double kPathFollowingProfileKffv = 1.0;
+    public static double kPathFollowingProfileKffv = 1.2;
     public static double kPathFollowingProfileKffa = 0.05;
     public static double kPathFollowingGoalPosTolerance = 0.75;
     public static double kPathFollowingGoalVelTolerance = 12.0;
     public static double kPathStopSteeringDistance = 9.0;
 
+    
     @Override
     public String getFileLocation() {
         return "~/constants.txt";

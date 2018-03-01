@@ -14,22 +14,21 @@ public class CenterTest implements PathContainer {
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
         sWaypoints.add(new Waypoint(0, 0, 0, 0));
-        sWaypoints.add(new Waypoint(20, 0, 0, 40));
-        sWaypoints.add(new Waypoint(40, 0, 0, 40));
-        sWaypoints.add(new Waypoint(60, 0, 0, 60));
-        sWaypoints.add(new Waypoint(80, 0, 0, 40));
-        sWaypoints.add(new Waypoint(100, 0, 0, 40));
+        sWaypoints.add(new Waypoint(-20, 0, 0, 60));
+        sWaypoints.add(new Waypoint(-40, 0, 20, 60));
+        sWaypoints.add(new Waypoint(-60, 20, 20, 60));
+        sWaypoints.add(new Waypoint(-120, 20, 0, 60));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }
 
     @Override
     public RigidTransform2d getStartPose() {
-        return new RigidTransform2d(new Translation2d(0, 0), Rotation2d.fromDegrees(0.0));
+        return new RigidTransform2d(new Translation2d(0, 0), Rotation2d.fromDegrees(180.0));
     }
 
     @Override
     public boolean isReversed() {
-        return false;
+        return true;
     }
 }
