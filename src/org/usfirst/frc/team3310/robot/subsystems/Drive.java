@@ -270,7 +270,7 @@ public class Drive extends Subsystem implements Loop
 	}
 	
     public synchronized Rotation2d getGyroAngle() {
-        return mAngleAdjustment.rotateBy(Rotation2d.fromDegrees(getGyroAngleDeg()));
+        return mAngleAdjustment.rotateBy(Rotation2d.fromDegrees(-getGyroAngleDeg()));
     }
 
     public synchronized void setGyroAngle(Rotation2d adjustment) {
@@ -488,6 +488,10 @@ public class Drive extends Subsystem implements Loop
  //           leftDrive1.set(ControlMode.Velocity, inchesPerSecondToRpm(left_inches_per_sec * scale));
  //           rightDrive1.set(ControlMode.Velocity, inchesPerSecondToRpm(right_inches_per_sec * scale));
             System.out.println("vel Com u/s = " + command + ", vel com in/sec= " + left_inches_per_sec * scale + ", scale = " + scale + ", left pos in = " + getLeftPositionInches()  + ", right pos in = " + getRightPositionInches() + ", left vel in/sec = " + getLeftVelocityInchesPerSec() + ", left vel u/s = " + leftDrive1.getSelectedSensorVelocity(0));
+        	SmartDashboard.putNumber("Left command in/sec", left_inches_per_sec * scale);
+        	SmartDashboard.putNumber("Right command in/sec", right_inches_per_sec * scale);
+        	SmartDashboard.putNumber("Left actual in/sec", getLeftPositionInches());
+        	SmartDashboard.putNumber("Right actual in/sec", getRightPositionInches());
         } else {
             System.out.println("Hit a bad velocity control state");
             leftDrive1.set(ControlMode.Velocity, 0);
