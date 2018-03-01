@@ -13,16 +13,16 @@ public class LeftTurnRadius implements PathContainer {
     @Override
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-        sWaypoints.add(new Waypoint(20,60,0,0));
-        sWaypoints.add(new Waypoint(60,60,30,20));
-        sWaypoints.add(new Waypoint(60,100,0,20));
+        sWaypoints.add(new Waypoint(20,  60,  0,  0));
+        sWaypoints.add(new Waypoint(60,  60, 30, 20));
+        sWaypoints.add(new Waypoint(60, 100,  0, 20));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }
     
     @Override
     public RigidTransform2d getStartPose() {
-        return new RigidTransform2d(new Translation2d(20, 60), Rotation2d.fromDegrees(180.0)); 
+        return new RigidTransform2d(new Translation2d(20, 60), Rotation2d.fromDegrees(0.0)); 
     }
 
     @Override

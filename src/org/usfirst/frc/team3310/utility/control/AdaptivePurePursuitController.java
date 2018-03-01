@@ -63,15 +63,15 @@ public class AdaptivePurePursuitController {
         if (mReversed) {
             pose = new RigidTransform2d(pose.getTranslation(),
                     pose.getRotation().rotateBy(Rotation2d.fromRadians(Math.PI)));
-            SmartDashboard.putNumber("Adaptive Pos X", pose.getTranslation().x());
-            SmartDashboard.putNumber("Adaptive Pos Y", pose.getTranslation().y());
+//            SmartDashboard.putNumber("Adaptive Pos X", pose.getTranslation().x());
+//            SmartDashboard.putNumber("Adaptive Pos Y", pose.getTranslation().y());
         }
 
         final Path.TargetPointReport report = mPath.getTargetPoint(pose.getTranslation(), mLookahead);
-        SmartDashboard.putNumber("Closest X", report.closest_point.x());
-        SmartDashboard.putNumber("Closest Y", report.closest_point.y());
-        SmartDashboard.putNumber("Lookahead X", report.lookahead_point.x());
-        SmartDashboard.putNumber("Lookahead Y", report.lookahead_point.y());
+//        SmartDashboard.putNumber("Closest X", report.closest_point.x());
+//        SmartDashboard.putNumber("Closest Y", report.closest_point.y());
+//        SmartDashboard.putNumber("Lookahead X", report.lookahead_point.x());
+//        SmartDashboard.putNumber("Lookahead Y", report.lookahead_point.y());
         
         if (isFinished()) {
             // Stop.

@@ -14,6 +14,26 @@ import org.usfirst.frc.team3310.utility.motion.MotionState;
  * Field Coordinate System: Uses a right hand coordinate system. Positive x is right, positive y is up, and the origin
  * is at the bottom left corner of the field. For angles, 0 degrees is facing right (1, 0) and angles increase as you
  * turn counter clockwise.
+ * 
+ *  +Y
+ *   ^
+ *   |
+ *   |------------------------------   
+ *   |                              | <--- FRC Field Boundary
+ *   |                              |  
+ *   |                              |
+ *   |      -----                   |
+ *   |     |robot|--> 0 deg         |
+ *   |      -----                   |
+ *   ----------------------------------> +X 
+ * (0,0)
+ * 
+ *  Notes:
+ *  1) The starting point needs to match the first point (x,y) with the proper starting rotation
+ *  2) When chaining together paths, keep all coordinates for both paths in the reference frame above.  
+ *     The second path should start where the first stopped.
+ *  3) When moving in reverse, you need to set the isReversed flag on the path.
+ *  
  */
 
 public class Path {

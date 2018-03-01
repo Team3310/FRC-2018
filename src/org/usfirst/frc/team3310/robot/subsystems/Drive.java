@@ -13,6 +13,7 @@ import org.usfirst.frc.team3310.utility.MPSoftwarePIDController;
 import org.usfirst.frc.team3310.utility.MPSoftwarePIDController.MPSoftwareTurnType;
 import org.usfirst.frc.team3310.utility.MPTalonPIDController;
 import org.usfirst.frc.team3310.utility.PIDParams;
+import org.usfirst.frc.team3310.utility.ReflectingCSVWriter;
 import org.usfirst.frc.team3310.utility.SoftwarePIDController;
 import org.usfirst.frc.team3310.utility.TalonSRXEncoder;
 import org.usfirst.frc.team3310.utility.TalonSRXFactory;
@@ -151,6 +152,8 @@ public class Drive extends Subsystem implements Loop
 	private double kPGyro = 0.04;
 	private boolean isCalibrating = false;
 	private double gyroOffsetDeg = 0;
+	
+	private ReflectingCSVWriter<PathFollower.DebugOutput> writer;
 
     /**
      * Check if the drive talons are configured for velocity control
@@ -423,10 +426,13 @@ public class Drive extends Subsystem implements Loop
         System.out.println("Robot pose = " + robot_pose);
         Twist2d command = mPathFollower.update(timestamp, robot_pose,
                 RobotState.getInstance().getDistanceDriven(), RobotState.getInstance().getPredictedVelocity().dx);
+        	writer.add(mPathFollower.getDebug());
         if (!mPathFollower.isFinished()) {
             Kinematics.DriveVelocity setpoint = Kinematics.inverseKinematics(command);
             updateVelocitySetpoint(setpoint.left, setpoint.right);
         } else {
+            writer.flush();
+            System.out.println("Path follower finished");
             updateVelocitySetpoint(0, 0);
         }
     }
@@ -450,6 +456,9 @@ public class Drive extends Subsystem implements Loop
                             Constants.kPathFollowingMaxVel, Constants.kPathFollowingMaxAccel,
                             Constants.kPathFollowingGoalPosTolerance, Constants.kPathFollowingGoalVelTolerance,
                             Constants.kPathStopSteeringDistance));
+            writer = new ReflectingCSVWriter<PathFollower.DebugOutput>(
+                    "setWantDrivePath.csv", PathFollower.DebugOutput.class);
+
             driveControlMode = DriveControlMode.ADAPTIVE_PURSUIT;
             mCurrentPath = path;
         } else {

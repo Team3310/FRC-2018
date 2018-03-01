@@ -13,9 +13,9 @@ public class LeftTurnRadiusReversed implements PathContainer {
     @Override
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-        sWaypoints.add(new Waypoint(20,60,0,0));
-        sWaypoints.add(new Waypoint(60,60,30,15));
-        sWaypoints.add(new Waypoint(60,100,0,15));
+        sWaypoints.add(new Waypoint(20,  60,  0,  0));
+        sWaypoints.add(new Waypoint(60,  60, 30, 20));
+        sWaypoints.add(new Waypoint(60, 100,  0, 20));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }
