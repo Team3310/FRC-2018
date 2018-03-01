@@ -12,7 +12,5 @@
 	<classpathentry kind="var" path="USERLIBS_DIR/json-simple-1.1.1.jar"/>
 	<classpathentry kind="var" path="USERLIBS_DIR/niVisionWPI.jar"/>
 	<classpathentry kind="var" path="USERLIBS_DIR/Jama-1.0.3.jar"/>
-	<classpathentry kind="var" path="USERLIBS_DIR/CTRLib.jar"/>
-	<classpathentry kind="var" path="USERLIBS_DIR/Pathfinder-Java.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

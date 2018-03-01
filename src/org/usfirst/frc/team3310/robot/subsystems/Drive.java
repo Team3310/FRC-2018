@@ -89,6 +89,7 @@ public class Drive extends Subsystem implements Loop
 
 	// Pneumatics
 	private Solenoid speedShift;
+	private DriveSpeedShiftState shiftState = DriveSpeedShiftState.LO;
 
 	// Input devices
 	public static final int DRIVER_INPUT_JOYSTICK_ARCADE = 0;
@@ -183,30 +184,17 @@ public class Drive extends Subsystem implements Loop
 			rightDrive2 = TalonSRXFactory.createPermanentSlaveTalon(RobotMap.DRIVETRAIN_RIGHT_MOTOR2_CAN_ID, RobotMap.DRIVETRAIN_RIGHT_MOTOR1_CAN_ID);
 			rightDrive3 = TalonSRXFactory.createPermanentSlaveTalon(RobotMap.DRIVETRAIN_RIGHT_MOTOR3_CAN_ID, RobotMap.DRIVETRAIN_RIGHT_MOTOR1_CAN_ID);
 			
-			gyroPigeon = new PigeonIMU(rightDrive2);
+			leftDrive1.setSafetyEnabled(false);
+			leftDrive1.setSensorPhase(false);  
 			
 			leftDrive1.setInverted(true);
-			leftDrive1.setSensorPhase(false);   // Encoder on ball shifter spins opposite direction due to gears
-//			leftDrive1.configClosedloopRamp(VOLTAGE_RAMP_RATE, TalonSRXEncoder.TIMEOUT_MS);
-			leftDrive1.setNeutralMode(NeutralMode.Brake);
-			leftDrive1.setSafetyEnabled(false);
-//	        if (leftDrive1.isSensorPresent(CANTalon.FeedbackDevice.QuadEncoder) != CANTalon.FeedbackDeviceStatus.FeedbackStatusPresent) {
-//	            Driver.reportError("Could not detect left drive encoder encoder!", false);
-//	        }
-			
 			leftDrive2.setInverted(true);
 			leftDrive3.setInverted(true);
 			
-//			rightDrive1.configVoltageCompSaturation(12.0, TalonSRXEncoder.TIMEOUT_MS);
-//			rightDrive1.enableVoltageCompensation(true);
-			rightDrive1.setSensorPhase(false);   // Encoder on ball shifter spins opposite direction due to gears
-			rightDrive1.setNeutralMode(NeutralMode.Brake);
 			rightDrive1.setSafetyEnabled(false);
-			rightDrive1.setInverted(false);
-//	        if (rightDrive1.isSensorPresent(CANTalon.FeedbackDevice.QuadEncoder) != CANTalon.FeedbackDeviceStatus.FeedbackStatusPresent) {
-//	            DriverStation.reportError("Could not detect right drive encoder encoder!", false);
-//	        }
+			rightDrive1.setSensorPhase(false);  
 			
+			rightDrive1.setInverted(false);			
 			rightDrive2.setInverted(false);
 			rightDrive3.setInverted(false);
 							
@@ -215,10 +203,13 @@ public class Drive extends Subsystem implements Loop
 			
 			m_drive = new BHRDifferentialDrive(leftDrive1, rightDrive1);
 			m_drive.setSafetyEnabled(false);
-			
-			loadGains();
+
+			gyroPigeon = new PigeonIMU(rightDrive2);
 			
 			speedShift = new Solenoid(RobotMap.DRIVETRAIN_SPEEDSHIFT_PCM_ID);
+			
+			loadGains();
+        	setBrakeMode(true);
 		}
 		catch (Exception e) {
 			System.err.println("An error occurred in the DriveTrain constructor");
@@ -509,26 +500,38 @@ public class Drive extends Subsystem implements Loop
      */
     private void configureTalonsForSpeedControl() {
         if (!usesTalonVelocityControl(driveControlMode)) {
-            // We entered a velocity control state.
         	leftDrive1.enableVoltageCompensation(true);
         	leftDrive1.configVoltageCompSaturation(12.0, TalonSRXEncoder.TIMEOUT_MS);
-        	leftDrive1.selectProfileSlot(kHighGearVelocityControlSlot, TalonSRXEncoder.PID_IDX);
-        	leftDrive1.configNominalOutputForward(Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
-        	leftDrive1.configNominalOutputReverse(-Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
         	leftDrive1.configPeakOutputForward(+1.0f, TalonSRXEncoder.TIMEOUT_MS);
         	leftDrive1.configPeakOutputReverse(-1.0f, TalonSRXEncoder.TIMEOUT_MS);
-            leftDrive1.configClosedloopRamp(Constants.kDriveHighGearVelocityRampRate, TalonSRXEncoder.TIMEOUT_MS);
-        	    	
+
         	rightDrive1.enableVoltageCompensation(true);
         	rightDrive1.configVoltageCompSaturation(12.0, TalonSRXEncoder.TIMEOUT_MS);
-        	rightDrive1.selectProfileSlot(kHighGearVelocityControlSlot, TalonSRXEncoder.PID_IDX);
-        	rightDrive1.configNominalOutputForward(Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
-        	rightDrive1.configNominalOutputReverse(-Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
         	rightDrive1.configPeakOutputForward(+1.0f, TalonSRXEncoder.TIMEOUT_MS);
         	rightDrive1.configPeakOutputReverse(-1.0f, TalonSRXEncoder.TIMEOUT_MS);
-        	rightDrive1.configClosedloopRamp(Constants.kDriveHighGearVelocityRampRate, TalonSRXEncoder.TIMEOUT_MS);
-
-        	setBrakeMode(true);
+       	
+        	if (getShiftState() == DriveSpeedShiftState.HI) {
+	        	leftDrive1.selectProfileSlot(kHighGearVelocityControlSlot, TalonSRXEncoder.PID_IDX);
+	        	leftDrive1.configNominalOutputForward(Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
+	        	leftDrive1.configNominalOutputReverse(-Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
+	            leftDrive1.configClosedloopRamp(Constants.kDriveHighGearVelocityRampRate, TalonSRXEncoder.TIMEOUT_MS);
+	        	    	
+	        	rightDrive1.selectProfileSlot(kHighGearVelocityControlSlot, TalonSRXEncoder.PID_IDX);
+	        	rightDrive1.configNominalOutputForward(Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
+	        	rightDrive1.configNominalOutputReverse(-Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
+	        	rightDrive1.configClosedloopRamp(Constants.kDriveHighGearVelocityRampRate, TalonSRXEncoder.TIMEOUT_MS);
+        	}
+        	else {
+	        	leftDrive1.selectProfileSlot(kLowGearVelocityControlSlot, TalonSRXEncoder.PID_IDX);
+	        	leftDrive1.configNominalOutputForward(Constants.kDriveLowGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
+	        	leftDrive1.configNominalOutputReverse(-Constants.kDriveLowGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
+	            leftDrive1.configClosedloopRamp(Constants.kDriveLowGearVelocityRampRate, TalonSRXEncoder.TIMEOUT_MS);
+	        	    	
+	        	rightDrive1.selectProfileSlot(kLowGearVelocityControlSlot, TalonSRXEncoder.PID_IDX);
+	        	rightDrive1.configNominalOutputForward(Constants.kDriveLowGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
+	        	rightDrive1.configNominalOutputReverse(-Constants.kDriveLowGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
+	        	rightDrive1.configClosedloopRamp(Constants.kDriveLowGearVelocityRampRate, TalonSRXEncoder.TIMEOUT_MS);
+        	}
         }
     }
 
@@ -581,12 +584,7 @@ public class Drive extends Subsystem implements Loop
 		m_steerInput = -OI.getInstance().getDriverController().getRightXAxis();
 		
 		boolean isShift = OI.getInstance().getDriverController().getLeftBumperButton();
-		if (isShift) {
-			speedShift.set(true);
-		}
-		else {
-			speedShift.set(false);
-		}		
+		setShiftState(isShift ? DriveSpeedShiftState.HI : DriveSpeedShiftState.LO);
 		
 		m_moveOutput = adjustForSensitivity(m_moveScale, m_moveTrim,
 					m_moveInput, m_moveNonLinear, MOVE_NON_LINEARITY);
@@ -653,12 +651,20 @@ public class Drive extends Subsystem implements Loop
 	}
 
 	public void setShiftState(DriveSpeedShiftState state) {
+		if (state == shiftState) {
+			return;
+		}
+		shiftState = state;
 		if(state == DriveSpeedShiftState.HI) {
 			speedShift.set(true);
 		}
 		else if(state == DriveSpeedShiftState.LO) {
 			speedShift.set(false);
 		}
+	}
+	
+	public DriveSpeedShiftState getShiftState() {
+		return shiftState;
 	}
 
 	public synchronized boolean isFinished() {
