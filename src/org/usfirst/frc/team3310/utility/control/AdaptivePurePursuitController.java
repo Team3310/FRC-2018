@@ -5,6 +5,8 @@ import org.usfirst.frc.team3310.utility.math.Rotation2d;
 import org.usfirst.frc.team3310.utility.math.Translation2d;
 import org.usfirst.frc.team3310.utility.math.Twist2d;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 /**
  * Implements an adaptive pure pursuit controller. See:
  * https://www.ri.cmu.edu/pub_files/pub1/kelly_alonzo_1994_4/kelly_alonzo_1994_4 .pdf
@@ -61,9 +63,16 @@ public class AdaptivePurePursuitController {
         if (mReversed) {
             pose = new RigidTransform2d(pose.getTranslation(),
                     pose.getRotation().rotateBy(Rotation2d.fromRadians(Math.PI)));
+            SmartDashboard.putNumber("Adaptive Pos X", pose.getTranslation().x());
+            SmartDashboard.putNumber("Adaptive Pos Y", pose.getTranslation().y());
         }
 
         final Path.TargetPointReport report = mPath.getTargetPoint(pose.getTranslation(), mLookahead);
+        SmartDashboard.putNumber("Closest X", report.closest_point.x());
+        SmartDashboard.putNumber("Closest Y", report.closest_point.y());
+        SmartDashboard.putNumber("Lookahead X", report.lookahead_point.x());
+        SmartDashboard.putNumber("Lookahead Y", report.lookahead_point.y());
+        
         if (isFinished()) {
             // Stop.
             return new Command(Twist2d.identity(), report.closest_point_distance, report.max_speed, 0.0,

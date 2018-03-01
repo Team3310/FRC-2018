@@ -142,9 +142,10 @@ public class Robot extends TimedRobot {
         controlLoop.start();
     	ramp.setTeleopStartTime();
     	ramp.setOperationMode(operationMode);
+    	drive.endGyroCalibration();
+    	drive.resetGyro();
     	drive.resetEncoders();
         mRobotState.reset(Timer.getFPGATimestamp(), new RigidTransform2d());
-    	drive.endGyroCalibration();
     	elevator.setShiftState(Elevator.ElevatorSpeedShiftState.HI);
     	
     	if (operationMode != OperationMode.COMPETITION) {

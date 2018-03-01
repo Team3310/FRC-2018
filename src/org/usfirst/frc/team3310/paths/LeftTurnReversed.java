@@ -1,4 +1,4 @@
-﻿package org.usfirst.frc.team3310.paths;
+package org.usfirst.frc.team3310.paths;
 
 import java.util.ArrayList;
 
@@ -13,9 +13,9 @@ public class LeftTurnReversed implements PathContainer {
     @Override
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-        sWaypoints.add(new Waypoint(20,60,0,0));
-        sWaypoints.add(new Waypoint(60,60,0,15));
-        sWaypoints.add(new Waypoint(60,100,0,15));
+        sWaypoints.add(new Waypoint(-20,60,0,0));
+        sWaypoints.add(new Waypoint(-60,60,0,20));
+        sWaypoints.add(new Waypoint(-60,100,0,20));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }
