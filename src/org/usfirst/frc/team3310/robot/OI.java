@@ -4,8 +4,9 @@ import org.usfirst.frc.team3310.buttons.XBoxDPadTriggerButton;
 import org.usfirst.frc.team3310.buttons.XBoxTriggerButton;
 import org.usfirst.frc.team3310.controller.XboxController;
 import org.usfirst.frc.team3310.paths.CenterTest;
-import org.usfirst.frc.team3310.robot.commands.DriveResetGyro;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
+import org.usfirst.frc.team3310.robot.commands.DriveResetEncoders;
+import org.usfirst.frc.team3310.robot.commands.DriveResetGyro;
 import org.usfirst.frc.team3310.robot.commands.DriveSpeedShift;
 import org.usfirst.frc.team3310.robot.commands.DriveStraightMP;
 import org.usfirst.frc.team3310.robot.commands.ElevatorAutoZero;
@@ -30,8 +31,6 @@ import org.usfirst.frc.team3310.robot.subsystems.Intake;
 import org.usfirst.frc.team3310.robot.subsystems.Ramp.RampLatch;
 import org.usfirst.frc.team3310.robot.subsystems.Ramp.RampPull;
 
-import edu.wpi.first.wpilibj.buttons.Button;
-import edu.wpi.first.wpilibj.buttons.InternalButton;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -117,88 +116,119 @@ public class OI {
 //        JoystickButton elevatorSwitchPosition = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.X_BUTTON);
 //        elevatorSwitchPosition.whenPressed(new ElevatorSetPositionPID(10));
 
-        //Smart Dashboard
-        Button rampLatchClose = new InternalButton();
-        rampLatchClose.whenPressed(new RampSetLatchPosition(RampLatch.STOWED));
-        SmartDashboard.putData("Ramp Latch Close", rampLatchClose);
-        
-        Button rampPullRetract = new InternalButton();
-        rampPullRetract.whenPressed(new RampSetPullPosition(RampPull.UP));
-        SmartDashboard.putData("Ramp Pull Retract", rampPullRetract);
+        // Shuffleboard
+        SmartDashboard.putData("Ramp Latch Close", new RampSetLatchPosition(RampLatch.STOWED));
+        SmartDashboard.putData("Ramp Pull Retract", new RampSetPullPosition(RampPull.UP));
 
-        Button intakeCubeSD = new InternalButton();
-        intakeCubeSD.whenPressed(new IntakeSetSpeedFrontSensorOff(Intake.INTAKE_LOAD_SPEED));
-        SmartDashboard.putData("Intake Cube", intakeCube);
-        
-        Button autoZero = new InternalButton();
-        autoZero.whenPressed(new ElevatorAutoZero(false));
-        SmartDashboard.putData("Elevator Auto Zero", autoZero);
-        
-        Button elevatorMinPositionSD = new InternalButton();
-        elevatorMinPositionSD.whenPressed(new ElevatorSetPositionMP(Elevator.MIN_POSITION_INCHES));
-        SmartDashboard.putData("Elevator Min Position", elevatorMinPositionSD);
-        
-        Button elevatorSwitchPositionSD = new InternalButton();
-        elevatorSwitchPositionSD.whenPressed(new ElevatorSetPositionMP(Elevator.SWITCH_POSITION_INCHES));
-        SmartDashboard.putData("Elevator Switch Position", elevatorSwitchPositionSD);
-        
-        Button elevatorScaleLowPositionSD = new InternalButton();
-        elevatorScaleLowPositionSD.whenPressed(new ElevatorSetPositionMP(Elevator.SCALE_LOW_POSITION_INCHES));
-        SmartDashboard.putData("Elevator Scale Low Position", elevatorScaleLowPositionSD);
-        
-        Button elevatorScaleHighPositionSD = new InternalButton();
-        elevatorScaleHighPositionSD.whenPressed(new ElevatorSetPositionMP(Elevator.SCALE_HIGH_POSITION_INCHES));
-        SmartDashboard.putData("Elevator Scale High Position", elevatorScaleHighPositionSD);
-        
-        Button elevatorMaxPositionSD = new InternalButton();
-        elevatorMaxPositionSD.whenPressed(new ElevatorSetPositionMP(Elevator.MAX_POSITION_INCHES));
-        SmartDashboard.putData("Elevator Max Position", elevatorMaxPositionSD);
-        
-        Button elevatorLo = new InternalButton();
-        elevatorLo.whenPressed(new ElevatorSpeedShift(Elevator.ElevatorSpeedShiftState.LO));
-        SmartDashboard.putData("Elevator Lo Shift", elevatorLo);
-        
-        Button elevatorHi = new InternalButton();
-        elevatorHi.whenPressed(new ElevatorSpeedShift(Elevator.ElevatorSpeedShiftState.HI));
-        SmartDashboard.putData("Elevator Hi Shift", elevatorHi);
-        
-        Button elevatorButtonUp = new InternalButton();
-        elevatorButtonUp.whenPressed(new ElevatorSetSpeed(Elevator.TEST_SPEED_UP));
-        elevatorButtonUp.whenReleased(new ElevatorSetSpeed(0.0));
-        SmartDashboard.putData("Elevator Up", elevatorButtonUp);
-        
-        Button elevatorButtonDown = new InternalButton();;
-        elevatorButtonDown.whenPressed(new ElevatorSetSpeed(Elevator.TEST_SPEED_DOWN));
-        elevatorButtonDown.whenReleased(new ElevatorSetSpeed(0.0));
-        SmartDashboard.putData("Elevator Down", elevatorButtonDown);
+        SmartDashboard.putData("Elevator Auto Zero", new ElevatorAutoZero(false));
+        SmartDashboard.putData("Elevator Min Position", new ElevatorSetPositionMP(Elevator.MIN_POSITION_INCHES));
+        SmartDashboard.putData("Elevator Switch Position", new ElevatorSetPositionMP(Elevator.SWITCH_POSITION_INCHES));
+        SmartDashboard.putData("Elevator Scale Low Position", new ElevatorSetPositionMP(Elevator.SCALE_LOW_POSITION_INCHES));
+        SmartDashboard.putData("Elevator Scale High Position", new ElevatorSetPositionMP(Elevator.SCALE_HIGH_POSITION_INCHES));
+        SmartDashboard.putData("Elevator Max Position", new ElevatorSetPositionMP(Elevator.MAX_POSITION_INCHES));
+        SmartDashboard.putData("Elevator Lo Shift", new ElevatorSpeedShift(Elevator.ElevatorSpeedShiftState.LO));
+        SmartDashboard.putData("Elevator Hi Shift", new ElevatorSpeedShift(Elevator.ElevatorSpeedShiftState.HI));
+        SmartDashboard.putData("Elevator Manual Up", new ElevatorSetSpeed(Elevator.TEST_SPEED_UP));
+        SmartDashboard.putData("Elevator Manual Down", new ElevatorSetSpeed(Elevator.TEST_SPEED_DOWN));
+		SmartDashboard.putData("Elevator Reset Encoder", new ElevatorResetZero());
 
-		Button flipLeft = new InternalButton();
-		flipLeft.whenPressed(new FlipperFlip(FlipperSide.LEFT, FlipperState.DEPLOYED));
-		SmartDashboard.putData("Flip Cube Left Deployed", flipLeft);
-		
-		Button flipRight = new InternalButton();
-		flipRight.whenPressed(new FlipperFlip(FlipperSide.RIGHT, FlipperState.DEPLOYED));
-		SmartDashboard.putData("Flip Cube Right Deployed", flipRight);
-		
-		Button flipRightRetract = new InternalButton();
-		flipRightRetract.whenPressed(new FlipperFlip(FlipperSide.RIGHT, FlipperState.RETRACTED));
-		SmartDashboard.putData("Flip Cube Right Retracted", flipRightRetract);
-		
-		Button flipLeftRetract = new InternalButton();
-		flipLeftRetract.whenPressed(new FlipperFlip(FlipperSide.LEFT, FlipperState.RETRACTED));
-		SmartDashboard.putData("Flip Cube Left Retracted", flipLeftRetract);
-		
-		Button intakeOn = new InternalButton();
-		intakeOn.whenPressed(new IntakeSetSpeed(Intake.INTAKE_LOAD_SPEED));
-		SmartDashboard.putData("Intake On", intakeOn);
-		
-		Button intakeOff = new InternalButton();
-		intakeOff.whenPressed(new IntakeSetSpeed(0.0));
-		SmartDashboard.putData("Intake Off", intakeOff);
-		
-		Button driveMP = new InternalButton();
-		driveMP.whenPressed(new DriveStraightMP(72, Drive.MP_AUTON_MAX_STRAIGHT_VELOCITY_INCHES_PER_SEC, true, false, 0));
-		SmartDashboard.putData("Drive Straight MP", driveMP);
+        SmartDashboard.putData("Flip Cube Left Deployed", new FlipperFlip(FlipperSide.LEFT, FlipperState.DEPLOYED));
+		SmartDashboard.putData("Flip Cube Right Deployed", new FlipperFlip(FlipperSide.RIGHT, FlipperState.DEPLOYED));
+		SmartDashboard.putData("Flip Cube Right Retracted", new FlipperFlip(FlipperSide.RIGHT, FlipperState.RETRACTED));
+		SmartDashboard.putData("Flip Cube Left Retracted", new FlipperFlip(FlipperSide.LEFT, FlipperState.RETRACTED));
+
+		SmartDashboard.putData("Intake On", new IntakeSetSpeed(Intake.INTAKE_LOAD_SPEED));
+		SmartDashboard.putData("Intake Off", new IntakeSetSpeed(0.0));
+        SmartDashboard.putData("Intake Cube", new IntakeSetSpeedFrontSensorOff(Intake.INTAKE_LOAD_SPEED));
+
+        SmartDashboard.putData("Drive Straight MP", new DriveStraightMP(72, Drive.MP_AUTON_MAX_STRAIGHT_VELOCITY_INCHES_PER_SEC, true, false, 0));
+		SmartDashboard.putData("Drive Adaptive Pursuit", new DrivePathAdaptivePursuit(new CenterTest()));
+
+		SmartDashboard.putData("Drive Reset Gyro ", new DriveResetGyro());
+		SmartDashboard.putData("Drive Reset Encoder", new DriveResetEncoders());
+
+        // Smart Dashboard
+//        Button rampLatchClose = new InternalButton();
+//        rampLatchClose.whenPressed(new RampSetLatchPosition(RampLatch.STOWED));
+//        SmartDashboard.putData("Ramp Latch Close", rampLatchClose);
+//        
+//        Button rampPullRetract = new InternalButton();
+//        rampPullRetract.whenPressed(new RampSetPullPosition(RampPull.UP));
+//        SmartDashboard.putData("Ramp Pull Retract", rampPullRetract);
+//
+//        Button intakeCubeSD = new InternalButton();
+//        intakeCubeSD.whenPressed(new IntakeSetSpeedFrontSensorOff(Intake.INTAKE_LOAD_SPEED));
+//        SmartDashboard.putData("Intake Cube", intakeCube);
+//        
+//        Button autoZero = new InternalButton();
+//        autoZero.whenPressed(new ElevatorAutoZero(false));
+//        SmartDashboard.putData("Elevator Auto Zero", autoZero);
+//        
+//        Button elevatorMinPositionSD = new InternalButton();
+//        elevatorMinPositionSD.whenPressed(new ElevatorSetPositionMP(Elevator.MIN_POSITION_INCHES));
+//        SmartDashboard.putData("Elevator Min Position", elevatorMinPositionSD);
+//        
+//        Button elevatorSwitchPositionSD = new InternalButton();
+//        elevatorSwitchPositionSD.whenPressed(new ElevatorSetPositionMP(Elevator.SWITCH_POSITION_INCHES));
+//        SmartDashboard.putData("Elevator Switch Position", elevatorSwitchPositionSD);
+//        
+//        Button elevatorScaleLowPositionSD = new InternalButton();
+//        elevatorScaleLowPositionSD.whenPressed(new ElevatorSetPositionMP(Elevator.SCALE_LOW_POSITION_INCHES));
+//        SmartDashboard.putData("Elevator Scale Low Position", elevatorScaleLowPositionSD);
+//        
+//        Button elevatorScaleHighPositionSD = new InternalButton();
+//        elevatorScaleHighPositionSD.whenPressed(new ElevatorSetPositionMP(Elevator.SCALE_HIGH_POSITION_INCHES));
+//        SmartDashboard.putData("Elevator Scale High Position", elevatorScaleHighPositionSD);
+//        
+//        Button elevatorMaxPositionSD = new InternalButton();
+//        elevatorMaxPositionSD.whenPressed(new ElevatorSetPositionMP(Elevator.MAX_POSITION_INCHES));
+//        SmartDashboard.putData("Elevator Max Position", elevatorMaxPositionSD);
+//        
+//        Button elevatorLo = new InternalButton();
+//        elevatorLo.whenPressed(new ElevatorSpeedShift(Elevator.ElevatorSpeedShiftState.LO));
+//        SmartDashboard.putData("Elevator Lo Shift", elevatorLo);
+//        
+//        Button elevatorHi = new InternalButton();
+//        elevatorHi.whenPressed(new ElevatorSpeedShift(Elevator.ElevatorSpeedShiftState.HI));
+//        SmartDashboard.putData("Elevator Hi Shift", elevatorHi);
+//        
+//        Button elevatorButtonUp = new InternalButton();
+//        elevatorButtonUp.whenPressed(new ElevatorSetSpeed(Elevator.TEST_SPEED_UP));
+//        elevatorButtonUp.whenReleased(new ElevatorSetSpeed(0.0));
+//        SmartDashboard.putData("Elevator Up", elevatorButtonUp);
+//        
+//        Button elevatorButtonDown = new InternalButton();;
+//        elevatorButtonDown.whenPressed(new ElevatorSetSpeed(Elevator.TEST_SPEED_DOWN));
+//        elevatorButtonDown.whenReleased(new ElevatorSetSpeed(0.0));
+//        SmartDashboard.putData("Elevator Down", elevatorButtonDown);
+//
+//		Button flipLeft = new InternalButton();
+//		flipLeft.whenPressed(new FlipperFlip(FlipperSide.LEFT, FlipperState.DEPLOYED));
+//		SmartDashboard.putData("Flip Cube Left Deployed", flipLeft);
+//		
+//		Button flipRight = new InternalButton();
+//		flipRight.whenPressed(new FlipperFlip(FlipperSide.RIGHT, FlipperState.DEPLOYED));
+//		SmartDashboard.putData("Flip Cube Right Deployed", flipRight);
+//		
+//		Button flipRightRetract = new InternalButton();
+//		flipRightRetract.whenPressed(new FlipperFlip(FlipperSide.RIGHT, FlipperState.RETRACTED));
+//		SmartDashboard.putData("Flip Cube Right Retracted", flipRightRetract);
+//		
+//		Button flipLeftRetract = new InternalButton();
+//		flipLeftRetract.whenPressed(new FlipperFlip(FlipperSide.LEFT, FlipperState.RETRACTED));
+//		SmartDashboard.putData("Flip Cube Left Retracted", flipLeftRetract);
+//		
+//		Button intakeOn = new InternalButton();
+//		intakeOn.whenPressed(new IntakeSetSpeed(Intake.INTAKE_LOAD_SPEED));
+//		SmartDashboard.putData("Intake On", intakeOn);
+//		
+//		Button intakeOff = new InternalButton();
+//		intakeOff.whenPressed(new IntakeSetSpeed(0.0));
+//		SmartDashboard.putData("Intake Off", intakeOff);
+//		
+//		Button driveMP = new InternalButton();
+//		driveMP.whenPressed(new DriveStraightMP(72, Drive.MP_AUTON_MAX_STRAIGHT_VELOCITY_INCHES_PER_SEC, true, false, 0));
+//		SmartDashboard.putData("Drive Straight MP", driveMP);
 
 		// Center back around switch to scale
 //		List<Waypoint> waypoints = new ArrayList<>();
@@ -247,13 +277,13 @@ public class OI {
 //		waypoints.add(new Waypoint(new Translation2d(100, -160), 50.0, 20.0));
 //		waypoints.add(new Waypoint(new Translation2d(85, -260), 50.0));
 
-		Button driveAP = new InternalButton();
-		driveAP.whenPressed(new DrivePathAdaptivePursuit(new CenterTest()));
-		SmartDashboard.putData("Drive Adaptive Pursuit", driveAP);
-
-		Button gyroReset = new InternalButton();
-		gyroReset.whenPressed(new DriveResetGyro());
-		SmartDashboard.putData("Gyro Reset", gyroReset);
+//		Button driveAP = new InternalButton();
+//		driveAP.whenPressed(new DrivePathAdaptivePursuit(new CenterTest()));
+//		SmartDashboard.putData("Drive Adaptive Pursuit", driveAP);
+//
+//		Button gyroReset = new InternalButton();
+//		gyroReset.whenPressed(new DriveResetGyro());
+//		SmartDashboard.putData("Gyro Reset", gyroReset);
 
 		m_driverXbox.getLeftBumperButton();
 	}

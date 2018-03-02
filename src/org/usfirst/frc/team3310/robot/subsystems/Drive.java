@@ -32,6 +32,9 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -206,7 +209,7 @@ public class Drive extends Subsystem implements Loop
 			gyroPigeon = new PigeonIMU(rightDrive2);
 			
 			speedShift = new Solenoid(RobotMap.DRIVETRAIN_SPEEDSHIFT_PCM_ID);
-			
+									
 			loadGains();
         	setBrakeMode(true);
 		}
@@ -737,6 +740,15 @@ public class Drive extends Subsystem implements Loop
 				SmartDashboard.putNumber("Drive Right 3 Amps", rightDrive3.getOutputCurrent());
 				SmartDashboard.putNumber("Drive Right Average Amps", getAverageRightCurrent());
 				SmartDashboard.putNumber("Yaw Angle Deg", getGyroAngleDeg());
+				SmartDashboard.putData("Diff Drive", m_drive);
+				NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+				NetworkTableEntry tx = table.getEntry("tx");
+				NetworkTableEntry ty = table.getEntry("ty");
+				NetworkTableEntry ta = table.getEntry("ta");
+				SmartDashboard.putNumber("Limelight Valid", table.getEntry("tv").getDouble(0));
+				SmartDashboard.putNumber("Limelight X", table.getEntry("tx").getDouble(0));
+				SmartDashboard.putNumber("Limelight Y", table.getEntry("ty").getDouble(0));
+				SmartDashboard.putNumber("Limelight Area", table.getEntry("ta").getDouble(0));
 			}
 			catch (Exception e) {
 			}

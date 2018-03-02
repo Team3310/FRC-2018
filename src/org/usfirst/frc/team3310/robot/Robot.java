@@ -21,6 +21,7 @@ import org.usfirst.frc.team3310.utility.control.RobotStateEstimator;
 import org.usfirst.frc.team3310.utility.math.RigidTransform2d;
 
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -97,6 +98,8 @@ public class Robot extends TimedRobot {
 		LiveWindow.disableAllTelemetry();
 
 		zeroAllSensors();
+
+		NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1); 
 	}  
 	
 	// Called every loop for all modes
@@ -106,6 +109,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledInit() {
+		NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1); 
 	}
 
 	@Override
@@ -123,6 +127,8 @@ public class Robot extends TimedRobot {
     	elevator.setShiftState(Elevator.ElevatorSpeedShiftState.HI);
     	elevator.resetZeroPosition(Elevator.ZERO_POSITION_INCHES);
         zeroAllSensors();
+
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(0); 
 
 		if (autonomousCommand != null) {
 			autonomousCommand.start();
@@ -148,6 +154,8 @@ public class Robot extends TimedRobot {
     	drive.endGyroCalibration();
     	elevator.setShiftState(Elevator.ElevatorSpeedShiftState.HI);
         zeroAllSensors();
+
+        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(0); 
     	
     	if (operationMode != OperationMode.COMPETITION) {
     		Scheduler.getInstance().add(new ElevatorAutoZero(false));
