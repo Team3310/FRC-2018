@@ -1,176 +1,202 @@
 {
-  "dividerPosition": 0.2578947368421053,
+  "dividerPosition": 0.003157894736842105,
   "tabPane": [
     {
-      "title": "Tab 1",
+      "title": "Motor Amps",
       "autoPopulate": false,
       "autoPopulatePrefix": "",
       "widgetPane": {
-        "gridSize": 128.0,
+        "gridSize": 32.0,
         "showGrid": true,
         "hgap": 16.0,
         "vgap": 16.0,
         "tiles": {
           "0,0": {
             "size": [
-              1,
-              1
+              6,
+              8
             ],
             "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///SmartDashboard/Intake Front Sensor",
-              "_title": "SmartDashboard/Intake Front Sensor",
-              "colorWhenTrue": "#7CFC00FF",
-              "colorWhenFalse": "#8B0000FF"
+              "_type": "List Layout",
+              "_title": "Left Drive",
+              "_children": [
+                {
+                  "_type": "Number Bar",
+                  "_source0": "network_table:///SmartDashboard/Drive Left 1 Amps",
+                  "_title": "Drive Left 1",
+                  "min": 0.0,
+                  "max": 30.0,
+                  "center": 0.0,
+                  "numTickMarks": 4.0,
+                  "showText": true
+                },
+                {
+                  "_type": "Number Bar",
+                  "_source0": "network_table:///SmartDashboard/Drive Left 2 Amps",
+                  "_title": "Drive Left 2",
+                  "min": 0.0,
+                  "max": 30.0,
+                  "center": 0.0,
+                  "numTickMarks": 4.0,
+                  "showText": true
+                },
+                {
+                  "_type": "Number Bar",
+                  "_source0": "network_table:///SmartDashboard/Drive Left 3 Amps",
+                  "_title": "Drive Left 3",
+                  "min": 0.0,
+                  "max": 30.0,
+                  "center": 0.0,
+                  "numTickMarks": 4.0,
+                  "showText": true
+                },
+                {
+                  "_type": "Number Bar",
+                  "_source0": "network_table:///SmartDashboard/Drive Left Average Amps",
+                  "_title": "Drive Left Average Amps",
+                  "min": 0.0,
+                  "max": 30.0,
+                  "center": 0.0,
+                  "numTickMarks": 4.0,
+                  "showText": true
+                }
+              ]
             }
           },
-          "1,0": {
+          "6,0": {
             "size": [
-              1,
-              1
+              6,
+              8
             ],
             "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Drive Left Position Inches",
-              "_title": "SmartDashboard/Drive Left Position Inches"
+              "_type": "List Layout",
+              "_title": "Right Drive",
+              "_children": [
+                {
+                  "_type": "Number Bar",
+                  "_source0": "network_table:///SmartDashboard/Drive Right 1 Amps",
+                  "_title": "Drive Right 1",
+                  "min": 0.0,
+                  "max": 30.0,
+                  "center": 0.0,
+                  "numTickMarks": 4.0,
+                  "showText": true
+                },
+                {
+                  "_type": "Number Bar",
+                  "_source0": "network_table:///SmartDashboard/Drive Right 2 Amps",
+                  "_title": "Drive Right 2",
+                  "min": 0.0,
+                  "max": 30.0,
+                  "center": 0.0,
+                  "numTickMarks": 4.0,
+                  "showText": true
+                },
+                {
+                  "_type": "Number Bar",
+                  "_source0": "network_table:///SmartDashboard/Drive Right 3 Amps",
+                  "_title": "Drive Right 3",
+                  "min": 0.0,
+                  "max": 30.0,
+                  "center": 0.0,
+                  "numTickMarks": 4.0,
+                  "showText": true
+                },
+                {
+                  "_type": "Number Bar",
+                  "_source0": "network_table:///SmartDashboard/Drive Right Average Amps",
+                  "_title": "Drive Right Average Amps",
+                  "min": 0.0,
+                  "max": 30.0,
+                  "center": 0.0,
+                  "numTickMarks": 4.0,
+                  "showText": true
+                }
+              ]
             }
           },
-          "2,0": {
+          "12,0": {
             "size": [
-              1,
-              1
+              6,
+              8
             ],
             "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Drive Right Position Inches",
-              "_title": "SmartDashboard/Drive Right Position Inches"
+              "_type": "List Layout",
+              "_title": "Elevator",
+              "_children": [
+                {
+                  "_type": "Number Bar",
+                  "_source0": "network_table:///SmartDashboard/Elevator Motor 1 Amps",
+                  "_title": "Elevator Motor 1",
+                  "min": 0.0,
+                  "max": 30.0,
+                  "center": 0.0,
+                  "numTickMarks": 4.0,
+                  "showText": true
+                },
+                {
+                  "_type": "Number Bar",
+                  "_source0": "network_table:///SmartDashboard/Elevator Motor 2 Amps",
+                  "_title": "Elevator Motor 2",
+                  "min": 0.0,
+                  "max": 30.0,
+                  "center": 0.0,
+                  "numTickMarks": 4.0,
+                  "showText": true
+                },
+                {
+                  "_type": "Number Bar",
+                  "_source0": "network_table:///SmartDashboard/Elevator Motor 3 Amps",
+                  "_title": "Elevator Motor 3",
+                  "min": 0.0,
+                  "max": 30.0,
+                  "center": 0.0,
+                  "numTickMarks": 4.0,
+                  "showText": true
+                },
+                {
+                  "_type": "Number Bar",
+                  "_source0": "network_table:///SmartDashboard/Elevator Average Amps",
+                  "_title": "Elevator Average Amps",
+                  "min": 0.0,
+                  "max": 30.0,
+                  "center": 0.0,
+                  "numTickMarks": 4.0,
+                  "showText": true
+                }
+              ]
             }
           },
-          "3,0": {
+          "24,0": {
             "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Elevator Motor 1 Amps PDP",
-              "_title": "SmartDashboard/Elevator Motor 1 Amps PDP"
-            }
-          },
-          "3,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Elevator Motor 2 Amps PDP",
-              "_title": "SmartDashboard/Elevator Motor 2 Amps PDP"
-            }
-          },
-          "3,2": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Elevator Motor 3 Amps PDP",
-              "_title": "SmartDashboard/Elevator Motor 3 Amps PDP"
-            }
-          },
-          "0,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Yaw Angle Pigeon Deg",
-              "_title": "Yaw Angle Pigeon Deg"
-            }
-          },
-          "3,3": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Elevator Position Inches",
-              "_title": "Elevator Position Inches"
-            }
-          },
-          "5,0": {
-            "size": [
-              2,
-              2
-            ],
-            "content": {
-              "_type": "PDP",
-              "_source0": "network_table:///LiveWindow/Ungrouped/PowerDistributionPanel[0]",
-              "_title": "/LiveWindow/Ungrouped/PowerDistributionPanel[0]",
-              "showIndicatorText": true
-            }
-          },
-          "7,0": {
-            "size": [
-              2,
+              6,
               3
             ],
             "content": {
-              "_type": "Powerup Field",
-              "_title": ""
+              "_type": "Number Bar",
+              "_source0": "network_table:///SmartDashboard/Left Intake Amps",
+              "_title": "Left Intake Amps",
+              "min": 0.0,
+              "max": 30.0,
+              "center": 0.0,
+              "numTickMarks": 4.0,
+              "showText": true
             }
           },
-          "6,3": {
+          "18,0": {
             "size": [
-              3,
-              2
+              6,
+              3
             ],
             "content": {
-              "_type": "Differential Drivebase",
-              "_title": "",
-              "numberOfWheels": 4,
-              "wheelDiameter": 80.0,
-              "showVectors": true
-            }
-          },
-          "5,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Boolean Box",
-              "_source0": "network_table:///FMSInfo/IsRedAlliance",
-              "_title": "/FMSInfo/IsRedAlliance",
-              "colorWhenTrue": "#7CFC00FF",
-              "colorWhenFalse": "#8B0000FF"
-            }
-          }
-        }
-      }
-    },
-    {
-      "title": "Tab 2",
-      "autoPopulate": false,
-      "autoPopulatePrefix": "",
-      "widgetPane": {
-        "gridSize": 64.0,
-        "showGrid": true,
-        "hgap": 16.0,
-        "vgap": 16.0,
-        "tiles": {
-          "0,1": {
-            "size": [
-              3,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Drive Left 1 Amps",
-              "_title": "/SmartDashboard/Drive Left 1 Amps"
+              "_type": "Number Bar",
+              "_source0": "network_table:///SmartDashboard/Right Intake Amps",
+              "_title": "Right Intake Amps",
+              "min": 0.0,
+              "max": 30.0,
+              "center": 0.0,
+              "numTickMarks": 4.0,
+              "showText": true
             }
           }
         }
@@ -186,39 +212,6 @@
         "hgap": 16.0,
         "vgap": 16.0,
         "tiles": {
-          "0,1": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Drive Left 1 Amps",
-              "_title": "/SmartDashboard/Drive Left 1 Amps"
-            }
-          },
-          "0,3": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Drive Left 2 Amps",
-              "_title": "/SmartDashboard/Drive Left 2 Amps"
-            }
-          },
-          "0,5": {
-            "size": [
-              4,
-              2
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Drive Left 3 Amps",
-              "_title": "/SmartDashboard/Drive Left 3 Amps"
-            }
-          },
           "4,1": {
             "size": [
               4,
@@ -252,7 +245,7 @@
               "_title": "/SmartDashboard/Drive Right 3 Amps"
             }
           },
-          "0,7": {
+          "0,10": {
             "size": [
               4,
               2
@@ -432,6 +425,208 @@
               "_title": "/SmartDashboard/Intake Off/pressed",
               "colorWhenTrue": "#7CFC00FF",
               "colorWhenFalse": "#8B0000FF"
+            }
+          },
+          "0,0": {
+            "size": [
+              4,
+              9
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "Left Drive",
+              "_children": [
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Drive Left 1 Amps",
+                  "_title": "/SmartDashboard/Drive Left 1 Amps"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Drive Left 2 Amps",
+                  "_title": "/SmartDashboard/Drive Left 2 Amps"
+                },
+                {
+                  "_type": "Text View",
+                  "_source0": "network_table:///SmartDashboard/Drive Left 3 Amps",
+                  "_title": "/SmartDashboard/Drive Left 3 Amps"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Tab 1",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "0,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Intake Front Sensor",
+              "_title": "SmartDashboard/Intake Front Sensor",
+              "colorWhenTrue": "#7CFC00FF",
+              "colorWhenFalse": "#8B0000FF"
+            }
+          },
+          "1,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Drive Left Position Inches",
+              "_title": "SmartDashboard/Drive Left Position Inches"
+            }
+          },
+          "2,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Drive Right Position Inches",
+              "_title": "SmartDashboard/Drive Right Position Inches"
+            }
+          },
+          "3,0": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Elevator Motor 1 Amps PDP",
+              "_title": "SmartDashboard/Elevator Motor 1 Amps PDP"
+            }
+          },
+          "3,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Elevator Motor 2 Amps PDP",
+              "_title": "SmartDashboard/Elevator Motor 2 Amps PDP"
+            }
+          },
+          "3,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Elevator Motor 3 Amps PDP",
+              "_title": "SmartDashboard/Elevator Motor 3 Amps PDP"
+            }
+          },
+          "0,1": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Yaw Angle Pigeon Deg",
+              "_title": "Yaw Angle Pigeon Deg"
+            }
+          },
+          "3,3": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Elevator Position Inches",
+              "_title": "Elevator Position Inches"
+            }
+          },
+          "5,0": {
+            "size": [
+              2,
+              2
+            ],
+            "content": {
+              "_type": "PDP",
+              "_source0": "network_table:///LiveWindow/Ungrouped/PowerDistributionPanel[0]",
+              "_title": "/LiveWindow/Ungrouped/PowerDistributionPanel[0]",
+              "showIndicatorText": true
+            }
+          },
+          "7,0": {
+            "size": [
+              2,
+              3
+            ],
+            "content": {
+              "_type": "Powerup Field",
+              "_title": ""
+            }
+          },
+          "6,3": {
+            "size": [
+              3,
+              2
+            ],
+            "content": {
+              "_type": "Differential Drivebase",
+              "_title": "",
+              "numberOfWheels": 4,
+              "wheelDiameter": 80.0,
+              "showVectors": true
+            }
+          },
+          "5,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///FMSInfo/IsRedAlliance",
+              "_title": "/FMSInfo/IsRedAlliance",
+              "colorWhenTrue": "#7CFC00FF",
+              "colorWhenFalse": "#8B0000FF"
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Tab 2",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 64.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "0,1": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Drive Left 1 Amps",
+              "_title": "/SmartDashboard/Drive Left 1 Amps"
             }
           }
         }
