@@ -83,6 +83,8 @@ public class Intake extends Subsystem
 				SmartDashboard.putBoolean("Intake Front VEX Sensor", getFrontVEXIntakeSensor());
 				SmartDashboard.putBoolean("Intake Front IR Sensor", getFrontIRIntakeSensor());
 				SmartDashboard.putBoolean("Intake Back Sensor", getBackIntakeSensor());
+				SmartDashboard.putNumber("Left Intake Amps", leftArm.getOutputCurrent());
+				SmartDashboard.putNumber("Right Intake Amps", rightArm.getOutputCurrent());
 			}
 			catch (Exception e) {
 			}

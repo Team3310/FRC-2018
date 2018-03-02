@@ -714,6 +714,14 @@ public class Drive extends Subsystem implements Loop
     public double getLeftVelocityInchesPerSec() {
     	return leftDrive1.getVelocityWorld();
     }
+    
+    public double getAverageLeftCurrent() {
+    	return (leftDrive1.getOutputCurrent() + leftDrive2.getOutputCurrent() + leftDrive3.getOutputCurrent()) / 3;
+    }
+
+    public double getAverageRightCurrent() {
+    	return (rightDrive1.getOutputCurrent() + rightDrive2.getOutputCurrent() + rightDrive3.getOutputCurrent()) / 3;
+    }
 
 	public void updateStatus(Robot.OperationMode operationMode) {
 		if (operationMode == Robot.OperationMode.TEST) {
@@ -721,19 +729,14 @@ public class Drive extends Subsystem implements Loop
 				SmartDashboard.putNumber("Drive Right Position Inches", rightDrive1.getPositionWorld());
 				SmartDashboard.putNumber("Drive Left Position Inches", leftDrive1.getPositionWorld());
 				SmartDashboard.putNumber("Drive Left 1 Amps", leftDrive1.getOutputCurrent());
-				SmartDashboard.putNumber("Drive Left 2 Amps", leftDrive1.getOutputCurrent());
-				SmartDashboard.putNumber("Drive Left 3 Amps", leftDrive1.getOutputCurrent());
+				SmartDashboard.putNumber("Drive Left 2 Amps", leftDrive2.getOutputCurrent());
+				SmartDashboard.putNumber("Drive Left 3 Amps", leftDrive3.getOutputCurrent());
+				SmartDashboard.putNumber("Drive Left Average Amps", getAverageLeftCurrent());
 				SmartDashboard.putNumber("Drive Right 1 Amps", rightDrive1.getOutputCurrent());
 				SmartDashboard.putNumber("Drive Right 2 Amps", rightDrive2.getOutputCurrent());
 				SmartDashboard.putNumber("Drive Right 3 Amps", rightDrive3.getOutputCurrent());
+				SmartDashboard.putNumber("Drive Right Average Amps", getAverageRightCurrent());
 				SmartDashboard.putNumber("Yaw Angle Deg", getGyroAngleDeg());
-
-//				SmartDashboard.putNumber("Drive Left 1 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_LEFT_MOTOR1_CAN_ID));
-//				SmartDashboard.putNumber("Drive Left 2 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_LEFT_MOTOR2_CAN_ID));
-//				SmartDashboard.putNumber("Drive Left 3 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_LEFT_MOTOR3_CAN_ID));
-//				SmartDashboard.putNumber("Drive Right 1 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_RIGHT_MOTOR1_CAN_ID));
-//				SmartDashboard.putNumber("Drive Right 2 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_RIGHT_MOTOR2_CAN_ID));
-//				SmartDashboard.putNumber("Drive Right 3 Amps", Robot.pdp.getCurrent(RobotMap.DRIVETRAIN_RIGHT_MOTOR3_CAN_ID));
 			}
 			catch (Exception e) {
 			}

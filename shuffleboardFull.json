@@ -1,0 +1,410 @@
+{
+  "dividerPosition": 0.23473684210526316,
+  "tabPane": [
+    {
+      "title": "Main",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 16.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "0,0": {
+            "size": [
+              4,
+              3
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///FMSInfo/IsRedAlliance",
+              "_title": "Is Red Alliance",
+              "colorWhenTrue": "#FF0000FF",
+              "colorWhenFalse": "#0000FFFF"
+            }
+          },
+          "4,0": {
+            "size": [
+              4,
+              3
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///FMSInfo/MatchNumber",
+              "_title": "Match Number"
+            }
+          },
+          "8,0": {
+            "size": [
+              4,
+              3
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///FMSInfo/StationNumber",
+              "_title": "Station Number"
+            }
+          },
+          "12,0": {
+            "size": [
+              4,
+              3
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///FMSInfo/GameSpecificMessage",
+              "_title": "Game Data"
+            }
+          },
+          "0,3": {
+            "size": [
+              16,
+              4
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Auton Tasks",
+              "_title": "Auton Chooser"
+            }
+          },
+          "32,7": {
+            "size": [
+              5,
+              3
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Operation Mode",
+              "_title": "Operation Mode"
+            }
+          },
+          "16,0": {
+            "size": [
+              7,
+              7
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Intake Front IR Sensor",
+              "_title": "Intake Front IR Sensor",
+              "colorWhenTrue": "#7CFC00FF",
+              "colorWhenFalse": "#FFFF00FF"
+            }
+          },
+          "23,0": {
+            "size": [
+              7,
+              7
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Intake Front VEX Sensor",
+              "_title": "Intake Front VEX Sensor",
+              "colorWhenTrue": "#00FF00FF",
+              "colorWhenFalse": "#FFFF00FF"
+            }
+          },
+          "30,0": {
+            "size": [
+              7,
+              7
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Intake Back Sensor",
+              "_title": "Intake Back Sensor",
+              "colorWhenTrue": "#FFFFFFFF",
+              "colorWhenFalse": "#00FF00FF"
+            }
+          },
+          "37,0": {
+            "size": [
+              7,
+              3
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Yaw Angle Deg",
+              "_title": "Yaw Angle Deg"
+            }
+          },
+          "37,12": {
+            "size": [
+              7,
+              3
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Elevator Average Amps",
+              "_title": "Elevator Average Amps"
+            }
+          },
+          "37,6": {
+            "size": [
+              7,
+              3
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Drive Right Position Inches",
+              "_title": "Drive Right Position Inches"
+            }
+          },
+          "37,3": {
+            "size": [
+              7,
+              3
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Drive Left Position Inches",
+              "_title": "Drive Left Position Inches"
+            }
+          },
+          "37,9": {
+            "size": [
+              7,
+              3
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Elevator Position Inches",
+              "_title": "Elevator Position Inches"
+            }
+          },
+          "0,7": {
+            "size": [
+              13,
+              9
+            ],
+            "content": {
+              "_type": "PDP",
+              "_title": "PDP",
+              "showIndicatorText": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "title": "Motor Amps",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 32.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "tiles": {
+          "0,3": {
+            "size": [
+              6,
+              8
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "Left Drive",
+              "_children": [
+                {
+                  "_type": "Number Bar",
+                  "_source0": "network_table:///SmartDashboard/Drive Left 1 Amps",
+                  "_title": "Drive Left 1",
+                  "min": 0.0,
+                  "max": 30.0,
+                  "center": 0.0,
+                  "numTickMarks": 4.0,
+                  "showText": true
+                },
+                {
+                  "_type": "Number Bar",
+                  "_source0": "network_table:///SmartDashboard/Drive Left 2 Amps",
+                  "_title": "Drive Left 2",
+                  "min": 0.0,
+                  "max": 30.0,
+                  "center": 0.0,
+                  "numTickMarks": 4.0,
+                  "showText": true
+                },
+                {
+                  "_type": "Number Bar",
+                  "_source0": "network_table:///SmartDashboard/Drive Left 3 Amps",
+                  "_title": "Drive Left 3",
+                  "min": 0.0,
+                  "max": 30.0,
+                  "center": 0.0,
+                  "numTickMarks": 4.0,
+                  "showText": true
+                }
+              ]
+            }
+          },
+          "6,3": {
+            "size": [
+              6,
+              8
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "Right Drive",
+              "_children": [
+                {
+                  "_type": "Number Bar",
+                  "_source0": "network_table:///SmartDashboard/Drive Right 1 Amps",
+                  "_title": "Drive Right 1",
+                  "min": 0.0,
+                  "max": 30.0,
+                  "center": 0.0,
+                  "numTickMarks": 4.0,
+                  "showText": true
+                },
+                {
+                  "_type": "Number Bar",
+                  "_source0": "network_table:///SmartDashboard/Drive Right 2 Amps",
+                  "_title": "Drive Right 2",
+                  "min": 0.0,
+                  "max": 30.0,
+                  "center": 0.0,
+                  "numTickMarks": 4.0,
+                  "showText": true
+                },
+                {
+                  "_type": "Number Bar",
+                  "_source0": "network_table:///SmartDashboard/Drive Right 3 Amps",
+                  "_title": "Drive Right 3",
+                  "min": 0.0,
+                  "max": 30.0,
+                  "center": 0.0,
+                  "numTickMarks": 4.0,
+                  "showText": true
+                }
+              ]
+            }
+          },
+          "12,3": {
+            "size": [
+              6,
+              8
+            ],
+            "content": {
+              "_type": "List Layout",
+              "_title": "Elevator",
+              "_children": [
+                {
+                  "_type": "Number Bar",
+                  "_source0": "network_table:///SmartDashboard/Elevator Motor 1 Amps",
+                  "_title": "Elevator Motor 1",
+                  "min": 0.0,
+                  "max": 30.0,
+                  "center": 0.0,
+                  "numTickMarks": 4.0,
+                  "showText": true
+                },
+                {
+                  "_type": "Number Bar",
+                  "_source0": "network_table:///SmartDashboard/Elevator Motor 2 Amps",
+                  "_title": "Elevator Motor 2",
+                  "min": 0.0,
+                  "max": 30.0,
+                  "center": 0.0,
+                  "numTickMarks": 4.0,
+                  "showText": true
+                },
+                {
+                  "_type": "Number Bar",
+                  "_source0": "network_table:///SmartDashboard/Elevator Motor 3 Amps",
+                  "_title": "Elevator Motor 3",
+                  "min": 0.0,
+                  "max": 30.0,
+                  "center": 0.0,
+                  "numTickMarks": 4.0,
+                  "showText": true
+                }
+              ]
+            }
+          },
+          "12,0": {
+            "size": [
+              6,
+              3
+            ],
+            "content": {
+              "_type": "Number Bar",
+              "_source0": "network_table:///SmartDashboard/Elevator Average Amps",
+              "_title": "Elevator Average Amps",
+              "min": 0.0,
+              "max": 30.0,
+              "center": 0.0,
+              "numTickMarks": 4.0,
+              "showText": true
+            }
+          },
+          "0,0": {
+            "size": [
+              6,
+              3
+            ],
+            "content": {
+              "_type": "Number Bar",
+              "_source0": "network_table:///SmartDashboard/Drive Left Average Amps",
+              "_title": "Drive Left Average Amps",
+              "min": 0.0,
+              "max": 30.0,
+              "center": 0.0,
+              "numTickMarks": 4.0,
+              "showText": true
+            }
+          },
+          "6,0": {
+            "size": [
+              6,
+              3
+            ],
+            "content": {
+              "_type": "Number Bar",
+              "_source0": "network_table:///SmartDashboard/Drive Right Average Amps",
+              "_title": "Drive Right Average Amps",
+              "min": 0.0,
+              "max": 30.0,
+              "center": 0.0,
+              "numTickMarks": 4.0,
+              "showText": true
+            }
+          },
+          "24,0": {
+            "size": [
+              6,
+              3
+            ],
+            "content": {
+              "_type": "Number Bar",
+              "_source0": "network_table:///SmartDashboard/Left Intake Amps",
+              "_title": "Left Intake Amps",
+              "min": 0.0,
+              "max": 30.0,
+              "center": 0.0,
+              "numTickMarks": 4.0,
+              "showText": true
+            }
+          },
+          "18,0": {
+            "size": [
+              6,
+              3
+            ],
+            "content": {
+              "_type": "Number Bar",
+              "_source0": "network_table:///SmartDashboard/Right Intake Amps",
+              "_title": "Right Intake Amps",
+              "min": 0.0,
+              "max": 30.0,
+              "center": 0.0,
+              "numTickMarks": 4.0,
+              "showText": true
+            }
+          }
+        }
+      }
+    }
+  ]
+}
