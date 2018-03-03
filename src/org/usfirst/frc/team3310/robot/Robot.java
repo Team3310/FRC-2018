@@ -8,6 +8,8 @@
 package org.usfirst.frc.team3310.robot;
 
 import org.usfirst.frc.team3310.robot.commands.ElevatorAutoZero;
+import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToScaleRightAuton;
+import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRightAuton;
 import org.usfirst.frc.team3310.robot.commands.auton.RightSideScaleAuton;
 import org.usfirst.frc.team3310.robot.commands.auton.TestAuton;
 import org.usfirst.frc.team3310.robot.subsystems.Drive;
@@ -20,8 +22,8 @@ import org.usfirst.frc.team3310.utility.control.RobotState;
 import org.usfirst.frc.team3310.utility.control.RobotStateEstimator;
 import org.usfirst.frc.team3310.utility.math.RigidTransform2d;
 
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -90,8 +92,10 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putData("Operation Mode", operationModeChooser);
 
 		autonTaskChooser = new SendableChooser<Command>();
-		autonTaskChooser.addDefault("Test", new TestAuton());
+		autonTaskChooser.addObject("Test", new TestAuton());
 		autonTaskChooser.addObject("Right Side Scale", new RightSideScaleAuton());
+		autonTaskChooser.addObject("Center Start Switch Right", new CenterStartToSwitchRightAuton());
+		autonTaskChooser.addDefault("Center Start Scale Right", new CenterStartToScaleRightAuton());
 		SmartDashboard.putData("Auton Tasks", autonTaskChooser);
 		
 		LiveWindow.setEnabled(false);

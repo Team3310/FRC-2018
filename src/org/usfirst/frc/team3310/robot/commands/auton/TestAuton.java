@@ -1,10 +1,6 @@
 package org.usfirst.frc.team3310.robot.commands.auton;
 
-import org.usfirst.frc.team3310.paths.LeftTurnRadius;
-import org.usfirst.frc.team3310.paths.LeftTurnRadiusReversed;
-import org.usfirst.frc.team3310.paths.LeftTurnReversed;
 import org.usfirst.frc.team3310.paths.PathContainer;
-import org.usfirst.frc.team3310.paths.RightTurnRadiusStart90;
 import org.usfirst.frc.team3310.paths.SCurveReversed;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
 import org.usfirst.frc.team3310.robot.commands.DriveResetEncoders;

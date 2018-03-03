@@ -11,7 +11,7 @@ import org.usfirst.frc.team3310.robot.commands.DriveSpeedShift;
 import org.usfirst.frc.team3310.robot.commands.DriveStraightMP;
 import org.usfirst.frc.team3310.robot.commands.ElevatorAutoZero;
 import org.usfirst.frc.team3310.robot.commands.ElevatorClimb;
-import org.usfirst.frc.team3310.robot.commands.ElevatorResetZero;
+import org.usfirst.frc.team3310.robot.commands.ElevatorSetZero;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetMode;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetPositionMP;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetSpeed;
@@ -90,7 +90,7 @@ public class OI {
         elevatorPidMode.whenPressed(new ElevatorSetMode(ElevatorControlMode.JOYSTICK_PID));
 
         JoystickButton elevatorReset = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.START_BUTTON);
-        elevatorReset.whenPressed(new ElevatorResetZero());
+        elevatorReset.whenPressed(new ElevatorSetZero(Elevator.ZERO_POSITION_INCHES));
 
 //        JoystickButton elevatorMinPosition = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.A_BUTTON);
 //        elevatorMinPosition.whenPressed(new ElevatorSetPositionMP(Elevator.MIN_POSITION_INCHES));
@@ -130,7 +130,7 @@ public class OI {
         SmartDashboard.putData("Elevator Hi Shift", new ElevatorSpeedShift(Elevator.ElevatorSpeedShiftState.HI));
         SmartDashboard.putData("Elevator Manual Up", new ElevatorSetSpeed(Elevator.TEST_SPEED_UP));
         SmartDashboard.putData("Elevator Manual Down", new ElevatorSetSpeed(Elevator.TEST_SPEED_DOWN));
-		SmartDashboard.putData("Elevator Reset Encoder", new ElevatorResetZero());
+		SmartDashboard.putData("Elevator Reset Encoder", new ElevatorSetZero(Elevator.ZERO_POSITION_INCHES));
 
         SmartDashboard.putData("Flip Cube Left Deployed", new FlipperFlip(FlipperSide.LEFT, FlipperState.DEPLOYED));
 		SmartDashboard.putData("Flip Cube Right Deployed", new FlipperFlip(FlipperSide.RIGHT, FlipperState.DEPLOYED));

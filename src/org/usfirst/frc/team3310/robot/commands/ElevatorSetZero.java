@@ -5,15 +5,18 @@ import org.usfirst.frc.team3310.robot.subsystems.Elevator;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class ElevatorResetZero extends Command
+public class ElevatorSetZero extends Command
 {
-	public ElevatorResetZero() {
+	private double position;
+	
+	public ElevatorSetZero(double position) {
+		this.position = position;
 		requires(Robot.elevator);
 	}
 
 	@Override
 	protected void initialize() {
-		Robot.elevator.resetZeroPosition(Elevator.ZERO_POSITION_INCHES);
+		Robot.elevator.resetZeroPosition(position);
 	}
 
 	@Override

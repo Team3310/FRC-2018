@@ -154,6 +154,14 @@ public class Drive extends Subsystem implements Loop
 	private boolean isCalibrating = false;
 	private double gyroOffsetDeg = 0;
 	
+	private double limeArea;
+	private double limeX;
+	private double limeY;
+	private double limeSkew;
+	private boolean isLimeValid;
+	private double LEDMode;
+	private double camMode;
+	
     /**
      * Check if the drive talons are configured for velocity control
      */
@@ -538,24 +546,24 @@ public class Drive extends Subsystem implements Loop
         if (driveControlMode == DriveControlMode.ADAPTIVE_PURSUIT && mPathFollower != null) {
             return mPathFollower.isFinished();
         } else {
-            System.out.println("Robot is not in path following mode");
+            System.out.println("Robot is not in path following mode 1");
             return true;
         }
     }
 
     public synchronized void forceDoneWithPath() {
-        if (driveControlMode != DriveControlMode.ADAPTIVE_PURSUIT && mPathFollower != null) {
+        if (driveControlMode == DriveControlMode.ADAPTIVE_PURSUIT && mPathFollower != null) {
             mPathFollower.forceFinish();
         } else {
-            System.out.println("Robot is not in path following mode");
+            System.out.println("Robot is not in path following mode 2");
         }
     }
 
     public synchronized boolean hasPassedMarker(String marker) {
-        if (driveControlMode != DriveControlMode.ADAPTIVE_PURSUIT && mPathFollower != null) {
+        if (driveControlMode == DriveControlMode.ADAPTIVE_PURSUIT && mPathFollower != null) {
             return mPathFollower.hasPassedMarker(marker);
         } else {
-            System.out.println("Robot is not in path following mode");
+            System.out.println("Robot is not in path following mode 3. Control mode = " + driveControlMode);
             return false;
         }
     }
@@ -725,6 +733,63 @@ public class Drive extends Subsystem implements Loop
     public double getAverageRightCurrent() {
     	return (rightDrive1.getOutputCurrent() + rightDrive2.getOutputCurrent() + rightDrive3.getOutputCurrent()) / 3;
     }
+    
+	public NetworkTable getLimetable() {
+		return NetworkTableInstance.getDefault().getTable("limelight");
+	}
+
+	private void updateLimelight() {
+		NetworkTable limeTable = getLimetable();
+		
+		double valid = limeTable.getEntry("tv").getDouble(0); 
+		if(valid == 0) {
+			isLimeValid = false;
+		}else if(valid == 1) {
+			isLimeValid = true;
+		}
+		
+		limeX = limeTable.getEntry("tx").getDouble(0); 
+		limeY = limeTable.getEntry("ty").getDouble(0); 
+		limeArea = limeTable.getEntry("ta").getDouble(0); 
+		limeSkew = limeTable.getEntry("ts").getDouble(0); 
+	}
+	
+	//Set the LED mode of the limelight
+	public void switchLED() {
+		if(getLEDMode() == 0) {
+			getLimetable().getEntry("ledMode").setDouble(1);
+			SmartDashboard.putString("LED Mode", "Off");
+		}else if(getLEDMode() == 1) {
+			getLimetable().getEntry("ledMode").setDouble(0);
+			SmartDashboard.putString("LED Mode", "On");
+		}else if(getLEDMode() == 2) {
+			getLimetable().getEntry("ledMode").setDouble(1);
+			SmartDashboard.putString("LED Mode", "Off");
+		}
+	}
+	
+	//Limelight LED state
+	public double getLEDMode() {
+		LEDMode = getLimetable().getEntry("ledMode").getDouble(1);
+		return LEDMode;
+	}
+	
+	//Limelight Camera state
+	public double getCamMode() {
+		camMode = getLimetable().getEntry("camMode").getDouble(0);
+		return camMode;
+	}
+	
+	//Set the camera mode
+	public void switchCamera() {
+		if(getCamMode() == 0) {
+			getLimetable().getEntry("camMode").setDouble(1);
+			SmartDashboard.putString("Camera Mode", "Camera");
+		}else if(getCamMode() == 1) {
+			getLimetable().getEntry("camMode").setDouble(0);
+			SmartDashboard.putString("Camera Mode", "Vision");
+		}
+	}
 
 	public void updateStatus(Robot.OperationMode operationMode) {
 		if (operationMode == Robot.OperationMode.TEST) {

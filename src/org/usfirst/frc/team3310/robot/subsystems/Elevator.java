@@ -38,6 +38,7 @@ public class Elevator extends Subsystem implements Loop
 	public static final double JOYSTICK_INCHES_PER_MS_LO = 0.3;
 	
 	// Defined positions
+	public static final double ZERO_POSITION_AUTON_FORWARD_INCHES = 8.0;
 	public static final double ZERO_POSITION_INCHES = -0.25;
 	public static final double NEAR_ZERO_POSITION_INCHES = 0.0;
 	public static final double MIN_POSITION_INCHES = 0.0;

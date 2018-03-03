@@ -231,7 +231,7 @@ function init() {
     ctx.clearRect(0, 0, width, height);
     ctx.fillStyle="#FF0000";
     image = new Image();
-    image.src = '2018Field.png';
+    image.src = '2018Field.PNG';
     image.onload = function(){
         ctx.drawImage(image, 0, 0, width, height);
         update();
