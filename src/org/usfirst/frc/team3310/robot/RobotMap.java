@@ -37,7 +37,7 @@ public class RobotMap {
 	// DIO
 	public static final int INTAKE_FRONT_IR_SENSOR_DIO_ID = 0;
 	public static final int INTAKE_BACK_IR_SENSOR_DIO_ID = 1;
-	public static final int INTAKE_FRONT_VEX_SENSOR_DIO_ID = 2;
+	public static final int INTAKE_FRONT_VEX_SENSOR_DIO_ID = 3;
 
 	// Analog
 	public static final int REAR_SCALE_SENSOR_ANALOG_ID = 0;

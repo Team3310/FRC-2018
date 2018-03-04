@@ -12,9 +12,7 @@ import edu.wpi.first.wpilibj.command.WaitCommand;
 public class IntakeDropAndHold extends CommandGroup {
 
     public IntakeDropAndHold(double speed, double timeout) {
-    	addSequential(new IntakeSetSpeed(speed));
-    	addSequential(new WaitCommand(timeout));
-    	addSequential(new IntakeSetSpeed(0));
+    	addSequential(new IntakeSetSpeedTimed(speed, timeout));
        	addSequential(new WaitCommand(1.0));
         addSequential(new ElevatorSetPositionMP(Elevator.SWITCH_POSITION_INCHES));
     }

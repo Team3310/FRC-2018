@@ -174,7 +174,6 @@ public class MPTalonPIDController
 				if (motorController.isRight()) {
 					motorController.config_kF(0, KfRight, TalonSRXEncoder.TIMEOUT_MS);
 					motorController.setWorld(ControlMode.Position, mpPoint.position);
-					System.out.println("Right position = " + mpPoint.position + ", time = " + Timer.getFPGATimestamp());
 				}
 				else {
 					motorController.config_kF(0, KfLeft, TalonSRXEncoder.TIMEOUT_MS);

@@ -54,13 +54,12 @@ public class Drive extends Subsystem implements Loop
 	// Motion profile max velocities and accel times
 	public static final double MAX_TURN_RATE_DEG_PER_SEC = 320;
 	public static final double MP_AUTON_MAX_STRAIGHT_VELOCITY_INCHES_PER_SEC =  120;  //72;
-	public static final double MP_AUTON_MAX_BOILER_STRAIGHT_VELOCITY_INCHES_PER_SEC =  200;  
 	public static final double MP_AUTON_MAX_LO_GEAR_STRAIGHT_VELOCITY_INCHES_PER_SEC =  320;  
 	public static final double MP_AUTON_MAX_HIGH_GEAR_STRAIGHT_VELOCITY_INCHES_PER_SEC =  400;  
 	public static final double MP_AUTON_MAX_TURN_RATE_DEG_PER_SEC =  270;
-	public static final double MP_AUTON_MAX_BOILER_TURN_RATE_DEG_PER_SEC =  400;
-	public static final double MP_GEAR_DEPLOY_VELOCITY_INCHES_PER_SEC = 25;
-	public static final double MP_GEAR_DEPLOY_FASTER_VELOCITY_INCHES_PER_SEC = 80;
+	public static final double MP_SLOW_VELOCITY_INCHES_PER_SEC = 25;
+	public static final double MP_MEDIUM_VELOCITY_INCHES_PER_SEC = 80;
+	public static final double MP_FAST_VELOCITY_INCHES_PER_SEC = 100;
 	
 	public static final double MP_STRAIGHT_T1 = 600;
 	public static final double MP_STRAIGHT_T2 = 300;
@@ -755,40 +754,13 @@ public class Drive extends Subsystem implements Loop
 	}
 	
 	//Set the LED mode of the limelight
-	public void switchLED() {
-		if(getLEDMode() == 0) {
-			getLimetable().getEntry("ledMode").setDouble(1);
-			SmartDashboard.putString("LED Mode", "Off");
-		}else if(getLEDMode() == 1) {
-			getLimetable().getEntry("ledMode").setDouble(0);
-			SmartDashboard.putString("LED Mode", "On");
-		}else if(getLEDMode() == 2) {
-			getLimetable().getEntry("ledMode").setDouble(1);
-			SmartDashboard.putString("LED Mode", "Off");
-		}
-	}
-	
-	//Limelight LED state
-	public double getLEDMode() {
-		LEDMode = getLimetable().getEntry("ledMode").getDouble(1);
-		return LEDMode;
-	}
-	
-	//Limelight Camera state
-	public double getCamMode() {
-		camMode = getLimetable().getEntry("camMode").getDouble(0);
-		return camMode;
+	public void setLimeLED(boolean isOn) {
+//		getLimetable().getEntry("ledMode").setDouble(isOn ? 0 : 1);
 	}
 	
 	//Set the camera mode
-	public void switchCamera() {
-		if(getCamMode() == 0) {
-			getLimetable().getEntry("camMode").setDouble(1);
-			SmartDashboard.putString("Camera Mode", "Camera");
-		}else if(getCamMode() == 1) {
-			getLimetable().getEntry("camMode").setDouble(0);
-			SmartDashboard.putString("Camera Mode", "Vision");
-		}
+	public void setLimeCameraMode(boolean isOn) {
+//		getLimetable().getEntry("camMode").setDouble(isOn ? 1 : 0);
 	}
 
 	public void updateStatus(Robot.OperationMode operationMode) {

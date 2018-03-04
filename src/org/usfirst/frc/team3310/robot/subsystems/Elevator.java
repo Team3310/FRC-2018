@@ -53,9 +53,9 @@ public class Elevator extends Subsystem implements Loop
 	public static final double CLIMB_ASSIST_POSITION_INCHES = 50.0;
 
 	// Motion profile max velocities and accel times
-	public static final double MP_MAX_VELOCITY_INCHES_PER_SEC =  100; 
-	public static final double MP_T1 = 600;  // Fast = 300
-	public static final double MP_T2 = 300;  // Fast = 150
+	public static final double MP_MAX_VELOCITY_INCHES_PER_SEC =  80; 
+	public static final double MP_T1 = 400;  // Fast = 300
+	public static final double MP_T2 = 150;  // Fast = 150
 	
 	// Motor controllers
 	private ArrayList<TalonSRXEncoder> motorControllers = new ArrayList<TalonSRXEncoder>();	

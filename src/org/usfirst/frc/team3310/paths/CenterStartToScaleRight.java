@@ -15,7 +15,7 @@ public class CenterStartToScaleRight implements PathContainer {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
         sWaypoints.add(new Waypoint(19,157, 0, 0));
         sWaypoints.add(new Waypoint(40,157,20,75));
-        sWaypoints.add(new Waypoint(120,45,60,75,"raiseElevator"));
+        sWaypoints.add(new Waypoint(115,45,60,75,"raiseElevator"));
         sWaypoints.add(new Waypoint(210,75, 0,75));
         sWaypoints.add(new Waypoint(250,95,20,75));
         sWaypoints.add(new Waypoint(280,105, 0,75));

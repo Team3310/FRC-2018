@@ -8,8 +8,9 @@
 package org.usfirst.frc.team3310.robot;
 
 import org.usfirst.frc.team3310.robot.commands.ElevatorAutoZero;
-import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToScaleRightAuton;
+import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToScaleRightSwitchRightAuton;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRightAuton;
+import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRightScaleLeftAuton;
 import org.usfirst.frc.team3310.robot.commands.auton.RightSideScaleAuton;
 import org.usfirst.frc.team3310.robot.commands.auton.TestAuton;
 import org.usfirst.frc.team3310.robot.subsystems.Drive;
@@ -22,7 +23,6 @@ import org.usfirst.frc.team3310.utility.control.RobotState;
 import org.usfirst.frc.team3310.utility.control.RobotStateEstimator;
 import org.usfirst.frc.team3310.utility.math.RigidTransform2d;
 
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -95,7 +95,8 @@ public class Robot extends TimedRobot {
 		autonTaskChooser.addObject("Test", new TestAuton());
 		autonTaskChooser.addObject("Right Side Scale", new RightSideScaleAuton());
 		autonTaskChooser.addObject("Center Start Switch Right", new CenterStartToSwitchRightAuton());
-		autonTaskChooser.addDefault("Center Start Scale Right", new CenterStartToScaleRightAuton());
+		autonTaskChooser.addObject("Center Start Scale Right Switch Right", new CenterStartToScaleRightSwitchRightAuton());
+		autonTaskChooser.addDefault("Center Start Switch Right Scale Left", new CenterStartToSwitchRightScaleLeftAuton());
 		SmartDashboard.putData("Auton Tasks", autonTaskChooser);
 		
 		LiveWindow.setEnabled(false);
@@ -103,7 +104,8 @@ public class Robot extends TimedRobot {
 
 		zeroAllSensors();
 
-		NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1); 
+		drive.setLimeLED(true);
+		drive.setLimeCameraMode(false);
 	}  
 	
 	// Called every loop for all modes
@@ -113,7 +115,7 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void disabledInit() {
-		NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(1); 
+		drive.setLimeLED(false);
 	}
 
 	@Override
@@ -132,7 +134,8 @@ public class Robot extends TimedRobot {
     	elevator.resetZeroPosition(Elevator.ZERO_POSITION_INCHES);
         zeroAllSensors();
 
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(0); 
+		drive.setLimeLED(true);
+		drive.setLimeCameraMode(false);
 
 		if (autonomousCommand != null) {
 			autonomousCommand.start();
@@ -159,7 +162,8 @@ public class Robot extends TimedRobot {
     	elevator.setShiftState(Elevator.ElevatorSpeedShiftState.HI);
         zeroAllSensors();
 
-        NetworkTableInstance.getDefault().getTable("limelight").getEntry("ledMode").setNumber(0); 
+		drive.setLimeLED(true);
+		drive.setLimeCameraMode(false);
     	
     	if (operationMode != OperationMode.COMPETITION) {
     		Scheduler.getInstance().add(new ElevatorAutoZero(false));

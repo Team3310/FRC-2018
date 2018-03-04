@@ -51,10 +51,12 @@ public class Flipper extends Subsystem
 	public void setRightPosition(FlipperState state) {
 		if(state == FlipperState.DEPLOYED) {
 			rightFlipper.set(true);
+			leftFlipper.set(true);
 	    	System.out.println("Flipper right deploy, time = " + System.currentTimeMillis());
 		}
 		else if(state == FlipperState.RETRACTED) {
 			rightFlipper.set(false);
+			leftFlipper.set(false);
 	    	System.out.println("Flipper right retract");
 		}
 	}
