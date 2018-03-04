@@ -1,7 +1,7 @@
 package org.usfirst.frc.team3310.robot.commands.auton;
 
+import org.usfirst.frc.team3310.paths.CenterTest;
 import org.usfirst.frc.team3310.paths.PathContainer;
-import org.usfirst.frc.team3310.paths.SCurveReversed;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
 import org.usfirst.frc.team3310.robot.commands.DriveResetEncoders;
 import org.usfirst.frc.team3310.robot.commands.DriveResetPoseFromPath;
@@ -67,7 +67,7 @@ public class TestAuton extends CommandGroup {
 //    	addSequential(new DrivePathAdaptivePursuit(new RightTurnRadiusStart90()));
  
     	// S curve
-    	PathContainer path = new SCurveReversed();
+    	PathContainer path = new CenterTest();
         addSequential(new DriveResetEncoders());
         addSequential(new DriveResetPoseFromPath(path));
     	addSequential(new DrivePathAdaptivePursuit(path));

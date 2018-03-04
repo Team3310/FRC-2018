@@ -2,7 +2,7 @@ package org.usfirst.frc.team3310.robot.commands.auton;
 
 import org.usfirst.frc.team3310.paths.CenterStartToScaleRight;
 import org.usfirst.frc.team3310.paths.PathContainer;
-import org.usfirst.frc.team3310.paths.ScaleToSwitchSameSide;
+import org.usfirst.frc.team3310.paths.ScaleToSwitchSameSideRight;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
 import org.usfirst.frc.team3310.robot.commands.DriveResetPoseFromPath;
 import org.usfirst.frc.team3310.robot.commands.DriveStraightMP;
@@ -22,9 +22,9 @@ import edu.wpi.first.wpilibj.command.WaitForChildren;
 /**
  *
  */
-public class CenterStartToScaleRightSwitchRightAuton extends CommandGroup {
+public class CenterStartToScaleRight1SwitchRight1 extends CommandGroup {
 
-    public CenterStartToScaleRightSwitchRightAuton() {
+    public CenterStartToScaleRight1SwitchRight1() {
     	addSequential(new ElevatorSetZero(0));
     	
     	PathContainer path = new CenterStartToScaleRight();
@@ -37,7 +37,7 @@ public class CenterStartToScaleRightSwitchRightAuton extends CommandGroup {
         addParallel(new ElevatorSetPositionMP(Elevator.ZERO_POSITION_INCHES));
         addSequential(new WaitCommand(0.8));
         addParallel(new IntakeCubeAndLiftAbortDrive());
-    	addSequential(new DrivePathAdaptivePursuit(new ScaleToSwitchSameSide()));
+    	addSequential(new DrivePathAdaptivePursuit(new ScaleToSwitchSameSideRight()));
     	addSequential(new WaitForChildren());
     	addSequential(new ElevatorSetPositionMP(Elevator.SWITCH_POSITION_INCHES));
     	addSequential(new DriveStraightMP(12.0, Drive.MP_MEDIUM_VELOCITY_INCHES_PER_SEC, true, false, 0));

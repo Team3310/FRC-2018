@@ -7,12 +7,13 @@
 
 package org.usfirst.frc.team3310.robot;
 
+import java.util.HashMap;
+
 import org.usfirst.frc.team3310.robot.commands.ElevatorAutoZero;
-import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToScaleRightSwitchRightAuton;
-import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRightAuton;
-import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRightScaleLeftAuton;
-import org.usfirst.frc.team3310.robot.commands.auton.RightSideScaleAuton;
-import org.usfirst.frc.team3310.robot.commands.auton.TestAuton;
+import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToScaleLeft1SwitchLeft1;
+import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToScaleRight1SwitchRight1;
+import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchLeft1ScaleRight1;
+import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRight1ScaleLeft1;
 import org.usfirst.frc.team3310.robot.subsystems.Drive;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator;
 import org.usfirst.frc.team3310.robot.subsystems.Flipper;
@@ -55,7 +56,7 @@ public class Robot extends TimedRobot {
 	
 	// Choosers
 	private SendableChooser<OperationMode> operationModeChooser;
-	private SendableChooser<Command> autonTaskChooser;
+	private SendableChooser<AutonRouteChooser> autonTaskChooser;
     private Command autonomousCommand;
 
 	public static enum OperationMode { TEST, PRACTICE, COMPETITION };
@@ -91,12 +92,15 @@ public class Robot extends TimedRobot {
 	    operationModeChooser.addObject("Test", OperationMode.TEST);
 		SmartDashboard.putData("Operation Mode", operationModeChooser);
 
-		autonTaskChooser = new SendableChooser<Command>();
-		autonTaskChooser.addObject("Test", new TestAuton());
-		autonTaskChooser.addObject("Right Side Scale", new RightSideScaleAuton());
-		autonTaskChooser.addObject("Center Start Switch Right", new CenterStartToSwitchRightAuton());
-		autonTaskChooser.addObject("Center Start Scale Right Switch Right", new CenterStartToScaleRightSwitchRightAuton());
-		autonTaskChooser.addDefault("Center Start Switch Right Scale Left", new CenterStartToSwitchRightScaleLeftAuton());
+		autonTaskChooser = new SendableChooser<AutonRouteChooser>();
+		
+		AutonRouteChooser centerStartSwitch1Scale1 = new AutonRouteChooser();
+		centerStartSwitch1Scale1.addLLL(new CenterStartToScaleLeft1SwitchLeft1());
+		centerStartSwitch1Scale1.addLRL(new CenterStartToSwitchLeft1ScaleRight1());
+		centerStartSwitch1Scale1.addRLR(new CenterStartToSwitchRight1ScaleLeft1());
+		centerStartSwitch1Scale1.addRRR(new CenterStartToScaleRight1SwitchRight1());
+		
+		autonTaskChooser.addDefault("Center Start Switch 1 Scale 1", centerStartSwitch1Scale1);
 		SmartDashboard.putData("Auton Tasks", autonTaskChooser);
 		
 		LiveWindow.setEnabled(false);
@@ -126,8 +130,6 @@ public class Robot extends TimedRobot {
 
 	@Override
 	public void autonomousInit() {
-		autonomousCommand = autonTaskChooser.getSelected();
-
     	controlLoop.start();
     	drive.setIsRed(getAlliance().equals(Alliance.Red));
     	elevator.setShiftState(Elevator.ElevatorSpeedShiftState.HI);
@@ -136,6 +138,14 @@ public class Robot extends TimedRobot {
 
 		drive.setLimeLED(true);
 		drive.setLimeCameraMode(false);
+		
+		String gameMessage = m_ds.getGameSpecificMessage();
+		while (gameMessage == null || gameMessage.length() < 3) {
+			gameMessage = m_ds.getGameSpecificMessage();
+		}
+
+		AutonRouteChooser routeChooser = autonTaskChooser.getSelected();
+		autonomousCommand = routeChooser.getRoute(gameMessage);
 
 		if (autonomousCommand != null) {
 			autonomousCommand.start();
@@ -189,6 +199,45 @@ public class Robot extends TimedRobot {
     	elevator.updateStatus(operationMode);
     	flipper.updateStatus(operationMode);
     	ramp.updateStatus(operationMode);
+    }
+    
+    private class AutonRouteChooser {
+    	
+    	private HashMap<String, Command> commandMap = new HashMap<String, Command>(4);
+    	
+    	public AutonRouteChooser() {
+    		
+    	}
+    	
+    	public AutonRouteChooser(Command LLL, Command LRL, Command RLR, Command RRR) {
+    		commandMap.put("LLL", LLL);
+    		commandMap.put("LRL", LRL);
+    		commandMap.put("RLR", RLR);
+    		commandMap.put("RRR", RRR);
+    	}
+    	
+    	public Command getRoute(String gameMessage) {
+    		if (!commandMap.containsKey(gameMessage.toUpperCase())) {
+    			System.out.println("Invalid game message");
+    		}
+    		return commandMap.get(gameMessage.toUpperCase());
+    	}
+    	
+    	public void addLLL(Command route) {
+    		commandMap.put("LLL", route);
+    	}
+    	
+    	public void addLRL(Command route) {
+    		commandMap.put("LRL", route);
+    	}
+    	
+    	public void addRLR(Command route) {
+    		commandMap.put("RLR", route);
+    	}
+    	
+    	public void addRRR(Command route) {
+    		commandMap.put("RRR", route);
+    	}
     }
 
 }
