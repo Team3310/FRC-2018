@@ -20,10 +20,10 @@ import edu.wpi.first.wpilibj.command.WaitForChildren;
 /**
  *
  */
-public class CenterStartToSwitchRight1ScaleLeft1 extends CommandGroup {
+public class CenterStartToSwitchRight1ScaleRight1 extends CommandGroup {
 
-    public CenterStartToSwitchRight1ScaleLeft1() {
-        
+    public CenterStartToSwitchRight1ScaleRight1() {
+    
     	// Drive backwards to scale, drive forward, eject cube, pickup last cube
     	addSequential(new CenterStartToSwitch1PickupLastCube(new CenterStartToScaleRight(), new ScaleToSwitchSameSideRight()));
 

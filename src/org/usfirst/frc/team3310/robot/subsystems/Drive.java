@@ -214,12 +214,13 @@ public class Drive extends Subsystem implements Loop
 			m_drive.setSafetyEnabled(false);
 
 			gyroPigeon = new PigeonIMU(rightDrive2);
+			gyroPigeon.clearStickyFaults(10);
 			
 			speedShift = new Solenoid(RobotMap.DRIVETRAIN_SPEEDSHIFT_PCM_ID);
 									
 			loadGains();
         	setBrakeMode(true);
-		}
+	}
 		catch (Exception e) {
 			System.err.println("An error occurred in the DriveTrain constructor");
 		}
