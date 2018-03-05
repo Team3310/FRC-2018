@@ -2,7 +2,7 @@ package org.usfirst.frc.team3310.robot.commands.auton;
 
 import org.usfirst.frc.team3310.paths.CenterStartToScaleLeft;
 import org.usfirst.frc.team3310.paths.PathContainer;
-import org.usfirst.frc.team3310.paths.ScaleToSwitchSameSideLeft;
+import org.usfirst.frc.team3310.paths.ScaleLeftToSwitchLeft;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
 import org.usfirst.frc.team3310.robot.commands.DriveResetPoseFromPath;
 import org.usfirst.frc.team3310.robot.commands.DriveStraightMP;
@@ -38,7 +38,7 @@ public class CenterStartToScaleLeft1SwitchLeft1 extends CommandGroup {
         
         addSequential(new WaitCommand(0.8));
         addParallel(new IntakeCubeAndLiftAbortDrive());
-    	addSequential(new DrivePathAdaptivePursuit(new ScaleToSwitchSameSideLeft()));
+    	addSequential(new DrivePathAdaptivePursuit(new ScaleLeftToSwitchLeft()));
     	addSequential(new WaitForChildren());
     	
     	addSequential(new ElevatorSetPositionMP(Elevator.SWITCH_POSITION_INCHES));

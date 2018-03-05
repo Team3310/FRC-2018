@@ -8,7 +8,7 @@ import org.usfirst.frc.team3310.utility.math.RigidTransform2d;
 import org.usfirst.frc.team3310.utility.math.Rotation2d;
 import org.usfirst.frc.team3310.utility.math.Translation2d;
 
-public class ScaleToSwitchSameSideLeft implements PathContainer {
+public class ScaleLeftToSwitchLeft implements PathContainer {
     
     @Override
     public Path buildPath() {
