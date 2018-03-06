@@ -9,11 +9,17 @@ public class IntakeSetSpeedFrontSensorOff extends ExtraTimeoutCommand {
 	
 	private double speed;
 	private boolean cubeDetected;
-	private static final double EXTRA_INTAKE_TIME = 0.1;
+	private double EXTRA_INTAKE_TIME = 0.1;
 	private static final double TIMEOUT = 10.0;
 
     public IntakeSetSpeedFrontSensorOff(double speed) {
     	this.speed = speed;
+        requires(Robot.intake);
+    }
+
+    public IntakeSetSpeedFrontSensorOff(double speed, double extraTimeout) {
+    	this.speed = speed;
+    	EXTRA_INTAKE_TIME = extraTimeout;
         requires(Robot.intake);
     }
 

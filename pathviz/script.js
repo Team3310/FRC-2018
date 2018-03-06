@@ -98,8 +98,8 @@ class Waypoint {
 	}
 
 	toString() {
-		var comment = (this.comment.length > 0) ? " //" + this.comment : "";
-		return "sWaypoints.add(new Waypoint("+this.position.x+","+this.position.y+","+this.radius+","+this.speed+"));" + comment;
+		var comment = (this.comment.length > 0) ? ", " + this.comment : "";
+		return "sWaypoints.add(new Waypoint("+this.position.x+","+this.position.y+","+this.radius+","+this.speed + comment + "));" ;
 	}
 }
 

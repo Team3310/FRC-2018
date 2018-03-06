@@ -214,7 +214,7 @@ public class Drive extends Subsystem implements Loop
 			m_drive.setSafetyEnabled(false);
 
 			gyroPigeon = new PigeonIMU(rightDrive2);
-			gyroPigeon.clearStickyFaults(10);
+//			gyroPigeon.clearStickyFaults(10);
 			
 			speedShift = new Solenoid(RobotMap.DRIVETRAIN_SPEEDSHIFT_PCM_ID);
 									
@@ -555,7 +555,7 @@ public class Drive extends Subsystem implements Loop
         if (driveControlMode == DriveControlMode.ADAPTIVE_PURSUIT && mPathFollower != null) {
             mPathFollower.forceFinish();
         } else {
-            System.out.println("Robot is not in path following mode 2");
+            System.out.println("Robot is not in path following mode 2, control mode = " + driveControlMode);
         }
     }
 

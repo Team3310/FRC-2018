@@ -14,7 +14,7 @@ public class SwitchRightToScaleLeft implements PathContainer {
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
         
-        sWaypoints.add(new Waypoint(215,105, 0,0));
+        sWaypoints.add(new Waypoint(213,105, 0,0));
         sWaypoints.add(new Waypoint(225,105,10,60));
         sWaypoints.add(new Waypoint(210,185, 0,60,"raiseElevator"));
         sWaypoints.add(new Waypoint(210,255,15,60));
@@ -25,7 +25,7 @@ public class SwitchRightToScaleLeft implements PathContainer {
     
     @Override
     public RigidTransform2d getStartPose() {
-        return new RigidTransform2d(new Translation2d(215, 105), Rotation2d.fromDegrees(180.0)); 
+        return new RigidTransform2d(new Translation2d(213, 105), Rotation2d.fromDegrees(180.0)); 
     }
 
     @Override

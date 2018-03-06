@@ -10,10 +10,12 @@ package org.usfirst.frc.team3310.robot;
 import java.util.HashMap;
 
 import org.usfirst.frc.team3310.robot.commands.ElevatorAutoZero;
-import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToScaleLeft1SwitchLeft1;
-import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToScaleRight1SwitchRight1;
+import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchLeft1;
+import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchLeft1ScaleLeft1;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchLeft1ScaleRight1;
+import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRight1;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRight1ScaleLeft1;
+import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRight1ScaleRight1;
 import org.usfirst.frc.team3310.robot.subsystems.Drive;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator;
 import org.usfirst.frc.team3310.robot.subsystems.Flipper;
@@ -95,12 +97,19 @@ public class Robot extends TimedRobot {
 		autonTaskChooser = new SendableChooser<AutonRouteChooser>();
 		
 		AutonRouteChooser centerStartSwitch1Scale1 = new AutonRouteChooser();
-		centerStartSwitch1Scale1.addLLL(new CenterStartToScaleLeft1SwitchLeft1());
+		centerStartSwitch1Scale1.addLLL(new CenterStartToSwitchLeft1ScaleLeft1());
 		centerStartSwitch1Scale1.addLRL(new CenterStartToSwitchLeft1ScaleRight1());
 		centerStartSwitch1Scale1.addRLR(new CenterStartToSwitchRight1ScaleLeft1());
-		centerStartSwitch1Scale1.addRRR(new CenterStartToScaleRight1SwitchRight1());
+		centerStartSwitch1Scale1.addRRR(new CenterStartToSwitchRight1ScaleRight1());
 		
-		autonTaskChooser.addDefault("Center Start Switch 1 Scale 1", centerStartSwitch1Scale1);
+		AutonRouteChooser centerStartSwitch1 = new AutonRouteChooser();
+		centerStartSwitch1.addLLL(new CenterStartToSwitchLeft1());
+		centerStartSwitch1.addLRL(new CenterStartToSwitchLeft1());
+		centerStartSwitch1.addRLR(new CenterStartToSwitchRight1());
+		centerStartSwitch1.addRRR(new CenterStartToSwitchRight1());
+		
+		autonTaskChooser.addDefault("Center Start Switch 1", centerStartSwitch1);
+		autonTaskChooser.addObject("Center Start Switch 1 Scale 1", centerStartSwitch1Scale1);
 		SmartDashboard.putData("Auton Tasks", autonTaskChooser);
 		
 		LiveWindow.setEnabled(false);
@@ -207,13 +216,6 @@ public class Robot extends TimedRobot {
     	
     	public AutonRouteChooser() {
     		
-    	}
-    	
-    	public AutonRouteChooser(Command LLL, Command LRL, Command RLR, Command RRR) {
-    		commandMap.put("LLL", LLL);
-    		commandMap.put("LRL", LRL);
-    		commandMap.put("RLR", RLR);
-    		commandMap.put("RRR", RRR);
     	}
     	
     	public Command getRoute(String gameMessage) {

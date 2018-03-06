@@ -8,20 +8,22 @@ import org.usfirst.frc.team3310.utility.math.RigidTransform2d;
 import org.usfirst.frc.team3310.utility.math.Rotation2d;
 import org.usfirst.frc.team3310.utility.math.Translation2d;
 
-public class ScaleRightToSwitchRight implements PathContainer {
+public class CenterStartToSwitchLeft implements PathContainer {
     
     @Override
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-        sWaypoints.add(new Waypoint(280,105,0,0));
-        sWaypoints.add(new Waypoint(213,114,0,60));
+        sWaypoints.add(new Waypoint(19,157,0,0));
+        sWaypoints.add(new Waypoint(40,157,20,60));
+        sWaypoints.add(new Waypoint(100,209,15,60));
+        sWaypoints.add(new Waypoint(116,214,0,60));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }
     
     @Override
     public RigidTransform2d getStartPose() {
-        return new RigidTransform2d(new Translation2d(280, 105), Rotation2d.fromDegrees(180.0)); 
+        return new RigidTransform2d(new Translation2d(19, 157), Rotation2d.fromDegrees(0.0)); 
     }
 
     @Override

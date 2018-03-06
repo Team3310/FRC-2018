@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class IntakeCubeAndLiftAbortDrive extends CommandGroup {
 
     public IntakeCubeAndLiftAbortDrive() {
-        addSequential(new IntakeSetSpeedFrontSensorOff(Intake.INTAKE_LOAD_SPEED));
+        addSequential(new IntakeSetSpeedFrontSensorOff(Intake.INTAKE_LOAD_SPEED, 0.05));
         addSequential(new DriveForcePathDone());
     }
     

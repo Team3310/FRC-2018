@@ -14,9 +14,9 @@ public class CenterStartToSwitchRight implements PathContainer {
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
         sWaypoints.add(new Waypoint(19,157,0,0));
-        sWaypoints.add(new Waypoint(40,157,20,80));
-        sWaypoints.add(new Waypoint(100,105,20,80));
-        sWaypoints.add(new Waypoint(115,105,0,0));
+        sWaypoints.add(new Waypoint(40,157,20,60));
+        sWaypoints.add(new Waypoint(100,109,15,60));
+        sWaypoints.add(new Waypoint(116,104,0,60));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }
@@ -30,7 +30,4 @@ public class CenterStartToSwitchRight implements PathContainer {
     public boolean isReversed() {
         return false; 
     }
-	// WAYPOINT_DATA: [{"position":{"x":19,"y":157},"speed":0,"radius":0,"comment":""},{"position":{"x":40,"y":157},"speed":60,"radius":20,"comment":""},{"position":{"x":100,"y":105},"speed":60,"radius":20,"comment":""},{"position":{"x":122,"y":105},"speed":60,"radius":0,"comment":""}]
-	// IS_REVERSED: false
-	// FILE_NAME: CenterStartToSwitchRight
 }

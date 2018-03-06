@@ -28,7 +28,7 @@ public class CenterStartToSwitch1Scale1 extends CommandGroup {
         addSequential(new DriveResetPoseFromPath(switchToScale));
 
     	// Drive backwards to scale platform that we need to eject cube  	
-        addParallel(new IntakeSetSpeedTimed(Intake.INTAKE_LOAD_SLOW_SPEED, 1.0));
+//        addParallel(new IntakeSetSpeedTimed(Intake.INTAKE_LOAD_SLOW_SPEED, 1.0));
     	addParallel(new RunAfterMarker("raiseElevator", 6.0, new ElevatorSetPositionMP(Elevator.SCALE_HIGH_POSITION_INCHES)));
     	addSequential(new DrivePathAdaptivePursuit(switchToScale));
     	addSequential(new WaitForChildren());
