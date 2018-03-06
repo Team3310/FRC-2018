@@ -454,15 +454,18 @@ function getDataString() {
 	var startPoint = "new Translation2d(" + waypoints[0].position.x + ", " + waypoints[0].position.y + ")";
 	var isReversed = $("#isReversed").is(':checked');
     var startRot = $("#startRot").val();
-	var str = `package org.usfirst.frc.team3310.paths;
+	var str = `package org.usfirst.frc.team3310.paths.auton;
 
 import java.util.ArrayList;
 
+import org.usfirst.frc.team3310.paths.PathBuilder;
 import org.usfirst.frc.team3310.paths.PathBuilder.Waypoint;
+import org.usfirst.frc.team3310.paths.PathContainer;
 import org.usfirst.frc.team3310.utility.control.Path;
 import org.usfirst.frc.team3310.utility.math.RigidTransform2d;
 import org.usfirst.frc.team3310.utility.math.Rotation2d;
 import org.usfirst.frc.team3310.utility.math.Translation2d;
+
 
 public class ${title} implements PathContainer {
     
