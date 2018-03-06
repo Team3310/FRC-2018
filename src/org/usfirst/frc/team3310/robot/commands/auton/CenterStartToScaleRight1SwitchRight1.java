@@ -1,8 +1,8 @@
 package org.usfirst.frc.team3310.robot.commands.auton;
 
-import org.usfirst.frc.team3310.paths.CenterStartToScaleRight;
 import org.usfirst.frc.team3310.paths.PathContainer;
-import org.usfirst.frc.team3310.paths.ScaleRightToSwitchRight;
+import org.usfirst.frc.team3310.paths.auton.CenterStartToScaleRight;
+import org.usfirst.frc.team3310.paths.auton.ScaleRightToSwitchRight;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
 import org.usfirst.frc.team3310.robot.commands.DriveResetPoseFromPath;
 import org.usfirst.frc.team3310.robot.commands.DriveStraightMP;

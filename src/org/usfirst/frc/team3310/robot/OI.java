@@ -3,7 +3,7 @@ package org.usfirst.frc.team3310.robot;
 import org.usfirst.frc.team3310.buttons.XBoxDPadTriggerButton;
 import org.usfirst.frc.team3310.buttons.XBoxTriggerButton;
 import org.usfirst.frc.team3310.controller.XboxController;
-import org.usfirst.frc.team3310.paths.CenterTest;
+import org.usfirst.frc.team3310.paths.test.CenterTest;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
 import org.usfirst.frc.team3310.robot.commands.DriveResetEncoders;
 import org.usfirst.frc.team3310.robot.commands.DriveResetGyro;

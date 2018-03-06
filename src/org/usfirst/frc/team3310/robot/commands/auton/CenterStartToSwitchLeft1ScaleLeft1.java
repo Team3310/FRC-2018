@@ -1,8 +1,8 @@
 package org.usfirst.frc.team3310.robot.commands.auton;
 
-import org.usfirst.frc.team3310.paths.CenterStartToScaleLeft;
-import org.usfirst.frc.team3310.paths.ScaleLeftToSwitchLeft;
-import org.usfirst.frc.team3310.paths.SwitchLeftToScaleLeft;
+import org.usfirst.frc.team3310.paths.auton.CenterStartToScaleLeft;
+import org.usfirst.frc.team3310.paths.auton.ScaleLeftToSwitchLeft;
+import org.usfirst.frc.team3310.paths.auton.SwitchLeftToScaleLeft;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
 

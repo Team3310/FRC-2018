@@ -36,6 +36,7 @@ public class CenterStartToSwitch1PickupLastCube extends CommandGroup {
     	addSequential(new WaitForChildren());
     	
     	// Drive forwards to switch.  Center on last cube.  
+        addSequential(new DriveResetPoseFromPath(scaleToSwitchPath, false));
     	addSequential(new DrivePathAdaptivePursuit(scaleToSwitchPath));
     	
     	// Eject cube

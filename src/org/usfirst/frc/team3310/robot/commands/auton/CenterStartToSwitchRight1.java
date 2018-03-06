@@ -1,7 +1,7 @@
 package org.usfirst.frc.team3310.robot.commands.auton;
 
-import org.usfirst.frc.team3310.paths.CenterStartToSwitchRight;
 import org.usfirst.frc.team3310.paths.PathContainer;
+import org.usfirst.frc.team3310.paths.auton.CenterStartToSwitchRight;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
 import org.usfirst.frc.team3310.robot.commands.DriveResetPoseFromPath;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetPositionMP;
