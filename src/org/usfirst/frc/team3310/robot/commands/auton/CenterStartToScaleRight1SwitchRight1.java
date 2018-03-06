@@ -28,7 +28,7 @@ public class CenterStartToScaleRight1SwitchRight1 extends CommandGroup {
     	addSequential(new ElevatorSetZero(0));
     	
     	PathContainer path = new CenterStartToScaleRight();
-        addSequential(new DriveResetPoseFromPath(path));
+        addSequential(new DriveResetPoseFromPath(path, true));
 
     	addParallel(new RunAfterMarker("raiseElevator", 4.0, new ElevatorSetPositionMP(Elevator.SCALE_HIGH_POSITION_INCHES)));
     	addSequential(new DrivePathAdaptivePursuit(path));

@@ -68,11 +68,11 @@ public class Robot extends TimedRobot {
 	public static final PowerDistributionPanel pdp = new PowerDistributionPanel();
 	
 	// State
-    private RobotState mRobotState = RobotState.getInstance();
+    private RobotState robotState = RobotState.getInstance();
 
     public void zeroAllSensors() {
         drive.zeroSensors();
-        mRobotState.reset(Timer.getFPGATimestamp(), new RigidTransform2d());
+        robotState.reset(Timer.getFPGATimestamp(), new RigidTransform2d());
         drive.zeroSensors();
     }
 
@@ -208,6 +208,7 @@ public class Robot extends TimedRobot {
     	elevator.updateStatus(operationMode);
     	flipper.updateStatus(operationMode);
     	ramp.updateStatus(operationMode);
+    	robotState.updateStatus(operationMode);
     }
     
     private class AutonRouteChooser {

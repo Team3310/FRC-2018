@@ -45,17 +45,8 @@ public class RobotStateEstimator implements Loop {
         robot_state_.addObservations(timestamp, odometry_velocity, predicted_velocity);
         left_encoder_prev_distance_ = left_distance;
         right_encoder_prev_distance_ = right_distance;
-        updateStatus(timestamp);
     }
     
-    public void updateStatus(double timestamp) {
-    	SmartDashboard.putNumber("Distance Driven", robot_state_.getDistanceDriven());
-    	RigidTransform2d pose = robot_state_.getFieldToVehicle(timestamp);
-    	SmartDashboard.putNumber("Pose X", pose.getTranslation().x());
-    	SmartDashboard.putNumber("Pose Y", pose.getTranslation().y());
-    	SmartDashboard.putNumber("Pose Rot", pose.getRotation().getDegrees());
-    }
-
     @Override
     public void onStop(double timestamp) {
         // no-op

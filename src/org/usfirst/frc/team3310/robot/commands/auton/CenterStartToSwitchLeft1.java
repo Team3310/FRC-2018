@@ -21,7 +21,7 @@ public class CenterStartToSwitchLeft1 extends CommandGroup {
     	addSequential(new ElevatorSetZero(0));
     	
     	PathContainer path = new CenterStartToSwitchLeft();
-        addSequential(new DriveResetPoseFromPath(path));
+        addSequential(new DriveResetPoseFromPath(path, true));
 
         addParallel(new ElevatorSetPositionMP(Elevator.SWITCH_POSITION_INCHES));
     	addSequential(new DrivePathAdaptivePursuit(path));

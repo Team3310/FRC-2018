@@ -69,7 +69,7 @@ public class TestAuton extends CommandGroup {
     	// S curve
     	PathContainer path = new CenterTest();
         addSequential(new DriveResetEncoders());
-        addSequential(new DriveResetPoseFromPath(path));
+        addSequential(new DriveResetPoseFromPath(path, true));
     	addSequential(new DrivePathAdaptivePursuit(path));
      }
 }

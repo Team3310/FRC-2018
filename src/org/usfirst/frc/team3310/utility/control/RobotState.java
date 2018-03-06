@@ -2,6 +2,7 @@ package org.usfirst.frc.team3310.utility.control;
 
 import java.util.Map;
 
+import org.usfirst.frc.team3310.robot.Robot.OperationMode;
 import org.usfirst.frc.team3310.utility.math.InterpolatingDouble;
 import org.usfirst.frc.team3310.utility.math.InterpolatingTreeMap;
 import org.usfirst.frc.team3310.utility.math.RigidTransform2d;
@@ -120,11 +121,13 @@ public class RobotState {
         return vehicle_velocity_measured_;
     }
 
-    public void outputToSmartDashboard() {
-        RigidTransform2d odometry = getLatestFieldToVehicle().getValue();
-        SmartDashboard.putNumber("robot_pose_x", odometry.getTranslation().x());
-        SmartDashboard.putNumber("robot_pose_y", odometry.getTranslation().y());
-        SmartDashboard.putNumber("robot_pose_theta", odometry.getRotation().getDegrees());
-        SmartDashboard.putNumber("robot velocity", vehicle_velocity_measured_.dx);
+    public void updateStatus(OperationMode operationMode) {
+    	if (operationMode == OperationMode.TEST) {
+	        RigidTransform2d odometry = getLatestFieldToVehicle().getValue();
+	        SmartDashboard.putNumber("robot_pose_x", odometry.getTranslation().x());
+	        SmartDashboard.putNumber("robot_pose_y", odometry.getTranslation().y());
+	        SmartDashboard.putNumber("robot_pose_theta", odometry.getRotation().getDegrees());
+	        SmartDashboard.putNumber("robot velocity", vehicle_velocity_measured_.dx);
+    	}
     }
 }

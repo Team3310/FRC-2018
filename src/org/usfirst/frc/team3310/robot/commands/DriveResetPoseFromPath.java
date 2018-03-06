@@ -11,18 +11,39 @@ import edu.wpi.first.wpilibj.command.Command;
 public class DriveResetPoseFromPath extends Command
 {
     protected PathContainer pathContainer;
+    protected boolean usePathRotation;
+    protected RigidTransform2d transform;
 
-    public DriveResetPoseFromPath(PathContainer pathContainer) {
+    public DriveResetPoseFromPath(PathContainer pathContainer, boolean usePathRotation) {
         this.pathContainer = pathContainer;
+        this.transform = null;
+        this.usePathRotation = usePathRotation;
+		requires(Robot.drive);
+	}
+
+    public DriveResetPoseFromPath(RigidTransform2d transform, boolean usePathRotation) {
+        this.pathContainer = null;
+        this.transform = transform;
+        this.usePathRotation = usePathRotation;
 		requires(Robot.drive);
 	}
 
 	@Override
 	protected void initialize() {
-        RigidTransform2d startPose = pathContainer.getStartPose();
-        Robot.drive.setGyroAngle(startPose.getRotation());
+        RigidTransform2d startPose = (transform == null) ? pathContainer.getStartPose() : transform;
+        
+        if (usePathRotation) {
+        	Robot.drive.setGyroAngle(startPose.getRotation());
+        }
+        else {
+        	startPose.setRotation(RobotState.getInstance().getLatestFieldToVehicle().getValue().getRotation());
+        }
+        
         RobotState.getInstance().reset(Timer.getFPGATimestamp(), startPose);
-        Robot.drive.setGyroAngle(startPose.getRotation());
+        
+        if (usePathRotation) {
+        	Robot.drive.setGyroAngle(startPose.getRotation());
+        }
 	}
 
 	@Override

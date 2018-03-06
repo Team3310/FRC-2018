@@ -27,7 +27,7 @@ public class CenterStartToSwitch1PickupLastCube extends CommandGroup {
     
     	// Initialize everything at starting position
     	addSequential(new ElevatorSetZero(0));
-        addSequential(new DriveResetPoseFromPath(startToScalePath));
+        addSequential(new DriveResetPoseFromPath(startToScalePath, true));
 
     	// Drive backwards to scale.  Start raising elevator during the path when "raiseElevator" marker is crossed
     	addParallel(new RunAfterMarker("raiseElevator", 4.0, new ElevatorSetPositionMP(Elevator.SWITCH_POSITION_INCHES)));
