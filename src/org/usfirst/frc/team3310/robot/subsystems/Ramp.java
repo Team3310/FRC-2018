@@ -16,7 +16,8 @@ public class Ramp extends Subsystem
 	public static enum RampPull { UP, DOWN };
 
 	private Solenoid latch;
-	private Solenoid pull;
+	private Solenoid pull1;
+	private Solenoid pull2;
 	
 	private double matchStartTimeSeconds;
 	private OperationMode operationMode;
@@ -24,7 +25,8 @@ public class Ramp extends Subsystem
 	private Ramp() {
 		try {
 			latch = new Solenoid(RobotMap.RAMP_LATCH_PCM_ID);
-			pull = new Solenoid(RobotMap.RAMP_PULL_PCM_ID);
+			pull1 = new Solenoid(RobotMap.RAMP_PULL1_PCM_ID);
+			pull2 = new Solenoid(RobotMap.RAMP_PULL2_PCM_ID);
 		}
 		catch (Exception e) {
 			System.err.println("An error occurred in the Ramp constructor");
@@ -53,10 +55,12 @@ public class Ramp extends Subsystem
 		
 	public void setPullPosition(RampPull state) {
 		if(state == RampPull.DOWN) {
-			pull.set(true);
+			pull1.set(true);
+			pull2.set(true);
 		}
 		else if(state == RampPull.UP) {
-			pull.set(false);
+			pull1.set(false);
+			pull2.set(false);
 		}
 	}
 	

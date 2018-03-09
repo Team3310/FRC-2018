@@ -9,6 +9,7 @@ package org.usfirst.frc.team3310.robot;
 
 import java.util.HashMap;
 
+import org.usfirst.frc.team3310.paths.auton.GoStraight;
 import org.usfirst.frc.team3310.robot.commands.ElevatorAutoZero;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchLeft1;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchLeft1ScaleLeft1;
@@ -16,6 +17,13 @@ import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchLeft1Sca
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRight1;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRight1ScaleLeft1;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRight1ScaleRight1;
+import org.usfirst.frc.team3310.robot.commands.auton.LeftStartToSwitchLeft1ScaleLeft1;
+import org.usfirst.frc.team3310.robot.commands.auton.LeftStartToSwitchLeft1ScaleRight1;
+import org.usfirst.frc.team3310.robot.commands.auton.LeftStartToSwitchRight1;
+import org.usfirst.frc.team3310.robot.commands.auton.RightStartToSwitchLeft1;
+import org.usfirst.frc.team3310.robot.commands.auton.RightStartToSwitchRight1ScaleLeft1;
+import org.usfirst.frc.team3310.robot.commands.auton.RightStartToSwitchRight1ScaleRight1;
+import org.usfirst.frc.team3310.robot.commands.auton.StartLeftCenterRightGoStraight;
 import org.usfirst.frc.team3310.robot.subsystems.Drive;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator;
 import org.usfirst.frc.team3310.robot.subsystems.Flipper;
@@ -89,8 +97,8 @@ public class Robot extends TimedRobot {
  
     	// Update default at competition!!!
     	operationModeChooser = new SendableChooser<OperationMode>();
-	    operationModeChooser.addDefault("Practice", OperationMode.PRACTICE);
-	    operationModeChooser.addObject("Competition", OperationMode.COMPETITION);
+	    operationModeChooser.addObject("Practice", OperationMode.PRACTICE);
+	    operationModeChooser.addDefault("Competition", OperationMode.COMPETITION);
 	    operationModeChooser.addObject("Test", OperationMode.TEST);
 		SmartDashboard.putData("Operation Mode", operationModeChooser);
 
@@ -108,8 +116,29 @@ public class Robot extends TimedRobot {
 		centerStartSwitch1.addRLR(new CenterStartToSwitchRight1());
 		centerStartSwitch1.addRRR(new CenterStartToSwitchRight1());
 		
-		autonTaskChooser.addDefault("Center Start Switch 1", centerStartSwitch1);
-		autonTaskChooser.addObject("Center Start Switch 1 Scale 1", centerStartSwitch1Scale1);
+		AutonRouteChooser leftStartSwitch1Scale1 = new AutonRouteChooser();
+		leftStartSwitch1Scale1.addLLL(new LeftStartToSwitchLeft1ScaleLeft1());
+		leftStartSwitch1Scale1.addLRL(new LeftStartToSwitchLeft1ScaleRight1());
+		leftStartSwitch1Scale1.addRLR(new LeftStartToSwitchRight1());
+		leftStartSwitch1Scale1.addRRR(new LeftStartToSwitchRight1());
+		
+		AutonRouteChooser rightStartSwitch1Scale1 = new AutonRouteChooser();
+		rightStartSwitch1Scale1.addLLL(new RightStartToSwitchLeft1());
+		rightStartSwitch1Scale1.addLRL(new RightStartToSwitchLeft1());
+		rightStartSwitch1Scale1.addRLR(new RightStartToSwitchRight1ScaleLeft1());
+		rightStartSwitch1Scale1.addRRR(new RightStartToSwitchRight1ScaleRight1());
+		
+		AutonRouteChooser goStraight = new AutonRouteChooser();
+		goStraight.addLLL(new StartLeftCenterRightGoStraight(new GoStraight()));
+		goStraight.addLRL(new StartLeftCenterRightGoStraight(new GoStraight()));
+		goStraight.addRLR(new StartLeftCenterRightGoStraight(new GoStraight()));
+		goStraight.addRRR(new StartLeftCenterRightGoStraight(new GoStraight()));
+		
+		autonTaskChooser.addDefault("Center Start Switch 1 Scale 1", centerStartSwitch1Scale1);
+		autonTaskChooser.addObject("Right Start Switch 1 Scale 1", rightStartSwitch1Scale1);
+		autonTaskChooser.addObject("Left Start Switch 1 Scale 1", leftStartSwitch1Scale1);
+		autonTaskChooser.addObject("Center Start Switch 1", centerStartSwitch1);
+		autonTaskChooser.addObject("Go Straight Do Nothing", goStraight);
 		SmartDashboard.putData("Auton Tasks", autonTaskChooser);
 		
 		LiveWindow.setEnabled(false);

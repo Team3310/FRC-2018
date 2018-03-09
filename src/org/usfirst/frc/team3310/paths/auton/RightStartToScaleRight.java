@@ -10,26 +10,27 @@ import org.usfirst.frc.team3310.utility.math.RigidTransform2d;
 import org.usfirst.frc.team3310.utility.math.Rotation2d;
 import org.usfirst.frc.team3310.utility.math.Translation2d;
 
-public class CenterStartToSwitchRight implements PathContainer {
+
+public class RightStartToScaleRight implements PathContainer {
     
     @Override
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-        sWaypoints.add(new Waypoint(19,157,0,0));
-        sWaypoints.add(new Waypoint(40,157,20,60));
-        sWaypoints.add(new Waypoint(100,109,15,60));
-        sWaypoints.add(new Waypoint(116,104,0,60));
+        sWaypoints.add(new Waypoint(18,50,0,0));
+        sWaypoints.add(new Waypoint(180,50,30,60, "raiseElevator"));
+        sWaypoints.add(new Waypoint(240,90,30,60));
+        sWaypoints.add(new Waypoint(280,88,0,60));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }
     
     @Override
     public RigidTransform2d getStartPose() {
-        return new RigidTransform2d(new Translation2d(19, 157), Rotation2d.fromDegrees(0.0)); 
+        return new RigidTransform2d(new Translation2d(18, 50), Rotation2d.fromDegrees(180)); 
     }
 
     @Override
     public boolean isReversed() {
-        return false; 
+        return true; 
     }
 }

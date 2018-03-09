@@ -25,6 +25,7 @@ import org.usfirst.frc.team3310.robot.commands.RampSetPullPosition;
 import org.usfirst.frc.team3310.robot.subsystems.Drive;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator.ElevatorControlMode;
+import org.usfirst.frc.team3310.robot.subsystems.Elevator.ElevatorSpeedShiftState;
 import org.usfirst.frc.team3310.robot.subsystems.Flipper.FlipperSide;
 import org.usfirst.frc.team3310.robot.subsystems.Flipper.FlipperState;
 import org.usfirst.frc.team3310.robot.subsystems.Intake;
@@ -53,8 +54,17 @@ public class OI {
         JoystickButton shiftDrivetrain = new JoystickButton(m_driverXbox.getJoyStick(), XboxController.LEFT_BUMPER_BUTTON);
         shiftDrivetrain.whenPressed(new DriveSpeedShift(Drive.DriveSpeedShiftState.HI));
         shiftDrivetrain.whenReleased(new DriveSpeedShift(Drive.DriveSpeedShiftState.LO));
+ 
+        JoystickButton rampDeploy = new JoystickButton(m_driverXbox.getJoyStick(), XboxController.BACK_BUTTON);
+        rampDeploy.whenPressed(new RampSetLatchPosition(RampLatch.DEPLOYED));
 
-		// Operator controller
+        XBoxDPadTriggerButton rampPullDown = new XBoxDPadTriggerButton(m_driverXbox, XBoxDPadTriggerButton.DOWN);
+        rampPullDown.whenPressed(new RampSetPullPosition(RampPull.DOWN));
+
+        XBoxDPadTriggerButton rampPullUp = new XBoxDPadTriggerButton(m_driverXbox, XBoxDPadTriggerButton.UP);
+        rampPullUp.whenPressed(new RampSetPullPosition(RampPull.UP));
+
+        // Operator controller
 		m_operatorXbox = new XboxController(RobotMap.OPERATOR_JOYSTICK_1_USB_ID);
 		
         JoystickButton intakeLoad = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.RIGHT_BUMPER_BUTTON);
@@ -76,15 +86,18 @@ public class OI {
         XBoxDPadTriggerButton elevatorShiftHi = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.UP);
         elevatorShiftHi.whenPressed(new ElevatorSpeedShift(Elevator.ElevatorSpeedShiftState.HI));
 
-        XBoxDPadTriggerButton elevatorClimb = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.DOWN);
-        elevatorClimb.whenPressed(new ElevatorClimb());
-        elevatorClimb.whenReleased(new ElevatorSetMode(ElevatorControlMode.JOYSTICK_PID));
+//        XBoxDPadTriggerButton elevatorClimb = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.DOWN);
+//        elevatorClimb.whenPressed(new ElevatorClimb());
+//        elevatorClimb.whenReleased(new ElevatorSetMode(ElevatorControlMode.JOYSTICK_PID));
+
+        XBoxDPadTriggerButton elevatorShiftLo = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.DOWN);
+        elevatorShiftLo.whenPressed(new ElevatorSpeedShift(ElevatorSpeedShiftState.LO));
 
         XBoxDPadTriggerButton elevatorJoystickManualMode = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.LEFT);
         elevatorJoystickManualMode.whenPressed(new ElevatorSetMode(ElevatorControlMode.JOYSTICK_MANUAL));
 
-        XBoxDPadTriggerButton rampPullDown = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.RIGHT);
-        rampPullDown.whenPressed(new RampSetPullPosition(RampPull.DOWN));
+        XBoxDPadTriggerButton rampPullDown2 = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.RIGHT);
+        rampPullDown2.whenPressed(new RampSetPullPosition(RampPull.DOWN));
 
         JoystickButton elevatorPidMode = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.BACK_BUTTON);
         elevatorPidMode.whenPressed(new ElevatorSetMode(ElevatorControlMode.JOYSTICK_PID));

@@ -28,7 +28,8 @@ public class Intake extends Subsystem
 
 	// Sensors
 	private DigitalInput frontIRIntakeSensor;
-	private DigitalInput frontVEXIntakeSensor;
+	private DigitalInput frontLeftVEXIntakeSensor;
+	private DigitalInput frontRightVEXIntakeSensor;
 	private DigitalInput backIntakeSensor;
 	
 	private Intake() {
@@ -41,7 +42,8 @@ public class Intake extends Subsystem
 			rightArm.setNeutralMode(NeutralMode.Brake);
 
 			frontIRIntakeSensor = new DigitalInput(RobotMap.INTAKE_FRONT_IR_SENSOR_DIO_ID);
-			frontVEXIntakeSensor = new DigitalInput(RobotMap.INTAKE_FRONT_VEX_SENSOR_DIO_ID);
+			frontLeftVEXIntakeSensor = new DigitalInput(RobotMap.INTAKE_FRONT_LEFT_VEX_SENSOR_DIO_ID);
+			frontRightVEXIntakeSensor = new DigitalInput(RobotMap.INTAKE_FRONT_RIGHT_VEX_SENSOR_DIO_ID);
 			backIntakeSensor = new DigitalInput(RobotMap.INTAKE_BACK_IR_SENSOR_DIO_ID);						
 		}
 		catch (Exception e) {
@@ -69,10 +71,14 @@ public class Intake extends Subsystem
 		return frontIRIntakeSensor.get();
 	}
 	
-	public boolean getFrontVEXIntakeSensor() {
-		return !frontVEXIntakeSensor.get();   
+	public boolean getFrontLeftVEXIntakeSensor() {
+		return !frontLeftVEXIntakeSensor.get();   
 	}
 	
+	public boolean getFrontRightVEXIntakeSensor() {
+		return !frontRightVEXIntakeSensor.get();   
+	}
+
 	public boolean getBackIntakeSensor() {
 		return backIntakeSensor.get();
 	}
@@ -80,7 +86,8 @@ public class Intake extends Subsystem
 	public void updateStatus(Robot.OperationMode operationMode) {
 		if (operationMode == Robot.OperationMode.TEST) {
 			try {
-				SmartDashboard.putBoolean("Intake Front VEX Sensor", getFrontVEXIntakeSensor());
+				SmartDashboard.putBoolean("Intake Front Left VEX Sensor", getFrontLeftVEXIntakeSensor());
+				SmartDashboard.putBoolean("Intake Front Right VEX Sensor", getFrontRightVEXIntakeSensor());
 				SmartDashboard.putBoolean("Intake Front IR Sensor", getFrontIRIntakeSensor());
 				SmartDashboard.putBoolean("Intake Back Sensor", getBackIntakeSensor());
 				SmartDashboard.putNumber("Left Intake Amps", leftArm.getOutputCurrent());

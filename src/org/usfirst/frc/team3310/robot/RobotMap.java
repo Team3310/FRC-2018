@@ -29,15 +29,17 @@ public class RobotMap {
 	// Pneumatics
 	public static final int ELEVATOR_SPEEDSHIFT_PCM_ID = 0;
 	public static final int RAMP_LATCH_PCM_ID = 1;
-	public static final int RAMP_PULL_PCM_ID = 2;
+	public static final int RAMP_PULL1_PCM_ID = 2;
+	public static final int RAMP_PULL2_PCM_ID = 4;
 	public static final int DRIVETRAIN_SPEEDSHIFT_PCM_ID = 3;
-	public static final int LEFT_FLIPPER_PCM_ID = 4;
+	public static final int LEFT_FLIPPER_PCM_ID = 6;
 	public static final int RIGHT_FLIPPER_PCM_ID = 5;		
 	
 	// DIO
 	public static final int INTAKE_FRONT_IR_SENSOR_DIO_ID = 0;
 	public static final int INTAKE_BACK_IR_SENSOR_DIO_ID = 1;
-	public static final int INTAKE_FRONT_VEX_SENSOR_DIO_ID = 3;
+	public static final int INTAKE_FRONT_LEFT_VEX_SENSOR_DIO_ID = 3;
+	public static final int INTAKE_FRONT_RIGHT_VEX_SENSOR_DIO_ID = 4;
 
 	// Analog
 	public static final int REAR_SCALE_SENSOR_ANALOG_ID = 0;
