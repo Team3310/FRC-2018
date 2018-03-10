@@ -13,7 +13,7 @@ public class CenterStartToSwitchRight1ScaleRight1 extends CommandGroup {
 
     public CenterStartToSwitchRight1ScaleRight1() {
     
-    	addSequential(new CenterStartToSwitch1Scale1(new CenterStartToScaleRight(), new ScaleRightToSwitchRight(), new SwitchRightToScaleRight()));
+    	addSequential(new CenterStartToSwitch1Scale1(new CenterStartToScaleRight(), new ScaleRightToSwitchRight(), new SwitchRightToScaleRight(), true));
 
     }
 }

@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.command.WaitForChildren;
  */
 public class CenterStartToSwitch1Scale1 extends CommandGroup {
 
-    public CenterStartToSwitch1Scale1(PathContainer startToScale, PathContainer scaleToSwitch, PathContainer switchToScale) {
+    public CenterStartToSwitch1Scale1(PathContainer startToScale, PathContainer scaleToSwitch, PathContainer switchToScale, boolean lowerElevator) {
     
     	// Drive backwards to scale, drive forward, eject cube, pickup last cube
     	addSequential(new CenterStartToSwitch1PickupLastCube(startToScale, scaleToSwitch));
@@ -32,7 +32,9 @@ public class CenterStartToSwitch1Scale1 extends CommandGroup {
     	
     	// Eject cube
         addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 1.0));
-    	addSequential(new DriveStraightMP(12.0, Drive.MP_MEDIUM_VELOCITY_INCHES_PER_SEC, true, false, 0));
-        addSequential(new ElevatorSetPositionMP(Elevator.ZERO_POSITION_INCHES));
+        if (lowerElevator) {
+	    	addSequential(new DriveStraightMP(12.0, Drive.MP_MEDIUM_VELOCITY_INCHES_PER_SEC, true, false, 0));
+	        addSequential(new ElevatorSetPositionMP(Elevator.ZERO_POSITION_INCHES));
+        }
      }
 }

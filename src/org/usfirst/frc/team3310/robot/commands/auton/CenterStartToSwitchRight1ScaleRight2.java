@@ -15,7 +15,7 @@ public class CenterStartToSwitchRight1ScaleRight2 extends CommandGroup {
 
     public CenterStartToSwitchRight1ScaleRight2() {
     
-    	addSequential(new CenterStartToSwitch1Scale1(new CenterStartToScaleRight(), new ScaleRightToSwitchRight(), new SwitchRightToScaleRight()));
+    	addSequential(new CenterStartToSwitch1Scale1(new CenterStartToScaleRight(), new ScaleRightToSwitchRight(), new SwitchRightToScaleRight(), false));
     	addSequential(new ScaleToSwitchCube2(new ScaleRightToSwitchRight2(), new SwitchRight2ToScaleRight()));
     }
 }
