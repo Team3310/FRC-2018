@@ -9,8 +9,19 @@ package org.usfirst.frc.team3310.robot;
 
 import java.util.HashMap;
 
+import org.usfirst.frc.team3310.paths.auton.CenterStartToScaleLeft;
+import org.usfirst.frc.team3310.paths.auton.CenterStartToScaleRight;
 import org.usfirst.frc.team3310.paths.auton.GoStraight;
+import org.usfirst.frc.team3310.paths.auton.ScaleLeftToSwitchLeft;
+import org.usfirst.frc.team3310.paths.auton.ScaleLeftToSwitchLeft2;
+import org.usfirst.frc.team3310.paths.auton.ScaleRightToSwitchRight;
+import org.usfirst.frc.team3310.paths.auton.ScaleRightToSwitchRight2;
+import org.usfirst.frc.team3310.paths.auton.SwitchLeft2ToScaleLeft;
+import org.usfirst.frc.team3310.paths.auton.SwitchLeftToScaleLeft;
+import org.usfirst.frc.team3310.paths.auton.SwitchRight2ToScaleRight;
+import org.usfirst.frc.team3310.paths.auton.SwitchRightToScaleRight;
 import org.usfirst.frc.team3310.robot.commands.ElevatorAutoZero;
+import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToScale3;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchLeft1;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchLeft1ScaleLeft1;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchLeft1ScaleRight1;
@@ -29,6 +40,7 @@ import org.usfirst.frc.team3310.robot.subsystems.Elevator;
 import org.usfirst.frc.team3310.robot.subsystems.Flipper;
 import org.usfirst.frc.team3310.robot.subsystems.Intake;
 import org.usfirst.frc.team3310.robot.subsystems.Ramp;
+import org.usfirst.frc.team3310.robot.subsystems.Ramp.RampPull;
 import org.usfirst.frc.team3310.utility.Looper;
 import org.usfirst.frc.team3310.utility.control.RobotState;
 import org.usfirst.frc.team3310.utility.control.RobotStateEstimator;
@@ -134,6 +146,12 @@ public class Robot extends TimedRobot {
 		goStraight.addRLR(new StartLeftCenterRightGoStraight(new GoStraight()));
 		goStraight.addRRR(new StartLeftCenterRightGoStraight(new GoStraight()));
 		
+//		AutonRouteChooser scale3Cube = new AutonRouteChooser();
+//		scale3Cube.addLLL(new CenterStartToScale3(new CenterStartToScaleLeft(), new ScaleLeftToSwitchLeft(), new SwitchLeftToScaleLeft(), new ScaleLeftToSwitchLeft2(), new SwitchLeft2ToScaleLeft()));
+//		scale3Cube.addLRL(new CenterStartToScale3(new CenterStartToScaleRight(), new ScaleRightToSwitchRight(), new SwitchRightToScaleRight(), new ScaleRightToSwitchRight2(), new SwitchRight2ToScaleRight()));
+//		scale3Cube.addRLR(new CenterStartToScale3(new CenterStartToScaleLeft(), new ScaleLeftToSwitchLeft(), new SwitchLeftToScaleLeft(), new ScaleLeftToSwitchLeft2(), new SwitchLeft2ToScaleLeft()));
+//		scale3Cube.addRRR(new CenterStartToScale3(new CenterStartToScaleRight(), new ScaleRightToSwitchRight(), new SwitchRightToScaleRight(), new ScaleRightToSwitchRight2(), new SwitchRight2ToScaleRight()));
+		
 		autonTaskChooser.addDefault("Center Start Switch 1 Scale 1", centerStartSwitch1Scale1);
 		autonTaskChooser.addObject("Right Start Switch 1 Scale 1", rightStartSwitch1Scale1);
 		autonTaskChooser.addObject("Left Start Switch 1 Scale 1", leftStartSwitch1Scale1);
@@ -167,7 +185,7 @@ public class Robot extends TimedRobot {
 	}
 
 	@Override
-	public void autonomousInit() {
+	public void autonomousInit() {		
     	controlLoop.start();
     	drive.setIsRed(getAlliance().equals(Alliance.Red));
     	elevator.setShiftState(Elevator.ElevatorSpeedShiftState.HI);
@@ -204,7 +222,8 @@ public class Robot extends TimedRobot {
 		operationMode = operationModeChooser.getSelected();
 		
         controlLoop.start();
-    	ramp.setTeleopStartTime();
+		ramp.setPullPosition(RampPull.DOWN);
+		ramp.setTeleopStartTime();
     	ramp.setOperationMode(operationMode);
     	drive.endGyroCalibration();
     	elevator.setShiftState(Elevator.ElevatorSpeedShiftState.HI);

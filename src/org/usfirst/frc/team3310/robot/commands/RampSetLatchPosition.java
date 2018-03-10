@@ -3,6 +3,7 @@ package org.usfirst.frc.team3310.robot.commands;
 import org.usfirst.frc.team3310.robot.Robot;
 import org.usfirst.frc.team3310.robot.Robot.OperationMode;
 import org.usfirst.frc.team3310.robot.subsystems.Ramp.RampLatch;
+import org.usfirst.frc.team3310.robot.subsystems.Ramp.RampPull;
 
 import edu.wpi.first.wpilibj.command.Command;
 
@@ -17,9 +18,9 @@ public class RampSetLatchPosition extends Command
 
 	@Override
 	protected void initialize() {
-		if (Robot.ramp.getOperationMode() == OperationMode.COMPETITION && Robot.ramp.getRemainingTeleopSeconds() < 30) {
+//		if (Robot.ramp.getOperationMode() == OperationMode.COMPETITION) { // && Robot.ramp.getRemainingTeleopSeconds() < 30
 			Robot.ramp.setLatchPosition(state);
-		}
+//		}
 	}
 
 	@Override

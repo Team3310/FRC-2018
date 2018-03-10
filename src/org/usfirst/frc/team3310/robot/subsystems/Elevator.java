@@ -35,7 +35,7 @@ public class Elevator extends Subsystem implements Loop
 	public static final double TEST_SPEED_DOWN = -0.3;
 	public static final double AUTO_ZERO_SPEED = -0.3;
 	public static final double JOYSTICK_INCHES_PER_MS_HI = 0.75;
-	public static final double JOYSTICK_INCHES_PER_MS_LO = JOYSTICK_INCHES_PER_MS_HI/3.68;
+	public static final double JOYSTICK_INCHES_PER_MS_LO = JOYSTICK_INCHES_PER_MS_HI/3.68 * 0.8;
 	
 	// Defined positions
 	public static final double ZERO_POSITION_AUTON_FORWARD_INCHES = 8.0;
@@ -71,7 +71,8 @@ public class Elevator extends Subsystem implements Loop
 	public static int MP_SLOT = 1;
 
 	private PIDParams mpPIDParams = new PIDParams(0.2, 0.0, 0.0, 0.0, 0.005, 0.0);  
-	private PIDParams pidPIDParams = new PIDParams(0.05, 0.0, 0.0, 0.0, 0.0, 0.0);  
+	private PIDParams pidPIDParamsHiGear = new PIDParams(0.075, 0.0, 0.0, 0.0, 0.0, 0.0);  
+	private PIDParams pidPIDParamsLoGear = new PIDParams(0.45, 0.0, 0.0, 0.0, 0.0, 0.0);  
 	public static final double KF_UP = 0.005;
 	public static final double KF_DOWN = 0.0;
 	public static final double PID_ERROR_INCHES = 1.0;
@@ -174,7 +175,9 @@ public class Elevator extends Subsystem implements Loop
 	public void onStart(double timestamp) {
 		mpController = new MPTalonPIDController(periodMs, motorControllers);
 		mpController.setPID(mpPIDParams, MP_SLOT);
-		mpController.setPID(pidPIDParams, PID_SLOT);
+		mpController.setPID(pidPIDParamsHiGear, PID_SLOT);
+		mpController.setPIDSlot(PID_SLOT);
+		mpController.setPID(pidPIDParamsHiGear, PID_SLOT);
 		mpController.setPIDSlot(PID_SLOT);
 	}
 
@@ -229,10 +232,12 @@ public class Elevator extends Subsystem implements Loop
 		if(state == ElevatorSpeedShiftState.HI) {
 			joystickInchesPerMs = JOYSTICK_INCHES_PER_MS_HI;
 			speedShift.set(true);
+			mpController.setPID(pidPIDParamsHiGear, PID_SLOT);
 		}
 		else if(state == ElevatorSpeedShiftState.LO) {
 			joystickInchesPerMs = JOYSTICK_INCHES_PER_MS_LO;
 			speedShift.set(false);
+			mpController.setPID(pidPIDParamsLoGear, PID_SLOT);
 		}
 	}
 	
