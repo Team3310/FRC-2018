@@ -2,11 +2,8 @@ package org.usfirst.frc.team3310.utility.control;
 
 import org.usfirst.frc.team3310.robot.subsystems.Drive;
 import org.usfirst.frc.team3310.utility.Loop;
-import org.usfirst.frc.team3310.utility.math.RigidTransform2d;
 import org.usfirst.frc.team3310.utility.math.Rotation2d;
 import org.usfirst.frc.team3310.utility.math.Twist2d;
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Periodically estimates the state of the robot using the robot's distance traveled (compares two waypoints), gyroscope

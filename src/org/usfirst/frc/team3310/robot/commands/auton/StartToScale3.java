@@ -1,17 +1,13 @@
 package org.usfirst.frc.team3310.robot.commands.auton;
 
 import org.usfirst.frc.team3310.paths.PathContainer;
-import org.usfirst.frc.team3310.paths.auton.CenterStartToScaleRight;
-import org.usfirst.frc.team3310.paths.auton.ScaleRightToSwitchRight;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
 import org.usfirst.frc.team3310.robot.commands.DriveResetPoseFromPath;
-import org.usfirst.frc.team3310.robot.commands.DriveStraightMP;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetPositionMP;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetZero;
 import org.usfirst.frc.team3310.robot.commands.IntakeCubeAndLiftAbortDrive;
 import org.usfirst.frc.team3310.robot.commands.IntakeSetSpeedTimed;
 import org.usfirst.frc.team3310.robot.commands.RunAfterMarker;
-import org.usfirst.frc.team3310.robot.subsystems.Drive;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator;
 import org.usfirst.frc.team3310.robot.subsystems.Intake;
 
@@ -22,9 +18,9 @@ import edu.wpi.first.wpilibj.command.WaitForChildren;
 /**
  *
  */
-public class CenterStartToScale3 extends CommandGroup {
+public class StartToScale3 extends CommandGroup {
 
-    public CenterStartToScale3(
+    public StartToScale3(
     		PathContainer startToScalePath, 
     		PathContainer scaleToSwitchPath1, 
     		PathContainer switchToScale1, 

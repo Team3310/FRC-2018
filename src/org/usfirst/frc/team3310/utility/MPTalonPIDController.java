@@ -5,8 +5,6 @@ import java.util.ArrayList;
 //import com.ctre.CANTalon.TalonControlMode;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 
-import edu.wpi.first.wpilibj.Timer;
-
 public class MPTalonPIDController
 {	
 	protected static enum MPControlMode { STRAIGHT, TURN };

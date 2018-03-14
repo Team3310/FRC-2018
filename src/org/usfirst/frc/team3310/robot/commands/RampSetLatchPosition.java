@@ -1,9 +1,7 @@
 package org.usfirst.frc.team3310.robot.commands;
 
 import org.usfirst.frc.team3310.robot.Robot;
-import org.usfirst.frc.team3310.robot.Robot.OperationMode;
 import org.usfirst.frc.team3310.robot.subsystems.Ramp.RampLatch;
-import org.usfirst.frc.team3310.robot.subsystems.Ramp.RampPull;
 
 import edu.wpi.first.wpilibj.command.Command;
 
