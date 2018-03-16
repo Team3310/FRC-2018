@@ -10,7 +10,6 @@ package org.usfirst.frc.team3310.robot;
 import java.util.HashMap;
 
 import org.usfirst.frc.team3310.paths.auton.GoStraight;
-import org.usfirst.frc.team3310.paths.auton.LeftStartToScaleLeft;
 import org.usfirst.frc.team3310.paths.auton.LeftStartToScaleLeftV2;
 import org.usfirst.frc.team3310.paths.auton.RightStartToScaleRight;
 import org.usfirst.frc.team3310.paths.auton.ScaleLeftToSwitchLeft;
@@ -39,6 +38,7 @@ import org.usfirst.frc.team3310.robot.commands.auton.RightStartToSwitchRight1Sca
 import org.usfirst.frc.team3310.robot.commands.auton.StartLeftCenterRightGoStraight;
 import org.usfirst.frc.team3310.robot.commands.auton.StartToScale3;
 import org.usfirst.frc.team3310.robot.subsystems.Drive;
+import org.usfirst.frc.team3310.robot.subsystems.Drive.DriveSpeedShiftState;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator;
 import org.usfirst.frc.team3310.robot.subsystems.Flipper;
 import org.usfirst.frc.team3310.robot.subsystems.Intake;
@@ -206,6 +206,7 @@ public class Robot extends TimedRobot {
 	public void autonomousInit() {		
     	controlLoop.start();
     	drive.setIsRed(getAlliance().equals(Alliance.Red));
+    	drive.setShiftState(DriveSpeedShiftState.HI);
     	elevator.setShiftState(Elevator.ElevatorSpeedShiftState.HI);
     	elevator.resetZeroPosition(Elevator.ZERO_POSITION_INCHES);
         zeroAllSensors();
@@ -235,6 +236,7 @@ public class Robot extends TimedRobot {
 	public void teleopInit() {
 		if (autonomousCommand != null) {
 			autonomousCommand.cancel();
+	    	drive.setShiftState(DriveSpeedShiftState.LO);
 		}
 
 		operationMode = operationModeChooser.getSelected();

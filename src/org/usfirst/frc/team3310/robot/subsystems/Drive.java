@@ -48,7 +48,7 @@ public class Drive extends Subsystem implements Loop
 	public static enum ClimberState { DEPLOYED, RETRACTED };
 
 	// One revolution of the wheel = Pi * D inches = 60/24 revs due to gears * 36/12 revs due mag encoder gear on ball shifter * 4096 ticks 
-	public static final double ENCODER_TICKS_TO_INCHES = (36.0 / 12.0) * (60.0 / 24.0) * 4096.0 / (5.7 * Math.PI);  
+	public static final double ENCODER_TICKS_TO_INCHES = (36.0 / 12.0) * (60.0 / 24.0) * 4096.0 / (5.8 * Math.PI);  
 	public static final double TRACK_WIDTH_INCHES = 24.56;  // 26.937;
 	
 	// Motion profile max velocities and accel times
@@ -663,10 +663,10 @@ public class Drive extends Subsystem implements Loop
 		}
 		shiftState = state;
 		if(state == DriveSpeedShiftState.HI) {
-			speedShift.set(true);
+			speedShift.set(false);
 		}
 		else if(state == DriveSpeedShiftState.LO) {
-			speedShift.set(false);
+			speedShift.set(true);
 		}
 	}
 	
@@ -769,6 +769,8 @@ public class Drive extends Subsystem implements Loop
 			try {
 				SmartDashboard.putNumber("Drive Right Position Inches", rightDrive1.getPositionWorld());
 				SmartDashboard.putNumber("Drive Left Position Inches", leftDrive1.getPositionWorld());
+				SmartDashboard.putNumber("Drive Right Velocity InPerSec", rightDrive1.getVelocityWorld());
+				SmartDashboard.putNumber("Drive Left Velocity InPerSec", leftDrive1.getVelocityWorld());
 				SmartDashboard.putNumber("Drive Left 1 Amps", leftDrive1.getOutputCurrent());
 				SmartDashboard.putNumber("Drive Left 2 Amps", leftDrive2.getOutputCurrent());
 				SmartDashboard.putNumber("Drive Left 3 Amps", leftDrive3.getOutputCurrent());

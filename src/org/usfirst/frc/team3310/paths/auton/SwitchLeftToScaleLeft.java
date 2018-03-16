@@ -10,15 +10,16 @@ import org.usfirst.frc.team3310.utility.math.RigidTransform2d;
 import org.usfirst.frc.team3310.utility.math.Rotation2d;
 import org.usfirst.frc.team3310.utility.math.Translation2d;
 
+
 public class SwitchLeftToScaleLeft implements PathContainer {
     
     @Override
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
         sWaypoints.add(new Waypoint(224,234,0,0));
-        sWaypoints.add(new Waypoint(231,234,0,60,   "raiseElevator"));
-        sWaypoints.add(new Waypoint(261,241,0,60));
-        sWaypoints.add(new Waypoint(291,241,0,60));
+        sWaypoints.add(new Waypoint(231,234,0,60,       "raiseElevator"));
+        sWaypoints.add(new Waypoint(261,237,0,60, "startEject"));
+        sWaypoints.add(new Waypoint(291,237,0,60));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }

@@ -11,6 +11,7 @@ public class IntakeCubeAndLiftAbortDrive extends CommandGroup {
 
     public IntakeCubeAndLiftAbortDrive() {
         addSequential(new IntakeSetSpeedFrontSensorOff(Intake.INTAKE_LOAD_SPEED, 0.05));
+        System.out.println("Cube is obtained.");
         addSequential(new DriveForcePathDone());
     }
     

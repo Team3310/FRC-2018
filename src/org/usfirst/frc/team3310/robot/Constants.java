@@ -16,8 +16,8 @@ public class Constants extends ConstantsBase {
     /* ROBOT PHYSICAL CONSTANTS */
 
     // Wheels
-    public static double kDriveWheelDiameterInches = 5.9;
-    public static double kTrackWidthInches = 24.56;
+    public static double kDriveWheelDiameterInches = 5.8;
+    public static double kTrackWidthInches = 26.17;
     public static double kTrackScrubFactor = 0.924;
     
     // Drive constants
@@ -33,10 +33,10 @@ public class Constants extends ConstantsBase {
 
     // PID gains for drive velocity loop (HIGH GEAR)
     // Units: setpoint, error, and output are in inches per second.
-    public static double kDriveHighGearVelocityKp = 0.02; //1.2;
+    public static double kDriveHighGearVelocityKp = 0.5; //1.2;
     public static double kDriveHighGearVelocityKi = 0.0;
-    public static double kDriveHighGearVelocityKd = 0.01;//6.0;
-    public static double kDriveHighGearVelocityKf = 0.06;//.15;
+    public static double kDriveHighGearVelocityKd = 0.04;//6.0;
+    public static double kDriveHighGearVelocityKf = 0.07;//.15;
     public static int kDriveHighGearVelocityIZone = 200;
     public static double kDriveHighGearVelocityRampRate = 0.05;
     public static double kDriveHighGearNominalOutput = 0.5/12.0;
@@ -101,8 +101,8 @@ public class Constants extends ConstantsBase {
 //    public static double kPathStopSteeringDistance = 9.0;
 
     public static double kSegmentCompletionTolerance = 0.1; // inches
-    public static double kPathFollowingMaxAccel = 120.0; // inches per second^2
-    public static double kPathFollowingMaxVel = 120.0; // inches per second
+    public static double kPathFollowingMaxAccel = 90.0; // inches per second^2
+    public static double kPathFollowingMaxVel = 150.0; // inches per second
     public static double kPathFollowingProfileKp = 5.0;  //5.0
     public static double kPathFollowingProfileKi = 0.03;
     public static double kPathFollowingProfileKv = 0.02;
