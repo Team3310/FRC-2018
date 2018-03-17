@@ -37,7 +37,7 @@ public class CenterStartToScaleLeft1SwitchLeft1 extends CommandGroup {
         addParallel(new ElevatorSetPositionMP(Elevator.ZERO_POSITION_INCHES));
         
         addSequential(new WaitCommand(0.8));
-        addParallel(new IntakeCubeAndLiftAbortDrive());
+        addParallel(new IntakeCubeAndLiftAbortDrive(false));
     	addSequential(new DrivePathAdaptivePursuit(new ScaleLeftToSwitchLeft()));
     	addSequential(new WaitForChildren());
     	

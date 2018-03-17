@@ -24,7 +24,7 @@ public class ScaleToSwitchCube2 extends CommandGroup {
     	// Drive forward to switch platform to pickup cube  	
         addParallel(new ElevatorSetPositionMP(Elevator.ZERO_POSITION_INCHES));
         addSequential(new WaitCommand(0.8));
-        addParallel(new IntakeCubeAndLiftAbortDrive());
+        addParallel(new IntakeCubeAndLiftAbortDrive(false));
         addSequential(new DriveResetPoseFromPath(scaleToSwitchPath2, false));
     	addSequential(new DrivePathAdaptivePursuit(scaleToSwitchPath2));
     	addSequential(new WaitForChildren());

@@ -35,14 +35,18 @@ public class IntakeSetSpeedFrontSensorOff extends ExtraTimeoutCommand {
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
     	if (cubeDetected == false && (Robot.intake.getFrontIRIntakeSensor() || Robot.intake.getFrontLeftVEXIntakeSensor() || Robot.intake.getFrontRightVEXIntakeSensor())) {
-    		startExtraTimeout(EXTRA_INTAKE_TIME);
+//    	if (cubeDetected == false && (Robot.intake.getFrontLeftVEXIntakeSensor() || Robot.intake.getFrontRightVEXIntakeSensor())) {
+//    		startExtraTimeout(EXTRA_INTAKE_TIME);
     		cubeDetected = true;
+        	Robot.intake.setSpeed(0);
+    		System.out.println("CUBE DETECTED!!!!!");
     	}
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return isExtraTimedOut() || isTimedOut();
+ //       return isExtraTimedOut() || isTimedOut();
+        return cubeDetected || isTimedOut();
     }
 
     // Called once after isFinished returns true

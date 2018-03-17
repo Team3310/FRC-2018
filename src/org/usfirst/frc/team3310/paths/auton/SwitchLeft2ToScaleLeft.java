@@ -16,9 +16,9 @@ public class SwitchLeft2ToScaleLeft implements PathContainer {
     @Override
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-        sWaypoints.add(new Waypoint(219,213,0,0));
-        sWaypoints.add(new Waypoint(248,240,20,60));
-        sWaypoints.add(new Waypoint(291,241,0,60));
+        sWaypoints.add(new Waypoint(219,213,0,60));
+        sWaypoints.add(new Waypoint(248,235,20,60,   "raiseElevator"));
+        sWaypoints.add(new Waypoint(291,221,0,60));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }
@@ -30,6 +30,6 @@ public class SwitchLeft2ToScaleLeft implements PathContainer {
 
     @Override
     public boolean isReversed() {
-        return false; 
+        return true; 
     }
 }

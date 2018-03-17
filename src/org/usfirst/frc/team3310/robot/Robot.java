@@ -206,7 +206,7 @@ public class Robot extends TimedRobot {
 	public void autonomousInit() {		
     	controlLoop.start();
     	drive.setIsRed(getAlliance().equals(Alliance.Red));
-    	drive.setShiftState(DriveSpeedShiftState.HI);
+    	drive.setShiftState(DriveSpeedShiftState.LO);
     	elevator.setShiftState(Elevator.ElevatorSpeedShiftState.HI);
     	elevator.resetZeroPosition(Elevator.ZERO_POSITION_INCHES);
         zeroAllSensors();

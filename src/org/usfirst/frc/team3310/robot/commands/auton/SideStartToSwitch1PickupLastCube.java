@@ -45,7 +45,8 @@ public class SideStartToSwitch1PickupLastCube extends CommandGroup {
         // Back up, lower elevator, start intake, wait until cube acquired
     	addParallel(new ParallelDelay(0.7, new ElevatorSetPositionPID(Elevator.ZERO_POSITION_INCHES)));
     	addSequential(new DriveStraightMP(-12.0, Drive.MP_FAST_VELOCITY_INCHES_PER_SEC, true, false, 0));
-        addParallel(new IntakeCubeAndLiftAbortDrive());
+        addParallel(new IntakeCubeAndLiftAbortDrive(false));
     	addSequential(new DriveStraightMP(22.0, Drive.MP_SLOW_VELOCITY_INCHES_PER_SEC, true, false, 0));
+    	addParallel(new IntakeSetSpeedTimed(Intake.INTAKE_LOAD_SLOW_SPEED, 0.2));
      }
 }

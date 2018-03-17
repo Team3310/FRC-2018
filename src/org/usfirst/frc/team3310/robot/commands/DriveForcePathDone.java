@@ -13,6 +13,7 @@ public class DriveForcePathDone extends Command
 	protected void initialize() {
 		Robot.drive.forceDoneWithPath();
 		Robot.drive.setFinished(true);
+		System.out.println("DRIVE FORCE PATH DONE!!!!!");
 	}
 
 	@Override

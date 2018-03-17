@@ -33,7 +33,7 @@ public class Constants extends ConstantsBase {
 
     // PID gains for drive velocity loop (HIGH GEAR)
     // Units: setpoint, error, and output are in inches per second.
-    public static double kDriveHighGearVelocityKp = 0.5; //1.2;
+    public static double kDriveHighGearVelocityKp = 1.0; //1.2;
     public static double kDriveHighGearVelocityKi = 0.0;
     public static double kDriveHighGearVelocityKd = 0.04;//6.0;
     public static double kDriveHighGearVelocityKf = 0.07;//.15;
@@ -44,7 +44,7 @@ public class Constants extends ConstantsBase {
 
     // PID gains for drive velocity loop (LOW GEAR)
     // Units: setpoint, error, and output are in inches per second.
-    public static double kDriveLowGearVelocityKp = 0.15; //.02
+    public static double kDriveLowGearVelocityKp = 0.2; //.02
     public static double kDriveLowGearVelocityKi = 0.0;
     public static double kDriveLowGearVelocityKd = 0.04; // .01
     public static double kDriveLowGearVelocityKf = 0.07;  // .06

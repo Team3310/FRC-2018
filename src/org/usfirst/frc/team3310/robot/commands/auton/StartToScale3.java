@@ -30,47 +30,50 @@ public class StartToScale3 extends CommandGroup {
     		PathContainer scaleToSwitchPath2, 
     		PathContainer switchToScale2) {
     	
-    	addSequential(new DriveSpeedShift(DriveSpeedShiftState.HI));
+    	addSequential(new DriveSpeedShift(DriveSpeedShiftState.LO));
     	addSequential(new ElevatorSetZero(0));
         addSequential(new DriveResetPoseFromPath(startToScalePath, true));
 
-    	addParallel(new RunAfterMarker("raiseElevator", 4.0, new ElevatorSetPositionMP(Elevator.SCALE_HIGH_POSITION_INCHES)));
-    	addParallel(new RunAfterMarker("startEject", 4.0, new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 1.0)));
+    	addParallel(new RunAfterMarker("raiseElevator", 4.0, new ElevatorSetPositionPID(Elevator.SCALE_FIRST_CUBE_POSITION_INCHES)));
+    	addParallel(new RunAfterMarker("startEject", 4.0, new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 0.8)));
+//    	addParallel(new ParallelDelay(1.0, new IntakeSetSpeedTimed(Intake.INTAKE_LOAD_SPEED, 0.5)));
     	addSequential(new DrivePathAdaptivePursuit(startToScalePath));
     	addSequential(new WaitForChildren());
-
+//    	addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 0.8));
+    	
     	// Drive forward to switch platform to pickup cube  	
 //        addParallel(new ElevatorSetPositionMP(Elevator.ZERO_POSITION_INCHES));
     	addSequential(new DriveSpeedShift(DriveSpeedShiftState.LO));
-        addParallel(new ElevatorSetPositionPID(Elevator.ZERO_POSITION_INCHES));
-        addSequential(new WaitCommand(0.3));
-        addParallel(new IntakeCubeAndLiftAbortDrive());
+        addParallel(new ElevatorSetPositionPID(Elevator.MIN_POSITION_INCHES));
+        addSequential(new WaitCommand(0.4));
         addSequential(new DriveResetPoseFromPath(scaleToSwitchPath1, false));
+        addParallel(new IntakeCubeAndLiftAbortDrive(false));
     	addSequential(new DrivePathAdaptivePursuit(scaleToSwitchPath1));
     	addSequential(new WaitForChildren());
 
     	// Drive backwards to scale platform that we need to eject cube  	
-    	addParallel(new ElevatorSetPositionMP(Elevator.SCALE_HIGH_POSITION_INCHES));
+//    	addParallel(new ElevatorSetPositionPID(Elevator.SCALE_HIGH_POSITION_INCHES));
         addSequential(new DriveResetPoseFromPath(switchToScale1, false));
-//    	addParallel(new RunAfterMarker("raiseElevator", 6.0, new ElevatorSetPositionMP(Elevator.SCALE_HIGH_POSITION_INCHES)));
+        addParallel(new IntakeSetSpeedTimed(Intake.INTAKE_LOAD_SPEED, 0.3));
+        addParallel(new RunAfterMarker("raiseElevator", 6.0, new ElevatorSetPositionPID(Elevator.SCALE_HIGH_POSITION_INCHES)));
 //   	addParallel(new RunAfterMarker("startEject", 4.0, new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 1.0)));
     	addSequential(new DrivePathAdaptivePursuit(switchToScale1));
     	addSequential(new WaitForChildren());
     	
     	// Eject cube
-        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 1.0));
+        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 0.8));
 
     	// Drive forward to switch platform to pickup cube  	
-        addParallel(new ElevatorSetPositionMP(Elevator.ZERO_POSITION_INCHES));
+        addParallel(new ElevatorSetPositionPID(Elevator.ZERO_POSITION_INCHES));
         addSequential(new WaitCommand(0.8));
-        addParallel(new IntakeCubeAndLiftAbortDrive());
+        addParallel(new IntakeCubeAndLiftAbortDrive(true));
         addSequential(new DriveResetPoseFromPath(scaleToSwitchPath2, false));
     	addSequential(new DrivePathAdaptivePursuit(scaleToSwitchPath2));
     	addSequential(new WaitForChildren());
 
     	// Drive backwards to scale platform that we need to eject cube  	
         addSequential(new DriveResetPoseFromPath(switchToScale2, false));
-    	addParallel(new RunAfterMarker("raiseElevator", 6.0, new ElevatorSetPositionMP(Elevator.SCALE_HIGH_POSITION_INCHES)));
+    	addParallel(new RunAfterMarker("raiseElevator", 6.0, new ElevatorSetPositionPID(Elevator.SCALE_HIGH_POSITION_INCHES)));
     	addSequential(new DrivePathAdaptivePursuit(switchToScale2));
     	addSequential(new WaitForChildren());
     	

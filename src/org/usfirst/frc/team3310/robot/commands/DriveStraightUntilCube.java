@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class DriveStraightUntilCube extends CommandGroup {
 
     public DriveStraightUntilCube() {
-        addParallel(new IntakeCubeAndLiftAbortDrive());
+        addParallel(new IntakeCubeAndLiftAbortDrive(false));
     	addSequential(new DriveStraightMP(100, 50, true, true, 0));
     }
 }
