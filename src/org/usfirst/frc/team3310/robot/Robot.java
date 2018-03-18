@@ -10,10 +10,12 @@ package org.usfirst.frc.team3310.robot;
 import java.util.HashMap;
 
 import org.usfirst.frc.team3310.paths.auton.GoStraight;
+import org.usfirst.frc.team3310.paths.auton.LeftStartToScaleLeft;
 import org.usfirst.frc.team3310.paths.auton.LeftStartToScaleLeftV2;
 import org.usfirst.frc.team3310.paths.auton.RightStartToScaleRight;
 import org.usfirst.frc.team3310.paths.auton.ScaleLeftToSwitchLeft;
 import org.usfirst.frc.team3310.paths.auton.ScaleLeftToSwitchLeft2;
+import org.usfirst.frc.team3310.paths.auton.ScaleLeftToSwitchLeftNoIntake;
 import org.usfirst.frc.team3310.paths.auton.ScaleRightToSwitchRight;
 import org.usfirst.frc.team3310.paths.auton.ScaleRightToSwitchRight2;
 import org.usfirst.frc.team3310.paths.auton.SwitchLeft2ToScaleLeft;
@@ -36,7 +38,9 @@ import org.usfirst.frc.team3310.robot.commands.auton.LeftStartToSwitchRight1;
 import org.usfirst.frc.team3310.robot.commands.auton.RightStartToSwitchLeft1;
 import org.usfirst.frc.team3310.robot.commands.auton.RightStartToSwitchRight1ScaleLeft1;
 import org.usfirst.frc.team3310.robot.commands.auton.RightStartToSwitchRight1ScaleRight1;
+import org.usfirst.frc.team3310.robot.commands.auton.SideStartToSwitch3;
 import org.usfirst.frc.team3310.robot.commands.auton.StartLeftCenterRightGoStraight;
+import org.usfirst.frc.team3310.robot.commands.auton.StartToScale1Switch1Scale1;
 import org.usfirst.frc.team3310.robot.commands.auton.StartToScale3;
 import org.usfirst.frc.team3310.robot.subsystems.Drive;
 import org.usfirst.frc.team3310.robot.subsystems.Drive.DriveSpeedShiftState;
@@ -168,6 +172,18 @@ public class Robot extends TimedRobot {
 		centerStartSwitch1Scale2.addRLR(new CenterStartToSwitchRight1ScaleLeft1());
 		centerStartSwitch1Scale2.addRRR(new CenterStartToSwitchRight1ScaleRight2());
 		
+		AutonRouteChooser leftStartScale1Switch1Scale1 = new AutonRouteChooser();
+		leftStartScale1Switch1Scale1.addLLL(new StartToScale1Switch1Scale1(new LeftStartToScaleLeftV2(), new ScaleLeftToSwitchLeft(), new SwitchLeftToScaleLeft(), new ScaleLeftToSwitchLeft2(), new SwitchLeft2ToScaleLeft()));
+		leftStartScale1Switch1Scale1.addRLR(new StartToScale1Switch1Scale1(new LeftStartToScaleLeftV2(), new ScaleLeftToSwitchLeft(), new SwitchLeftToScaleLeft(), new ScaleLeftToSwitchLeft2(), new SwitchLeft2ToScaleLeft()));
+		leftStartScale1Switch1Scale1.addLRL(new LeftStartToSwitchLeft1ScaleRight1());
+		leftStartScale1Switch1Scale1.addRRR(new LeftStartToSwitchRight1());
+
+		AutonRouteChooser leftStartSwitch3 = new AutonRouteChooser();
+		leftStartSwitch3.addLLL(new SideStartToSwitch3(new LeftStartToScaleLeft(), new ScaleLeftToSwitchLeftNoIntake(), new SwitchLeftToScaleLeft()));
+		leftStartSwitch3.addLRL(new SideStartToSwitch3(new LeftStartToScaleLeft(), new ScaleLeftToSwitchLeftNoIntake(), new SwitchLeftToScaleLeft()));
+		leftStartSwitch3.addRLR(new SideStartToSwitch3(new LeftStartToScaleLeft(), new ScaleLeftToSwitchLeftNoIntake(), new SwitchLeftToScaleLeft()));
+		leftStartSwitch3.addRRR(new SideStartToSwitch3(new LeftStartToScaleLeft(), new ScaleLeftToSwitchLeftNoIntake(), new SwitchLeftToScaleLeft()));
+		
 		AutonRouteChooser leftStartTest = new AutonRouteChooser();
 		leftStartTest.addLLL(new IntakeTest(new LeftStartToScaleLeftV2(), new ScaleLeftToSwitchLeft(), new SwitchLeftToScaleLeft(), new ScaleLeftToSwitchLeft2(), new SwitchLeft2ToScaleLeft()));
 		leftStartTest.addRLR(new IntakeTest(new LeftStartToScaleLeftV2(), new ScaleLeftToSwitchLeft(), new SwitchLeftToScaleLeft(), new ScaleLeftToSwitchLeft2(), new SwitchLeft2ToScaleLeft()));
@@ -182,6 +198,8 @@ public class Robot extends TimedRobot {
 		autonTaskChooser.addObject("Left Start Scale 3", leftStartScale3Cube);
 		autonTaskChooser.addObject("Right Start Scale 3", rightStartScale3Cube);
 		autonTaskChooser.addObject("Go Straight Do Nothing", goStraight);
+		autonTaskChooser.addObject("Left Start Scale 1 Switch 1 Scale 1", leftStartScale1Switch1Scale1);
+		autonTaskChooser.addObject("Left Start Switch 3", leftStartSwitch3);
 		autonTaskChooser.addDefault("Test Intake", leftStartTest);
 		SmartDashboard.putData("Auton Tasks", autonTaskChooser);
 		
