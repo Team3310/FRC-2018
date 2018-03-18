@@ -195,6 +195,9 @@ public class Drive extends Subsystem implements Loop
 			
 			leftDrive1.setSafetyEnabled(false);
 			leftDrive1.setSensorPhase(false);  
+
+			leftDrive1.configOpenloopRamp(0.1, TalonSRXEncoder.TIMEOUT_MS);
+			rightDrive1.configOpenloopRamp(0.1, TalonSRXEncoder.TIMEOUT_MS);
 			
 			leftDrive1.setInverted(true);
 			leftDrive2.setInverted(true);
@@ -756,12 +759,12 @@ public class Drive extends Subsystem implements Loop
 	
 	//Set the LED mode of the limelight
 	public void setLimeLED(boolean isOn) {
-//		getLimetable().getEntry("ledMode").setDouble(isOn ? 0 : 1);
+		getLimetable().getEntry("ledMode").setDouble(isOn ? 0 : 1);
 	}
 	
 	//Set the camera mode
 	public void setLimeCameraMode(boolean isOn) {
-//		getLimetable().getEntry("camMode").setDouble(isOn ? 1 : 0);
+		getLimetable().getEntry("camMode").setDouble(isOn ? 1 : 0);
 	}
 
 	public void updateStatus(Robot.OperationMode operationMode) {

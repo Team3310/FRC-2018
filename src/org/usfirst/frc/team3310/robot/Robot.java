@@ -29,6 +29,7 @@ import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRight1;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRight1ScaleLeft1;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRight1ScaleRight1;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRight1ScaleRight2;
+import org.usfirst.frc.team3310.robot.commands.auton.IntakeTest;
 import org.usfirst.frc.team3310.robot.commands.auton.LeftStartToSwitchLeft1ScaleLeft1;
 import org.usfirst.frc.team3310.robot.commands.auton.LeftStartToSwitchLeft1ScaleRight1;
 import org.usfirst.frc.team3310.robot.commands.auton.LeftStartToSwitchRight1;
@@ -167,14 +168,21 @@ public class Robot extends TimedRobot {
 		centerStartSwitch1Scale2.addRLR(new CenterStartToSwitchRight1ScaleLeft1());
 		centerStartSwitch1Scale2.addRRR(new CenterStartToSwitchRight1ScaleRight2());
 		
+		AutonRouteChooser leftStartTest = new AutonRouteChooser();
+		leftStartTest.addLLL(new IntakeTest(new LeftStartToScaleLeftV2(), new ScaleLeftToSwitchLeft(), new SwitchLeftToScaleLeft(), new ScaleLeftToSwitchLeft2(), new SwitchLeft2ToScaleLeft()));
+		leftStartTest.addRLR(new IntakeTest(new LeftStartToScaleLeftV2(), new ScaleLeftToSwitchLeft(), new SwitchLeftToScaleLeft(), new ScaleLeftToSwitchLeft2(), new SwitchLeft2ToScaleLeft()));
+		leftStartTest.addLRL(new IntakeTest(new LeftStartToScaleLeftV2(), new ScaleLeftToSwitchLeft(), new SwitchLeftToScaleLeft(), new ScaleLeftToSwitchLeft2(), new SwitchLeft2ToScaleLeft()));
+		leftStartTest.addRRR(new IntakeTest(new LeftStartToScaleLeftV2(), new ScaleLeftToSwitchLeft(), new SwitchLeftToScaleLeft(), new ScaleLeftToSwitchLeft2(), new SwitchLeft2ToScaleLeft()));
+
 		autonTaskChooser.addObject("Center Start Switch 1 Scale 1", centerStartSwitch1Scale1);
-		autonTaskChooser.addDefault("Center Start Switch 1 Scale 2", centerStartSwitch1Scale2);
+		autonTaskChooser.addObject("Center Start Switch 1 Scale 2", centerStartSwitch1Scale2);
 		autonTaskChooser.addObject("Right Start Switch 1 Scale 1", rightStartSwitch1Scale1);
 		autonTaskChooser.addObject("Left Start Switch 1 Scale 1", leftStartSwitch1Scale1);
 		autonTaskChooser.addObject("Center Start Switch 1", centerStartSwitch1);
 		autonTaskChooser.addObject("Left Start Scale 3", leftStartScale3Cube);
 		autonTaskChooser.addObject("Right Start Scale 3", rightStartScale3Cube);
 		autonTaskChooser.addObject("Go Straight Do Nothing", goStraight);
+		autonTaskChooser.addDefault("Test Intake", leftStartTest);
 		SmartDashboard.putData("Auton Tasks", autonTaskChooser);
 		
 		LiveWindow.setEnabled(false);
@@ -182,7 +190,7 @@ public class Robot extends TimedRobot {
 
 		zeroAllSensors();
 
-		drive.setLimeLED(true);
+		drive.setLimeLED(false);
 		drive.setLimeCameraMode(false);
 	}  
 	
@@ -211,7 +219,7 @@ public class Robot extends TimedRobot {
     	elevator.resetZeroPosition(Elevator.ZERO_POSITION_INCHES);
         zeroAllSensors();
 
-		drive.setLimeLED(true);
+		drive.setLimeLED(false);
 		drive.setLimeCameraMode(false);
 		
 		String gameMessage = m_ds.getGameSpecificMessage();
@@ -249,11 +257,14 @@ public class Robot extends TimedRobot {
     	elevator.setShiftState(Elevator.ElevatorSpeedShiftState.HI);
         zeroAllSensors();
 
-		drive.setLimeLED(true);
-		drive.setLimeCameraMode(false);
+		drive.setLimeLED(false);
+		drive.setLimeCameraMode(true);
     	
     	if (operationMode != OperationMode.COMPETITION) {
     		Scheduler.getInstance().add(new ElevatorAutoZero(false));
+    	}
+    	else {
+            elevator.setPositionPID(elevator.getPositionInches());
     	}
 	}
 

@@ -61,6 +61,11 @@ public class Intake extends Subsystem
 		rightArm.set(ControlMode.PercentOutput, -speed);
 	}
 		
+	public void setSpeedAsymmetric(double speedLeft, double speedRight) {
+		leftArm.set(ControlMode.PercentOutput, speedLeft);
+		rightArm.set(ControlMode.PercentOutput, -speedRight);
+	}
+		
 	public static Intake getInstance() {
 		if(instance == null) {
 			instance = new Intake();

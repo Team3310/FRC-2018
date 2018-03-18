@@ -1,16 +1,14 @@
 package org.usfirst.frc.team3310.robot.commands;
 
-import org.usfirst.frc.team3310.robot.subsystems.Intake;
-
 import edu.wpi.first.wpilibj.command.CommandGroup;
 
 /**
  *
  */
-public class IntakeCubeAndLiftAbortDrive extends CommandGroup {
+public class IntakeCubeAndLiftAbortDriveAsymmetric extends CommandGroup {
 
-    public IntakeCubeAndLiftAbortDrive(boolean extraIntake) {
-        addSequential(new IntakeSetSpeedFrontSensorOff(Intake.INTAKE_LOAD_SPEED));
+    public IntakeCubeAndLiftAbortDriveAsymmetric(boolean extraIntake) {
+        addSequential(new IntakeSetSpeedFrontSensorOffAsymmetric(1.0, 0.6));
         addSequential(new DriveForcePathDone());
 //        addSequential(new ElevatorSetPositionMP(Elevator.AFTER_INTAKE_POSITION_INCHES));
 //        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_LOAD_SLOW_SPEED, 0.2));

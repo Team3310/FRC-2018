@@ -6,20 +6,23 @@ import org.usfirst.frc.team3310.robot.subsystems.Intake;
 /**
  *
  */
-public class IntakeSetSpeedFrontSensorOff extends ExtraTimeoutCommand {
+public class IntakeSetSpeedFrontSensorOffAsymmetric extends ExtraTimeoutCommand {
 	
-	private double speed;
+	private double speedLeft;
+	private double speedRight;
 	private boolean cubeDetected;
 	private double EXTRA_INTAKE_TIME = 0.05;
 	private static final double TIMEOUT = 10.0;
 
-    public IntakeSetSpeedFrontSensorOff(double speed) {
-    	this.speed = speed;
+    public IntakeSetSpeedFrontSensorOffAsymmetric(double speedLeft, double speedRight) {
+    	this.speedLeft = speedLeft;
+    	this.speedRight = speedRight;
         requires(Robot.intake);
     }
 
-    public IntakeSetSpeedFrontSensorOff(double speed, double extraTimeout) {
-    	this.speed = speed;
+    public IntakeSetSpeedFrontSensorOffAsymmetric(double speedLeft, double speedRight, double extraTimeout) {
+    	this.speedLeft = speedLeft;
+    	this.speedRight = speedRight;
     	EXTRA_INTAKE_TIME = extraTimeout;
         requires(Robot.intake);
     }
@@ -30,7 +33,7 @@ public class IntakeSetSpeedFrontSensorOff extends ExtraTimeoutCommand {
     	resetExtraTimer();
     	setTimeout(TIMEOUT);
 		cubeDetected = false;
-    	Robot.intake.setSpeed(speed);
+    	Robot.intake.setSpeedAsymmetric(speedLeft, speedRight);
     }
 
     // Called repeatedly when this Command is scheduled to run
