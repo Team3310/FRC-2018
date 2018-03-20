@@ -27,11 +27,14 @@ import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchLeft1;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchLeft1ScaleLeft1;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchLeft1ScaleLeft2;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchLeft1ScaleRight1;
+import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchLeft2;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRight1;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRight1ScaleLeft1;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRight1ScaleRight1;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRight1ScaleRight2;
+import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRight2;
 import org.usfirst.frc.team3310.robot.commands.auton.IntakeTest;
+import org.usfirst.frc.team3310.robot.commands.auton.LeftStartToScaleRight1;
 import org.usfirst.frc.team3310.robot.commands.auton.LeftStartToSwitchLeft1ScaleLeft1;
 import org.usfirst.frc.team3310.robot.commands.auton.LeftStartToSwitchLeft1ScaleRight1;
 import org.usfirst.frc.team3310.robot.commands.auton.LeftStartToSwitchRight1;
@@ -136,11 +139,17 @@ public class Robot extends TimedRobot {
 		centerStartSwitch1.addRLR(new CenterStartToSwitchRight1());
 		centerStartSwitch1.addRRR(new CenterStartToSwitchRight1());
 		
+		AutonRouteChooser centerStartSwitch2 = new AutonRouteChooser();
+		centerStartSwitch2.addLLL(new CenterStartToSwitchLeft2());
+		centerStartSwitch2.addLRL(new CenterStartToSwitchLeft2());
+		centerStartSwitch2.addRLR(new CenterStartToSwitchRight2());
+		centerStartSwitch2.addRRR(new CenterStartToSwitchRight2());
+
 		AutonRouteChooser leftStartSwitch1Scale1 = new AutonRouteChooser();
 		leftStartSwitch1Scale1.addLLL(new LeftStartToSwitchLeft1ScaleLeft1());
 		leftStartSwitch1Scale1.addLRL(new LeftStartToSwitchLeft1ScaleRight1());
 		leftStartSwitch1Scale1.addRLR(new LeftStartToSwitchRight1());
-		leftStartSwitch1Scale1.addRRR(new LeftStartToSwitchRight1());
+		leftStartSwitch1Scale1.addRRR(new LeftStartToScaleRight1());
 		
 		AutonRouteChooser rightStartSwitch1Scale1 = new AutonRouteChooser();
 		rightStartSwitch1Scale1.addLLL(new RightStartToSwitchLeft1());
@@ -195,6 +204,7 @@ public class Robot extends TimedRobot {
 		autonTaskChooser.addObject("Right Start Switch 1 Scale 1", rightStartSwitch1Scale1);
 		autonTaskChooser.addObject("Left Start Switch 1 Scale 1", leftStartSwitch1Scale1);
 		autonTaskChooser.addObject("Center Start Switch 1", centerStartSwitch1);
+		autonTaskChooser.addObject("Center Start Switch 2", centerStartSwitch2);
 		autonTaskChooser.addObject("Left Start Scale 3", leftStartScale3Cube);
 		autonTaskChooser.addObject("Right Start Scale 3", rightStartScale3Cube);
 		autonTaskChooser.addObject("Go Straight Do Nothing", goStraight);
