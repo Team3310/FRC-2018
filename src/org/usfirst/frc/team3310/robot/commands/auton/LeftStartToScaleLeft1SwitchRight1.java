@@ -20,9 +20,9 @@ import edu.wpi.first.wpilibj.command.WaitForChildren;
 /**
  *
  */
-public class StartToScale3 extends CommandGroup {
+public class LeftStartToScaleLeft1SwitchRight1 extends CommandGroup {
 
-    public StartToScale3(
+    public LeftStartToScaleLeft1SwitchRight1(
     		PathContainer startToScalePath, 
     		PathContainer scaleToSwitchPath1, 
     		PathContainer switchToScale1, 

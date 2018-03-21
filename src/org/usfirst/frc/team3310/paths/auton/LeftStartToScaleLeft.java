@@ -17,9 +17,9 @@ public class LeftStartToScaleLeft implements PathContainer {
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
         sWaypoints.add(new Waypoint(18,274,0,90));
-        sWaypoints.add(new Waypoint(180,274,30,90,   "raiseElevator"));
+        sWaypoints.add(new Waypoint(180,274,30,90,    "raiseElevator"));
         sWaypoints.add(new Waypoint(240,234,30,90));
-        sWaypoints.add(new Waypoint(280,236,0,90));
+        sWaypoints.add(new Waypoint(286,236,0,90));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }
