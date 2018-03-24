@@ -23,17 +23,15 @@ public class RobotMap {
 	public static final int ELEVATOR_MOTOR_2_CAN_ID = 13;
 	public static final int ELEVATOR_MOTOR_3_CAN_ID = 12;
 	
-	public static final int INTAKE_LEFT = 10;
-	public static final int INTAKE_RIGHT = 5;
+	public static final int INTAKE_LEFT_CAN_ID = 10;
+	public static final int INTAKE_RIGHT_CAN_ID = 5;
+
+	public static final int FORKS_WINCH_CAN_ID = 9;
 		
 	// Pneumatics
 	public static final int ELEVATOR_SPEEDSHIFT_PCM_ID = 0;
-	public static final int RAMP_LATCH_PCM_ID = 1;
-	public static final int RAMP_PULL1_PCM_ID = 2;
-	public static final int RAMP_PULL2_PCM_ID = 4;
 	public static final int DRIVETRAIN_SPEEDSHIFT_PCM_ID = 3;
-	public static final int LEFT_FLIPPER_PCM_ID = 6;
-	public static final int RIGHT_FLIPPER_PCM_ID = 5;		
+	public static final int FORKS_LOCK_PCM_ID = 4;
 	
 	// DIO
 	public static final int INTAKE_FRONT_IR_SENSOR_DIO_ID = 0;

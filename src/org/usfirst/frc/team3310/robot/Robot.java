@@ -49,10 +49,9 @@ import org.usfirst.frc.team3310.robot.commands.auton.StartToScale3;
 import org.usfirst.frc.team3310.robot.subsystems.Drive;
 import org.usfirst.frc.team3310.robot.subsystems.Drive.DriveSpeedShiftState;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator;
-import org.usfirst.frc.team3310.robot.subsystems.Flipper;
+import org.usfirst.frc.team3310.robot.subsystems.Forks;
+import org.usfirst.frc.team3310.robot.subsystems.Forks.ForksLockState;
 import org.usfirst.frc.team3310.robot.subsystems.Intake;
-import org.usfirst.frc.team3310.robot.subsystems.Ramp;
-import org.usfirst.frc.team3310.robot.subsystems.Ramp.RampPull;
 import org.usfirst.frc.team3310.utility.Looper;
 import org.usfirst.frc.team3310.utility.control.RobotState;
 import org.usfirst.frc.team3310.utility.control.RobotStateEstimator;
@@ -82,8 +81,7 @@ public class Robot extends TimedRobot {
 	public static final Drive drive = Drive.getInstance();
 	public static final Elevator elevator = Elevator.getInstance();
 	public static final Intake intake = Intake.getInstance();
-	public static final Flipper flipper = Flipper.getInstance();
-	public static final Ramp ramp = Ramp.getInstance();
+	public static final Forks forks = Forks.getInstance();
 	
 	// Control looper
 	public static final Looper controlLoop = new Looper();
@@ -279,9 +277,7 @@ public class Robot extends TimedRobot {
 		operationMode = operationModeChooser.getSelected();
 		
         controlLoop.start();
-		ramp.setPullPosition(RampPull.DOWN);
-		ramp.setTeleopStartTime();
-    	ramp.setOperationMode(operationMode);
+		forks.setLockState(ForksLockState.STOWED);
     	drive.endGyroCalibration();
     	elevator.setShiftState(Elevator.ElevatorSpeedShiftState.HI);
         zeroAllSensors();
@@ -314,8 +310,7 @@ public class Robot extends TimedRobot {
     	drive.updateStatus(operationMode);
     	intake.updateStatus(operationMode);
     	elevator.updateStatus(operationMode);
-    	flipper.updateStatus(operationMode);
-    	ramp.updateStatus(operationMode);
+    	forks.updateStatus(operationMode);
     	robotState.updateStatus(operationMode);
     }
     

@@ -35,11 +35,11 @@ public class Intake extends Subsystem
 	
 	private Intake() {
 		try {
-			leftArm = TalonSRXFactory.createDefaultTalon(RobotMap.INTAKE_LEFT);
+			leftArm = TalonSRXFactory.createDefaultTalon(RobotMap.INTAKE_LEFT_CAN_ID);
 			leftArm.setNeutralMode(NeutralMode.Brake);
 			leftArm.setInverted(true);
 			
-			rightArm = TalonSRXFactory.createDefaultTalon(RobotMap.INTAKE_RIGHT);
+			rightArm = TalonSRXFactory.createDefaultTalon(RobotMap.INTAKE_RIGHT_CAN_ID);
 			rightArm.setNeutralMode(NeutralMode.Brake);
 
 			frontIRIntakeSensor = new DigitalInput(RobotMap.INTAKE_FRONT_IR_SENSOR_DIO_ID);

@@ -1,24 +1,22 @@
 package org.usfirst.frc.team3310.robot.commands;
 
 import org.usfirst.frc.team3310.robot.Robot;
-import org.usfirst.frc.team3310.robot.subsystems.Ramp.RampLatch;
+import org.usfirst.frc.team3310.robot.subsystems.Forks.ForksLockState;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class RampSetLatchPosition extends Command
+public class ForksSetLock extends Command
 {
-	private RampLatch state;
+	private ForksLockState state;
 	
-	public RampSetLatchPosition(RampLatch state) {
-		requires(Robot.ramp);
+	public ForksSetLock(ForksLockState state) {
+		requires(Robot.forks);
 		this.state = state;
 	}
 
 	@Override
 	protected void initialize() {
-//		if (Robot.ramp.getOperationMode() == OperationMode.COMPETITION) { // && Robot.ramp.getRemainingTeleopSeconds() < 30
-			Robot.ramp.setLatchPosition(state);
-//		}
+		Robot.forks.setLockState(state);
 	}
 
 	@Override

@@ -3,36 +3,24 @@ package org.usfirst.frc.team3310.robot;
 import org.usfirst.frc.team3310.buttons.XBoxDPadTriggerButton;
 import org.usfirst.frc.team3310.buttons.XBoxTriggerButton;
 import org.usfirst.frc.team3310.controller.XboxController;
-import org.usfirst.frc.team3310.paths.test.CenterTest;
-import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
-import org.usfirst.frc.team3310.robot.commands.DriveResetEncoders;
-import org.usfirst.frc.team3310.robot.commands.DriveResetGyro;
 import org.usfirst.frc.team3310.robot.commands.DriveSpeedShift;
-import org.usfirst.frc.team3310.robot.commands.DriveStraightMP;
-import org.usfirst.frc.team3310.robot.commands.ElevatorAutoZero;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetMode;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetPositionMP;
-import org.usfirst.frc.team3310.robot.commands.ElevatorSetSpeed;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetZero;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSpeedShift;
-import org.usfirst.frc.team3310.robot.commands.FlipperFlip;
+import org.usfirst.frc.team3310.robot.commands.ForksSetLock;
+import org.usfirst.frc.team3310.robot.commands.ForksSetWinchSpeed;
 import org.usfirst.frc.team3310.robot.commands.IntakeCubeAndLift;
 import org.usfirst.frc.team3310.robot.commands.IntakeSetSpeed;
-import org.usfirst.frc.team3310.robot.commands.IntakeSetSpeedFrontSensorOff;
-import org.usfirst.frc.team3310.robot.commands.RampSetLatchPosition;
-import org.usfirst.frc.team3310.robot.commands.RampSetPullPosition;
 import org.usfirst.frc.team3310.robot.subsystems.Drive;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator.ElevatorControlMode;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator.ElevatorSpeedShiftState;
-import org.usfirst.frc.team3310.robot.subsystems.Flipper.FlipperSide;
-import org.usfirst.frc.team3310.robot.subsystems.Flipper.FlipperState;
+import org.usfirst.frc.team3310.robot.subsystems.Forks;
+import org.usfirst.frc.team3310.robot.subsystems.Forks.ForksLockState;
 import org.usfirst.frc.team3310.robot.subsystems.Intake;
-import org.usfirst.frc.team3310.robot.subsystems.Ramp.RampLatch;
-import org.usfirst.frc.team3310.robot.subsystems.Ramp.RampPull;
 
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class is the glue that binds the controls on the physical operator
@@ -54,14 +42,15 @@ public class OI {
         shiftDrivetrain.whenPressed(new DriveSpeedShift(Drive.DriveSpeedShiftState.HI));
         shiftDrivetrain.whenReleased(new DriveSpeedShift(Drive.DriveSpeedShiftState.LO));
  
-        JoystickButton rampDeploy = new JoystickButton(m_driverXbox.getJoyStick(), XboxController.BACK_BUTTON);
-        rampDeploy.whenPressed(new RampSetLatchPosition(RampLatch.DEPLOYED));
+        JoystickButton forksDeploy = new JoystickButton(m_driverXbox.getJoyStick(), XboxController.BACK_BUTTON);
+        forksDeploy.whenPressed(new ForksSetLock(ForksLockState.DEPLOYED));
 
-        XBoxDPadTriggerButton rampPullDown = new XBoxDPadTriggerButton(m_driverXbox, XBoxDPadTriggerButton.DOWN);
-        rampPullDown.whenPressed(new RampSetPullPosition(RampPull.DOWN));
+        XBoxDPadTriggerButton winchUp = new XBoxDPadTriggerButton(m_driverXbox, XBoxDPadTriggerButton.UP);
+        winchUp.whenPressed(new ForksSetWinchSpeed(Forks.WINCH_SPEED));
+        winchUp.whenReleased(new ForksSetWinchSpeed(0));
 
-        XBoxDPadTriggerButton rampPullUp = new XBoxDPadTriggerButton(m_driverXbox, XBoxDPadTriggerButton.UP);
-        rampPullUp.whenPressed(new RampSetPullPosition(RampPull.UP));
+        XBoxDPadTriggerButton winchOff = new XBoxDPadTriggerButton(m_driverXbox, XBoxDPadTriggerButton.DOWN);
+        winchOff.whenPressed(new ForksSetWinchSpeed(0));
 
         // Operator controller
 		m_operatorXbox = new XboxController(RobotMap.OPERATOR_JOYSTICK_1_USB_ID);
@@ -85,18 +74,11 @@ public class OI {
         XBoxDPadTriggerButton elevatorShiftHi = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.UP);
         elevatorShiftHi.whenPressed(new ElevatorSpeedShift(Elevator.ElevatorSpeedShiftState.HI));
 
-//        XBoxDPadTriggerButton elevatorClimb = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.DOWN);
-//        elevatorClimb.whenPressed(new ElevatorClimb());
-//        elevatorClimb.whenReleased(new ElevatorSetMode(ElevatorControlMode.JOYSTICK_PID));
-
         XBoxDPadTriggerButton elevatorShiftLo = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.DOWN);
         elevatorShiftLo.whenPressed(new ElevatorSpeedShift(ElevatorSpeedShiftState.LO));
 
         XBoxDPadTriggerButton elevatorJoystickManualMode = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.LEFT);
         elevatorJoystickManualMode.whenPressed(new ElevatorSetMode(ElevatorControlMode.JOYSTICK_MANUAL));
-
-        XBoxDPadTriggerButton rampPullDown2 = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.RIGHT);
-        rampPullDown2.whenPressed(new RampSetPullPosition(RampPull.DOWN));
 
         JoystickButton elevatorPidMode = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.BACK_BUTTON);
         elevatorPidMode.whenPressed(new ElevatorSetMode(ElevatorControlMode.JOYSTICK_PID));
@@ -129,35 +111,30 @@ public class OI {
 //        elevatorSwitchPosition.whenPressed(new ElevatorSetPositionPID(10));
 
         // Shuffleboard
-        SmartDashboard.putData("Ramp Latch Close", new RampSetLatchPosition(RampLatch.STOWED));
-        SmartDashboard.putData("Ramp Pull Retract", new RampSetPullPosition(RampPull.UP));
-
-        SmartDashboard.putData("Elevator Auto Zero", new ElevatorAutoZero(false));
-        SmartDashboard.putData("Elevator Min Position", new ElevatorSetPositionMP(Elevator.MIN_POSITION_INCHES));
-        SmartDashboard.putData("Elevator Switch Position", new ElevatorSetPositionMP(Elevator.SWITCH_POSITION_INCHES));
-        SmartDashboard.putData("Elevator Scale Low Position", new ElevatorSetPositionMP(Elevator.SCALE_LOW_POSITION_INCHES));
-        SmartDashboard.putData("Elevator Scale High Position", new ElevatorSetPositionMP(Elevator.SCALE_HIGH_POSITION_INCHES));
-        SmartDashboard.putData("Elevator Max Position", new ElevatorSetPositionMP(Elevator.MAX_POSITION_INCHES));
-        SmartDashboard.putData("Elevator Lo Shift", new ElevatorSpeedShift(Elevator.ElevatorSpeedShiftState.LO));
-        SmartDashboard.putData("Elevator Hi Shift", new ElevatorSpeedShift(Elevator.ElevatorSpeedShiftState.HI));
-        SmartDashboard.putData("Elevator Manual Up", new ElevatorSetSpeed(Elevator.TEST_SPEED_UP));
-        SmartDashboard.putData("Elevator Manual Down", new ElevatorSetSpeed(Elevator.TEST_SPEED_DOWN));
-		SmartDashboard.putData("Elevator Reset Encoder", new ElevatorSetZero(Elevator.ZERO_POSITION_INCHES));
-
-        SmartDashboard.putData("Flip Cube Left Deployed", new FlipperFlip(FlipperSide.LEFT, FlipperState.DEPLOYED));
-		SmartDashboard.putData("Flip Cube Right Deployed", new FlipperFlip(FlipperSide.RIGHT, FlipperState.DEPLOYED));
-		SmartDashboard.putData("Flip Cube Right Retracted", new FlipperFlip(FlipperSide.RIGHT, FlipperState.RETRACTED));
-		SmartDashboard.putData("Flip Cube Left Retracted", new FlipperFlip(FlipperSide.LEFT, FlipperState.RETRACTED));
-
-		SmartDashboard.putData("Intake On", new IntakeSetSpeed(Intake.INTAKE_LOAD_SPEED));
-		SmartDashboard.putData("Intake Off", new IntakeSetSpeed(0.0));
-        SmartDashboard.putData("Intake Cube", new IntakeSetSpeedFrontSensorOff(Intake.INTAKE_LOAD_SPEED));
-
-        SmartDashboard.putData("Drive Straight MP", new DriveStraightMP(72, Drive.MP_AUTON_MAX_STRAIGHT_VELOCITY_INCHES_PER_SEC, true, false, 0));
-		SmartDashboard.putData("Drive Adaptive Pursuit", new DrivePathAdaptivePursuit(new CenterTest()));
-
-		SmartDashboard.putData("Drive Reset Gyro ", new DriveResetGyro());
-		SmartDashboard.putData("Drive Reset Encoder", new DriveResetEncoders());
+//        SmartDashboard.putData("Ramp Latch Close", new RampSetLatchPosition(RampLatch.STOWED));
+//        SmartDashboard.putData("Ramp Pull Retract", new RampSetPullPosition(RampPull.UP));
+//
+//        SmartDashboard.putData("Elevator Auto Zero", new ElevatorAutoZero(false));
+//        SmartDashboard.putData("Elevator Min Position", new ElevatorSetPositionMP(Elevator.MIN_POSITION_INCHES));
+//        SmartDashboard.putData("Elevator Switch Position", new ElevatorSetPositionMP(Elevator.SWITCH_POSITION_INCHES));
+//        SmartDashboard.putData("Elevator Scale Low Position", new ElevatorSetPositionMP(Elevator.SCALE_LOW_POSITION_INCHES));
+//        SmartDashboard.putData("Elevator Scale High Position", new ElevatorSetPositionMP(Elevator.SCALE_HIGH_POSITION_INCHES));
+//        SmartDashboard.putData("Elevator Max Position", new ElevatorSetPositionMP(Elevator.MAX_POSITION_INCHES));
+//        SmartDashboard.putData("Elevator Lo Shift", new ElevatorSpeedShift(Elevator.ElevatorSpeedShiftState.LO));
+//        SmartDashboard.putData("Elevator Hi Shift", new ElevatorSpeedShift(Elevator.ElevatorSpeedShiftState.HI));
+//        SmartDashboard.putData("Elevator Manual Up", new ElevatorSetSpeed(Elevator.TEST_SPEED_UP));
+//        SmartDashboard.putData("Elevator Manual Down", new ElevatorSetSpeed(Elevator.TEST_SPEED_DOWN));
+//		SmartDashboard.putData("Elevator Reset Encoder", new ElevatorSetZero(Elevator.ZERO_POSITION_INCHES));
+//
+//		SmartDashboard.putData("Intake On", new IntakeSetSpeed(Intake.INTAKE_LOAD_SPEED));
+//		SmartDashboard.putData("Intake Off", new IntakeSetSpeed(0.0));
+//        SmartDashboard.putData("Intake Cube", new IntakeSetSpeedFrontSensorOff(Intake.INTAKE_LOAD_SPEED));
+//
+//        SmartDashboard.putData("Drive Straight MP", new DriveStraightMP(72, Drive.MP_AUTON_MAX_STRAIGHT_VELOCITY_INCHES_PER_SEC, true, false, 0));
+//		SmartDashboard.putData("Drive Adaptive Pursuit", new DrivePathAdaptivePursuit(new CenterTest()));
+//
+//		SmartDashboard.putData("Drive Reset Gyro ", new DriveResetGyro());
+//		SmartDashboard.putData("Drive Reset Encoder", new DriveResetEncoders());
 
         // Smart Dashboard
 //        Button rampLatchClose = new InternalButton();

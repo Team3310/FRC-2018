@@ -1,29 +1,26 @@
 package org.usfirst.frc.team3310.robot.commands;
 
 import org.usfirst.frc.team3310.robot.Robot;
-import org.usfirst.frc.team3310.robot.subsystems.Flipper.FlipperSide;
-import org.usfirst.frc.team3310.robot.subsystems.Flipper.FlipperState;
+import org.usfirst.frc.team3310.robot.subsystems.Elevator.ElevatorSpeedShiftState;
 
 import edu.wpi.first.wpilibj.command.Command;
 
 /**
  *
  */
-public class FlipperFlip extends Command {
-
-	private FlipperSide flipperSide;
-	private FlipperState state;
+public class ForksSetWinchSpeed extends Command {
 	
-    public FlipperFlip(FlipperSide flipperSide, FlipperState state) {
-    	this.flipperSide = flipperSide;
-    	this.state = state;
-        requires(Robot.flipper);
+	private double speed;
+
+    public ForksSetWinchSpeed(double speed) {
+    	this.speed = speed;
+        requires(Robot.forks);
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	System.out.println("Flipper flip start, time = " + System.currentTimeMillis());
-    	Robot.flipper.setPosition(flipperSide, state);
+    	Robot.elevator.setShiftState(ElevatorSpeedShiftState.LO);
+    	Robot.forks.setWinchSpeed(speed);
     }
 
     // Called repeatedly when this Command is scheduled to run
@@ -42,5 +39,6 @@ public class FlipperFlip extends Command {
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+    	Robot.forks.setWinchSpeed(0);
     }
 }
