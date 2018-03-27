@@ -19,7 +19,7 @@ public class Forks extends Subsystem
 
 	private static Forks instance;
 
-	public static final double WINCH_SPEED = 0.3;
+	public static final double WINCH_SPEED = 1.0;
 
 	private TalonSRX winch;
 	private Solenoid lock;
@@ -28,9 +28,9 @@ public class Forks extends Subsystem
 	
 	private Forks() {
 		try {
-			winch = TalonSRXFactory.createDefaultTalon(RobotMap.FORKS_WINCH_CAN_ID);
-			winch.setNeutralMode(NeutralMode.Brake);
-			winch.setInverted(false);
+//			winch = TalonSRXFactory.createDefaultTalon(RobotMap.FORKS_WINCH_CAN_ID);
+//			winch.setNeutralMode(NeutralMode.Brake);
+//			winch.setInverted(false);
 			
 			lockState = ForksLockState.STOWED;
 			lock = new Solenoid(RobotMap.FORKS_LOCK_PCM_ID);

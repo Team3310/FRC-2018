@@ -77,12 +77,14 @@ public class SideStartToSwitch3 extends CommandGroup {
     	addSequential(new WaitForChildren());
 
     	// Drive backwards to scale platform that we need to eject cube  	
-/*        addSequential(new DriveResetPoseFromPath(switchToScale2, false));
+    	PathContainer backup6 = new Backup5();
+        addSequential(new DriveResetPoseFromPath(backup6, false));
     	addParallel(new RunAfterMarker("raiseElevator", 6.0, new ElevatorSetPositionPID(Elevator.SCALE_HIGH_POSITION_INCHES)));
-    	addSequential(new DrivePathAdaptivePursuit(switchToScale2));
+    	addSequential(new DrivePathAdaptivePursuit(backup6));
     	addSequential(new WaitForChildren());
-*/    	
+    	addSequential(new DriveStraightMP(25.0, Drive.MP_SLOW_VELOCITY_INCHES_PER_SEC, true, false, 0));
+    	
     	// Eject cube
-//        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 1.0));
+        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_EJECT_SPEED, 1.0));
      }
 }

@@ -3,7 +3,7 @@ package org.usfirst.frc.team3310.robot.commands.auton;
 import org.usfirst.frc.team3310.paths.PathContainer;
 import org.usfirst.frc.team3310.paths.auton.Backup5;
 import org.usfirst.frc.team3310.paths.auton.Forward5;
-import org.usfirst.frc.team3310.paths.auton.LeftSwitch2ndCube;
+import org.usfirst.frc.team3310.paths.auton.LeftSwitch2ndCubeV2;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
 import org.usfirst.frc.team3310.robot.commands.DriveResetPoseFromPath;
 import org.usfirst.frc.team3310.robot.commands.DriveSpeedShift;
@@ -69,7 +69,7 @@ public class StartToScale1Switch1Scale1 extends CommandGroup {
     	addParallel(new ParallelDelay(0.5, new ElevatorSetPositionPID(Elevator.MIN_POSITION_INCHES)));
     	addSequential(new DriveStraightMP(-25.0, Drive.MP_FAST_VELOCITY_INCHES_PER_SEC, true, false, 0));
 
-    	PathContainer forwardTo2ndCube = new LeftSwitch2ndCube();
+    	PathContainer forwardTo2ndCube = new LeftSwitch2ndCubeV2();
         addParallel(new IntakeCubeAndLiftAbortDrive(false));
         addSequential(new DriveResetPoseFromPath(forwardTo2ndCube, false));
     	addSequential(new DrivePathAdaptivePursuit(forwardTo2ndCube));

@@ -29,5 +29,7 @@ public class CenterStartToSwitch2 extends CommandGroup {
     	addSequential(new DriveStraightMP(-40, Drive.MP_AUTON_MAX_STRAIGHT_VELOCITY_INCHES_PER_SEC, true, true, 0));
     	addSequential(new CenterStartToSwitch1(centerToSwitch, false));
     	
-     }
+        addParallel(new ElevatorSetPositionMP(Elevator.MIN_POSITION_INCHES));
+    	addSequential(new DriveStraightMP(-15, Drive.MP_AUTON_MAX_STRAIGHT_VELOCITY_INCHES_PER_SEC, true, true, 0));
+    }
 }
