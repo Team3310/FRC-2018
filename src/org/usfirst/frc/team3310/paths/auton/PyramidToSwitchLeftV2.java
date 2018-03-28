@@ -11,26 +11,26 @@ import org.usfirst.frc.team3310.utility.math.Rotation2d;
 import org.usfirst.frc.team3310.utility.math.Translation2d;
 
 
-public class SwitchLeftToCenterStart implements PathContainer {
+public class PyramidToSwitchLeftV2 implements PathContainer {
     
     @Override
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-        sWaypoints.add(new Waypoint(116,220,0,40));
-        sWaypoints.add(new Waypoint(100,215,15,40));
-        sWaypoints.add(new Waypoint(74,184,15,40));
-        sWaypoints.add(new Waypoint(54,184,0,40));
+        sWaypoints.add(new Waypoint(46,179,0,60));
+        sWaypoints.add(new Waypoint(66,184,15,60));
+        sWaypoints.add(new Waypoint(94,236,15,60));
+        sWaypoints.add(new Waypoint(108,241,0,60));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }
     
     @Override
     public RigidTransform2d getStartPose() {
-        return new RigidTransform2d(new Translation2d(116, 220), Rotation2d.fromDegrees(0.0)); 
+        return new RigidTransform2d(new Translation2d(46, 179), Rotation2d.fromDegrees(0.0)); 
     }
 
     @Override
     public boolean isReversed() {
-        return true; 
+        return false; 
     }
 }

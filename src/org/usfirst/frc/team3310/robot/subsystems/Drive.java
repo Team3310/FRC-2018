@@ -53,11 +53,12 @@ public class Drive extends Subsystem implements Loop
 	
 	// Motion profile max velocities and accel times
 	public static final double MAX_TURN_RATE_DEG_PER_SEC = 320;
-	public static final double MP_AUTON_MAX_STRAIGHT_VELOCITY_INCHES_PER_SEC =  120;  //72;
+	public static final double MP_AUTON_MAX_STRAIGHT_VELOCITY_INCHES_PER_SEC =  140;  //72;
 	public static final double MP_AUTON_MAX_LO_GEAR_STRAIGHT_VELOCITY_INCHES_PER_SEC =  320;  
 	public static final double MP_AUTON_MAX_HIGH_GEAR_STRAIGHT_VELOCITY_INCHES_PER_SEC =  400;  
 	public static final double MP_AUTON_MAX_TURN_RATE_DEG_PER_SEC =  270;
 	public static final double MP_SLOW_VELOCITY_INCHES_PER_SEC = 25;
+	public static final double MP_SLOW_MEDIUM_VELOCITY_INCHES_PER_SEC = 50;
 	public static final double MP_MEDIUM_VELOCITY_INCHES_PER_SEC = 80;
 	public static final double MP_FAST_VELOCITY_INCHES_PER_SEC = 100;
 	
