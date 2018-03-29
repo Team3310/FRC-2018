@@ -197,8 +197,8 @@ public class Drive extends Subsystem implements Loop
 			leftDrive1.setSafetyEnabled(false);
 			leftDrive1.setSensorPhase(false);  
 
-			leftDrive1.configOpenloopRamp(0.1, TalonSRXEncoder.TIMEOUT_MS);
-			rightDrive1.configOpenloopRamp(0.1, TalonSRXEncoder.TIMEOUT_MS);
+			leftDrive1.configOpenloopRamp(0.0, TalonSRXEncoder.TIMEOUT_MS);
+			rightDrive1.configOpenloopRamp(0.0, TalonSRXEncoder.TIMEOUT_MS);
 			
 			leftDrive1.setInverted(true);
 			leftDrive2.setInverted(true);

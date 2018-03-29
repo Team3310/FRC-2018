@@ -22,18 +22,20 @@ public class Forks extends Subsystem
 	public static final double WINCH_SPEED = 1.0;
 
 	private TalonSRX winch;
-	private Solenoid lock;
+	private Solenoid lock1;
+	private Solenoid lock2;
 	
 	private ForksLockState lockState;
 	
 	private Forks() {
 		try {
-//			winch = TalonSRXFactory.createDefaultTalon(RobotMap.FORKS_WINCH_CAN_ID);
-//			winch.setNeutralMode(NeutralMode.Brake);
-//			winch.setInverted(false);
+			winch = TalonSRXFactory.createDefaultTalon(RobotMap.FORKS_WINCH_CAN_ID);
+			winch.setNeutralMode(NeutralMode.Brake);
+			winch.setInverted(false);
 			
 			lockState = ForksLockState.STOWED;
-			lock = new Solenoid(RobotMap.FORKS_LOCK_PCM_ID);
+			lock1 = new Solenoid(RobotMap.FORKS_LOCK_1_PCM_ID);
+			lock2 = new Solenoid(RobotMap.FORKS_LOCK_2_PCM_ID);
 		}
 		catch (Exception e) {
 			System.err.println("An error occurred in the Forks constructor");
@@ -58,10 +60,12 @@ public class Forks extends Subsystem
 	public void setLockState(ForksLockState state) {
 		lockState = state;
 		if(state == ForksLockState.STOWED) {
-			lock.set(true);
+			lock1.set(false);
+			lock2.set(false);
 		}
 		else if(state == ForksLockState.DEPLOYED) {
-			lock.set(false);
+			lock1.set(true);
+			lock2.set(true);
 		}
 	}
 	

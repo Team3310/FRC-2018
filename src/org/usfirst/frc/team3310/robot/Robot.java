@@ -245,6 +245,7 @@ public class Robot extends TimedRobot {
 		
         controlLoop.start();
 		forks.setLockState(ForksLockState.STOWED);
+    	drive.setShiftState(DriveSpeedShiftState.LO);
     	drive.endGyroCalibration();
     	elevator.setShiftState(Elevator.ElevatorSpeedShiftState.HI);
         zeroAllSensors();

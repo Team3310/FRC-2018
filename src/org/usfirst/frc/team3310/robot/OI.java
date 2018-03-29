@@ -45,6 +45,9 @@ public class OI {
         JoystickButton forksDeploy = new JoystickButton(m_driverXbox.getJoyStick(), XboxController.BACK_BUTTON);
         forksDeploy.whenPressed(new ForksSetLock(ForksLockState.DEPLOYED));
 
+        JoystickButton forksStow = new JoystickButton(m_driverXbox.getJoyStick(), XboxController.START_BUTTON);
+        forksStow.whenPressed(new ForksSetLock(ForksLockState.STOWED));
+
         XBoxDPadTriggerButton winchUp = new XBoxDPadTriggerButton(m_driverXbox, XBoxDPadTriggerButton.UP);
         winchUp.whenPressed(new ForksSetWinchSpeed(Forks.WINCH_SPEED));
         winchUp.whenReleased(new ForksSetWinchSpeed(0));
@@ -56,19 +59,19 @@ public class OI {
 		m_operatorXbox = new XboxController(RobotMap.OPERATOR_JOYSTICK_1_USB_ID);
 		
         JoystickButton intakeLoad = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.RIGHT_BUMPER_BUTTON);
-        intakeLoad.whenPressed(new IntakeSetSpeed(Intake.INTAKE_LOAD_SPEED));
+        intakeLoad.whenPressed(new IntakeSetSpeed(Intake.INTAKE_EJECT_SPEED));
         intakeLoad.whenReleased(new IntakeSetSpeed(0.0));
 		
         JoystickButton intakeEject = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.LEFT_BUMPER_BUTTON);
-        intakeEject.whenPressed(new IntakeSetSpeed(Intake.INTAKE_EJECT_SPEED));
+        intakeEject.whenPressed(new IntakeSetSpeed(Intake.INTAKE_LOAD_SPEED));
         intakeEject.whenReleased(new IntakeSetSpeed(0.0));
 		
         XBoxTriggerButton intakeLoadSlow = new XBoxTriggerButton(m_operatorXbox, XBoxTriggerButton.RIGHT_TRIGGER);
-        intakeLoadSlow.whenPressed(new IntakeSetSpeed(Intake.INTAKE_LOAD_SLOW_SPEED));
+        intakeLoadSlow.whenPressed(new IntakeSetSpeed(Intake.INTAKE_EJECT_SLOW_SPEED));
         intakeLoadSlow.whenReleased(new IntakeSetSpeed(0.0));
 		
         XBoxTriggerButton intakeEjectSlow = new XBoxTriggerButton(m_operatorXbox, XBoxTriggerButton.LEFT_TRIGGER);
-        intakeEjectSlow.whenPressed(new IntakeSetSpeed(Intake.INTAKE_EJECT_SLOW_SPEED));
+        intakeEjectSlow.whenPressed(new IntakeSetSpeed(Intake.INTAKE_LOAD_SLOW_SPEED));
         intakeEjectSlow.whenReleased(new IntakeSetSpeed(0.0));
 		
         XBoxDPadTriggerButton elevatorShiftHi = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.UP);

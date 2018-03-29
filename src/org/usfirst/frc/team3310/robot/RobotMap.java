@@ -31,7 +31,8 @@ public class RobotMap {
 	// Pneumatics
 	public static final int ELEVATOR_SPEEDSHIFT_PCM_ID = 0;
 	public static final int DRIVETRAIN_SPEEDSHIFT_PCM_ID = 3;
-	public static final int FORKS_LOCK_PCM_ID = 4;
+	public static final int FORKS_LOCK_1_PCM_ID = 4;
+	public static final int FORKS_LOCK_2_PCM_ID = 5;
 	
 	// DIO
 	public static final int INTAKE_FRONT_IR_SENSOR_DIO_ID = 0;
