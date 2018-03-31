@@ -12,6 +12,6 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 public class CenterStartToSwitchLeft2 extends CommandGroup {
 
     public CenterStartToSwitchLeft2() {
-    	addSequential(new CenterStartToSwitch2(new CenterStartToSwitchLeft(), new SwitchLeftToCenterStart(), new PyramidToSwitchLeft()));
+    	addSequential(new CenterStartToSwitch2(new CenterStartToSwitchLeft(), new SwitchLeftToCenterStart(), new PyramidToSwitchLeft(), true));
     }
 }

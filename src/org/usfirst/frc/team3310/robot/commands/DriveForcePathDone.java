@@ -13,7 +13,7 @@ public class DriveForcePathDone extends Command
 	protected void initialize() {
 		Robot.drive.forceDoneWithPath();
 		Robot.drive.setFinished(true);
-		System.out.println("DRIVE FORCE PATH DONE!!!!!");
+//		System.out.println("DRIVE FORCE PATH DONE!!!!!");
 	}
 
 	@Override
@@ -33,6 +33,6 @@ public class DriveForcePathDone extends Command
 
 	@Override
 	protected void interrupted() {
-    	System.out.println("DriveForcePathDone interrupted");			
+//   	System.out.println("DriveForcePathDone interrupted");			
 	}
 }

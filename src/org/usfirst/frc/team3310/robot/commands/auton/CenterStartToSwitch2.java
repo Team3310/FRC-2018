@@ -16,8 +16,8 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
  */
 public class CenterStartToSwitch2 extends CommandGroup {
 
-    public CenterStartToSwitch2(PathContainer centerStartToSwitch, PathContainer switchToCenter, PathContainer centerToSwitch) {
-    	addSequential(new CenterStartToSwitch1(centerStartToSwitch, true, 1.0));
+    public CenterStartToSwitch2(PathContainer centerStartToSwitch, PathContainer switchToCenter, PathContainer centerToSwitch, boolean resetGyro) {
+    	addSequential(new CenterStartToSwitch1(centerStartToSwitch, resetGyro, 1.0));
     	
         addSequential(new DriveResetPoseFromPath(switchToCenter, false));
         addParallel(new ElevatorSetPositionMP(Elevator.MIN_POSITION_INCHES));

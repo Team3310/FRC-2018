@@ -23,10 +23,10 @@ public class IntakeCubeAndLiftAbortDrive extends CommandGroup {
     }
     
     protected void initialize() {
-    	System.out.println("IntakeCubeAndLiftAbortDrive initialized");
+//    	System.out.println("IntakeCubeAndLiftAbortDrive initialized");
     }
     
     protected void interrupted() {
-    	System.out.println("IntakeCubeAndLiftAbortDrive interrupted");
+//    	System.out.println("IntakeCubeAndLiftAbortDrive interrupted");
     }
 }

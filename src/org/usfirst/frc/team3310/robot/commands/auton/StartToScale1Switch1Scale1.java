@@ -39,7 +39,7 @@ public class StartToScale1Switch1Scale1 extends CommandGroup {
         addSequential(new DriveResetPoseFromPath(startToScalePath, true));
 
     	addParallel(new RunAfterMarker("raiseElevator", 4.0, new ElevatorSetPositionPID(Elevator.SCALE_FIRST_CUBE_POSITION_INCHES)));
-    	addParallel(new RunAfterMarker("startEject", 4.0, new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 0.8)));
+    	addParallel(new RunAfterMarker("startEject", 4.0, new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_MEDIUM_SPEED, 0.8)));
     	addSequential(new DrivePathAdaptivePursuit(startToScalePath));
     	addSequential(new WaitForChildren());
     	    	

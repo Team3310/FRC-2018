@@ -25,7 +25,7 @@ public class IntakeSetSpeedFrontSensorOff extends ExtraTimeoutCommand {
 
     // Called just before this Command runs the first time
     protected void initialize() {
-    	System.out.println("Intake sensor off started");
+//    	System.out.println("Intake sensor off started");
     	resetExtraTimer();
     	setTimeout(TIMEOUT);
 		cubeDetected = false;
@@ -37,7 +37,7 @@ public class IntakeSetSpeedFrontSensorOff extends ExtraTimeoutCommand {
     	if (cubeDetected == false && (Robot.intake.getFrontIRIntakeSensor() || Robot.intake.getFrontLeftVEXIntakeSensor() || Robot.intake.getFrontRightVEXIntakeSensor())) {
     		startExtraTimeout(EXTRA_INTAKE_TIME);
     		cubeDetected = true;
-    		System.out.println("CUBE DETECTED!!!!!");
+//    		System.out.println("CUBE DETECTED!!!!!");
     	}
     }
 
@@ -49,12 +49,12 @@ public class IntakeSetSpeedFrontSensorOff extends ExtraTimeoutCommand {
     // Called once after isFinished returns true
     protected void end() {
     	Robot.intake.setSpeed(0);
-    	System.out.println("Intake sensor off end EJECT!!!!");
+//    	System.out.println("Intake sensor off end EJECT!!!!");
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
-    	System.out.println("IntakeSetSpeedFrontSensorOff interrupted");
+//    	System.out.println("IntakeSetSpeedFrontSensorOff interrupted");
     }
 }

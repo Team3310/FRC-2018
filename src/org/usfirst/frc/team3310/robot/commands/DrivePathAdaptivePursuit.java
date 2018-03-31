@@ -20,7 +20,7 @@ public class DrivePathAdaptivePursuit extends Command
 
 	protected void initialize() {
 		Robot.drive.setWantDrivePath(path, pathContainer.isReversed());
-		System.out.println("Adaptive Pursuit start");
+//		System.out.println("Adaptive Pursuit start");
 	}
 
 	protected void execute() {
@@ -31,12 +31,12 @@ public class DrivePathAdaptivePursuit extends Command
 	}
 
 	protected void end() {
-		System.out.println("Adaptive Pursuit finished");
+//		System.out.println("Adaptive Pursuit finished");
 		Robot.drive.setControlMode(DriveControlMode.JOYSTICK);
 	}
 
 	protected void interrupted() {
-    	System.out.println("DrivePathAdaptivePursuit interrupted");
+//    	System.out.println("DrivePathAdaptivePursuit interrupted");
 		end();
 	}
 }

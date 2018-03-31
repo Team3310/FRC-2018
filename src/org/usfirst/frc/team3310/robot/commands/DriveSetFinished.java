@@ -32,6 +32,6 @@ public class DriveSetFinished extends Command
 
 	@Override
 	protected void interrupted() {
-    	System.out.println("DriveSetFinished interrupted");			
+//    	System.out.println("DriveSetFinished interrupted");			
 	}
 }

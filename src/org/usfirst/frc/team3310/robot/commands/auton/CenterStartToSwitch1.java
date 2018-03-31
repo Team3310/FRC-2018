@@ -24,6 +24,6 @@ public class CenterStartToSwitch1 extends CommandGroup {
 
         addParallel(new ParallelDelay(elevatorDelay, new ElevatorSetPositionMP(Elevator.SWITCH_POSITION_INCHES)));
     	addSequential(new DrivePathAdaptivePursuit(centerStartToSwitch));
-    	addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_EJECT_SPEED, 0.5));
+    	addSequential(new ParallelDelay(0.5, new IntakeSetSpeedTimed(Intake.INTAKE_EJECT_SPEED, 0.5)));
      }
 }

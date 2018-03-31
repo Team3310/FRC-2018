@@ -35,7 +35,7 @@ public class DriveStraightMPIntakeOff extends Command
 	}
 
 	protected void interrupted() {
-    	System.out.println("DriveStraightMPIntakeOff interrupted");
+//    	System.out.println("DriveStraightMPIntakeOff interrupted");
 		end();
 	}
 }

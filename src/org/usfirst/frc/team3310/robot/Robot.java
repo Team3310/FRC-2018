@@ -9,42 +9,27 @@ package org.usfirst.frc.team3310.robot;
 
 import java.util.HashMap;
 
-import org.usfirst.frc.team3310.paths.auton.GoStraight;
+import org.usfirst.frc.team3310.paths.auton.LeftStartToCenterStart;
 import org.usfirst.frc.team3310.paths.auton.LeftStartToScaleLeft;
 import org.usfirst.frc.team3310.paths.auton.LeftStartToScaleLeftV2;
-import org.usfirst.frc.team3310.paths.auton.RightStartToScaleRight;
 import org.usfirst.frc.team3310.paths.auton.ScaleLeftToSwitchLeft;
 import org.usfirst.frc.team3310.paths.auton.ScaleLeftToSwitchLeft2;
 import org.usfirst.frc.team3310.paths.auton.ScaleLeftToSwitchLeftNoIntake;
-import org.usfirst.frc.team3310.paths.auton.ScaleRightToSwitchRight;
-import org.usfirst.frc.team3310.paths.auton.ScaleRightToSwitchRight2;
 import org.usfirst.frc.team3310.paths.auton.SwitchLeft2ToScaleLeft;
 import org.usfirst.frc.team3310.paths.auton.SwitchLeftToScaleLeft;
-import org.usfirst.frc.team3310.paths.auton.SwitchRight2ToScaleRight;
-import org.usfirst.frc.team3310.paths.auton.SwitchRightToScaleRight;
+import org.usfirst.frc.team3310.robot.commands.DriveStraightMP;
 import org.usfirst.frc.team3310.robot.commands.ElevatorAutoZero;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchLeft1;
-import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchLeft1ScaleLeft1;
-import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchLeft1ScaleLeft2;
-import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchLeft1ScaleRight1;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchLeft2;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchLeft3;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRight1;
-import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRight1ScaleLeft1;
-import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRight1ScaleRight1;
-import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRight1ScaleRight2;
 import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRight2;
-import org.usfirst.frc.team3310.robot.commands.auton.IntakeTest;
 import org.usfirst.frc.team3310.robot.commands.auton.LeftStartToScaleLeft1SwitchRight1V2;
 import org.usfirst.frc.team3310.robot.commands.auton.LeftStartToScaleRight1SwitchRight1;
 import org.usfirst.frc.team3310.robot.commands.auton.LeftStartToSwitchLeft1ScaleLeft1;
 import org.usfirst.frc.team3310.robot.commands.auton.LeftStartToSwitchLeft1ScaleRight1;
-import org.usfirst.frc.team3310.robot.commands.auton.LeftStartToSwitchRight1;
-import org.usfirst.frc.team3310.robot.commands.auton.RightStartToSwitchLeft1;
-import org.usfirst.frc.team3310.robot.commands.auton.RightStartToSwitchRight1ScaleLeft1;
-import org.usfirst.frc.team3310.robot.commands.auton.RightStartToSwitchRight1ScaleRight1;
+import org.usfirst.frc.team3310.robot.commands.auton.LeftStartToSwitchRight2;
 import org.usfirst.frc.team3310.robot.commands.auton.SideStartToSwitch3;
-import org.usfirst.frc.team3310.robot.commands.auton.StartLeftCenterRightGoStraight;
 import org.usfirst.frc.team3310.robot.commands.auton.StartToScale1Switch1Scale1;
 import org.usfirst.frc.team3310.robot.commands.auton.StartToScale3;
 import org.usfirst.frc.team3310.robot.subsystems.Drive;
@@ -152,16 +137,17 @@ public class Robot extends TimedRobot {
 		leftStartSwitch1Scale1.addRRR(new LeftStartToScaleRight1SwitchRight1());
 		
 		AutonRouteChooser goStraight = new AutonRouteChooser();
-		goStraight.addLLL(new StartLeftCenterRightGoStraight(new GoStraight()));
-		goStraight.addLRL(new StartLeftCenterRightGoStraight(new GoStraight()));
-		goStraight.addRLR(new StartLeftCenterRightGoStraight(new GoStraight()));
-		goStraight.addRRR(new StartLeftCenterRightGoStraight(new GoStraight()));
+		goStraight.addLLL(new DriveStraightMP(120.0, Drive.MP_MEDIUM_VELOCITY_INCHES_PER_SEC, true, false, 0));
+		goStraight.addLRL(new DriveStraightMP(120.0, Drive.MP_MEDIUM_VELOCITY_INCHES_PER_SEC, true, false, 0));
+		goStraight.addRLR(new DriveStraightMP(120.0, Drive.MP_MEDIUM_VELOCITY_INCHES_PER_SEC, true, false, 0));
+		goStraight.addRRR(new DriveStraightMP(120.0, Drive.MP_MEDIUM_VELOCITY_INCHES_PER_SEC, true, false, 0));
 		
 		AutonRouteChooser leftStartScale3Cube = new AutonRouteChooser();
 		leftStartScale3Cube.addLLL(new StartToScale3(new LeftStartToScaleLeftV2(), new ScaleLeftToSwitchLeft(), new SwitchLeftToScaleLeft(), new ScaleLeftToSwitchLeft2(), new SwitchLeft2ToScaleLeft()));
 		leftStartScale3Cube.addRLR(new StartToScale3(new LeftStartToScaleLeftV2(), new ScaleLeftToSwitchLeft(), new SwitchLeftToScaleLeft(), new ScaleLeftToSwitchLeft2(), new SwitchLeft2ToScaleLeft()));
 		leftStartScale3Cube.addLRL(new SideStartToSwitch3(new LeftStartToScaleLeft(), new ScaleLeftToSwitchLeftNoIntake(), new SwitchLeftToScaleLeft()));
-		leftStartScale3Cube.addRRR(new LeftStartToScaleRight1SwitchRight1());
+//		leftStartScale3Cube.addRRR(new LeftStartToScaleRight1SwitchRight1());
+		leftStartScale3Cube.addRRR(new LeftStartToSwitchRight2(new LeftStartToCenterStart()));
 
 		AutonRouteChooser leftStartScale1Switch1Scale1 = new AutonRouteChooser();
 		leftStartScale1Switch1Scale1.addLLL(new StartToScale1Switch1Scale1(new LeftStartToScaleLeftV2(), new ScaleLeftToSwitchLeft(), new SwitchLeftToScaleLeft(), new ScaleLeftToSwitchLeft2(), new SwitchLeft2ToScaleLeft()));
@@ -245,6 +231,7 @@ public class Robot extends TimedRobot {
 		
         controlLoop.start();
 		forks.setLockState(ForksLockState.STOWED);
+    	drive.setShiftState(DriveSpeedShiftState.HI);
     	drive.setShiftState(DriveSpeedShiftState.LO);
     	drive.endGyroCalibration();
     	elevator.setShiftState(Elevator.ElevatorSpeedShiftState.HI);
