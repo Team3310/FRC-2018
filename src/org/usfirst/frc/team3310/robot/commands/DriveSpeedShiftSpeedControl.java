@@ -5,11 +5,11 @@ import org.usfirst.frc.team3310.robot.subsystems.Drive.DriveSpeedShiftState;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class DriveSpeedShift extends Command
+public class DriveSpeedShiftSpeedControl extends Command
 {
 	private DriveSpeedShiftState state;
 	
-	public DriveSpeedShift(DriveSpeedShiftState state) {
+	public DriveSpeedShiftSpeedControl(DriveSpeedShiftState state) {
 		requires(Robot.drive);
 		this.state = state;
 	}
@@ -17,7 +17,6 @@ public class DriveSpeedShift extends Command
 	@Override
 	protected void initialize() {
 		Robot.drive.setShiftState(state);
-		Robot.drive.configureTalonsForSpeedControl();
 	}
 
 	@Override

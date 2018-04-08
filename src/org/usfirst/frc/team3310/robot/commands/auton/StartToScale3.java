@@ -29,12 +29,12 @@ public class StartToScale3 extends CommandGroup {
     		PathContainer scaleToSwitchPath2, 
     		PathContainer switchToScale2) {
     	
-    	addSequential(new DriveSpeedShift(DriveSpeedShiftState.LO));
+    	addSequential(new DriveSpeedShift(DriveSpeedShiftState.HI));
     	addSequential(new ElevatorSetZero(0));
         addSequential(new DriveResetPoseFromPath(startToScalePath, true));
 
     	addParallel(new RunAfterMarker("raiseElevator", 4.0, new ElevatorSetPositionPID(Elevator.SCALE_FIRST_CUBE_POSITION_INCHES)));
-    	addParallel(new RunAfterMarker("startEject", 4.0, new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_MEDIUM_SPEED, 0.8)));
+    	addParallel(new RunAfterMarker("startEject", 4.0, new IntakeSetSpeedTimed(0.9, 0.8)));
 //    	addParallel(new ParallelDelay(1.0, new IntakeSetSpeedTimed(Intake.INTAKE_LOAD_SPEED, 0.5)));
     	addSequential(new DrivePathAdaptivePursuit(startToScalePath));
     	addSequential(new WaitForChildren());

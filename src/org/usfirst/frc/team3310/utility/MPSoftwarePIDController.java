@@ -86,7 +86,12 @@ public class MPSoftwarePIDController
 		// Update the controllers set point.
 		if (turnType == MPSoftwareTurnType.TANK) {
 			for (TalonSRXEncoder motorController : motorControllers) {
-				motorController.set(ControlMode.PercentOutput, output);
+				if (motorController.isRight()) {
+					motorController.set(ControlMode.PercentOutput, -output);
+				}
+				else {
+					motorController.set(ControlMode.PercentOutput, output);					
+				}
 			}
 		}
 		else if (turnType == MPSoftwareTurnType.LEFT_SIDE_ONLY) {

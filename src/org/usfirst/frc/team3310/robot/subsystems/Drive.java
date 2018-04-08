@@ -69,6 +69,9 @@ public class Drive extends Subsystem implements Loop
 	public static final double MP_MAX_TURN_T1 = 400;
 	public static final double MP_MAX_TURN_T2 = 200;
 	
+	public static final double OPEN_LOOP_VOLTAGE_RAMP_HI = 0.0;
+	public static final double OPEN_LOOP_VOLTAGE_RAMP_LO = 0.1;
+	
 	// Motor controllers
 	private ArrayList<TalonSRXEncoder> motorControllers = new ArrayList<TalonSRXEncoder>();	
 
@@ -91,7 +94,7 @@ public class Drive extends Subsystem implements Loop
 
 	// Pneumatics
 	private Solenoid speedShift;
-	private DriveSpeedShiftState shiftState = DriveSpeedShiftState.LO;
+	private DriveSpeedShiftState shiftState = DriveSpeedShiftState.HI;
 
 	// Input devices
 	public static final int DRIVER_INPUT_JOYSTICK_ARCADE = 0;
@@ -106,6 +109,9 @@ public class Drive extends Subsystem implements Loop
 	public static final double MOVE_NON_LINEARITY = 1.0;
 	
 	public static final double STICK_DEADBAND = 0.02;
+	
+//	public static final double PITCH_THRESHOLD_1 = 20;
+	public static final double PITCH_THRESHOLD_2 = 16;
 
 	private int m_moveNonLinear = 0;
 	private int m_steerNonLinear = -3;
@@ -196,9 +202,6 @@ public class Drive extends Subsystem implements Loop
 			
 			leftDrive1.setSafetyEnabled(false);
 			leftDrive1.setSensorPhase(false);  
-
-			leftDrive1.configOpenloopRamp(0.0, TalonSRXEncoder.TIMEOUT_MS);
-			rightDrive1.configOpenloopRamp(0.0, TalonSRXEncoder.TIMEOUT_MS);
 			
 			leftDrive1.setInverted(true);
 			leftDrive2.setInverted(true);
@@ -229,6 +232,11 @@ public class Drive extends Subsystem implements Loop
 			System.err.println("An error occurred in the DriveTrain constructor");
 		}
 	}
+    
+    private void setOpenLoopVoltageRamp(double timeTo12VSec) {
+		leftDrive1.configOpenloopRamp(timeTo12VSec, TalonSRXEncoder.TIMEOUT_MS);
+		rightDrive1.configOpenloopRamp(timeTo12VSec, TalonSRXEncoder.TIMEOUT_MS);
+    }
 
     public synchronized void loadGains() {
         leftDrive1.setPIDFIZone(kLowGearVelocityControlSlot, 
@@ -268,7 +276,19 @@ public class Drive extends Subsystem implements Loop
 		gyroPigeon.getYawPitchRoll(yprPigeon);
 		return -yprPigeon[0] + gyroOffsetDeg;
 	}
-			
+	
+	public synchronized double getGyroPitchAngle() {
+		gyroPigeon.getYawPitchRoll(yprPigeon);
+		return  yprPigeon[2];
+	}
+	public boolean checkPitchAngle() {
+		double pitchAngle = Math.abs(getGyroPitchAngle());
+		if(pitchAngle > 10) {
+			return true;
+		}
+		return false;
+	}
+	
 	public synchronized void resetGyro() {
 		gyroPigeon.setYaw(0, TalonSRXEncoder.TIMEOUT_MS);
 		gyroPigeon.setFusedHeading(0, TalonSRXEncoder.TIMEOUT_MS);
@@ -492,8 +512,8 @@ public class Drive extends Subsystem implements Loop
     private synchronized void updateVelocitySetpoint(double left_inches_per_sec, double right_inches_per_sec) {
         if (usesTalonVelocityControl(driveControlMode)) {
             final double max_desired = Math.max(Math.abs(left_inches_per_sec), Math.abs(right_inches_per_sec));
-            final double scale = max_desired > Constants.kDriveHighGearMaxSetpoint
-                    ? Constants.kDriveHighGearMaxSetpoint / max_desired : 1.0;
+            final double maxSetpoint = getShiftState() == DriveSpeedShiftState.HI ? Constants.kDriveHighGearMaxSetpoint : Constants.kDriveLowGearMaxSetpoint;
+            final double scale = max_desired > maxSetpoint ? maxSetpoint / max_desired : 1.0;
             
             leftDrive1.setVelocityWorld(left_inches_per_sec * scale);
             rightDrive1.setVelocityWorld(right_inches_per_sec * scale);
@@ -509,7 +529,7 @@ public class Drive extends Subsystem implements Loop
     /**
      * Configures talons for velocity control
      */
-    private void configureTalonsForSpeedControl() {
+    public void configureTalonsForSpeedControl() {
         if (!usesTalonVelocityControl(driveControlMode)) {
         	leftDrive1.enableVoltageCompensation(true);
         	leftDrive1.configVoltageCompSaturation(12.0, TalonSRXEncoder.TIMEOUT_MS);
@@ -522,6 +542,7 @@ public class Drive extends Subsystem implements Loop
         	rightDrive1.configPeakOutputReverse(-1.0f, TalonSRXEncoder.TIMEOUT_MS);
        	
         	if (getShiftState() == DriveSpeedShiftState.HI) {
+        		System.out.println("configureTalonsForSpeedControl HI");
 	        	leftDrive1.selectProfileSlot(kHighGearVelocityControlSlot, TalonSRXEncoder.PID_IDX);
 	        	leftDrive1.configNominalOutputForward(Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
 	        	leftDrive1.configNominalOutputReverse(-Constants.kDriveHighGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
@@ -533,6 +554,7 @@ public class Drive extends Subsystem implements Loop
 	        	rightDrive1.configClosedloopRamp(Constants.kDriveHighGearVelocityRampRate, TalonSRXEncoder.TIMEOUT_MS);
         	}
         	else {
+        		System.out.println("configureTalonsForSpeedControl LO");
 	        	leftDrive1.selectProfileSlot(kLowGearVelocityControlSlot, TalonSRXEncoder.PID_IDX);
 	        	leftDrive1.configNominalOutputForward(Constants.kDriveLowGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
 	        	leftDrive1.configNominalOutputReverse(-Constants.kDriveLowGearNominalOutput, TalonSRXEncoder.TIMEOUT_MS);
@@ -594,9 +616,6 @@ public class Drive extends Subsystem implements Loop
 		m_moveInput = OI.getInstance().getDriverController().getLeftYAxis();
 		m_steerInput = -OI.getInstance().getDriverController().getRightXAxis();
 		
-		boolean isShift = OI.getInstance().getDriverController().getLeftBumperButton();
-		setShiftState(isShift ? DriveSpeedShiftState.HI : DriveSpeedShiftState.LO);
-		
 		m_moveOutput = adjustForSensitivity(m_moveScale, m_moveTrim,
 					m_moveInput, m_moveNonLinear, MOVE_NON_LINEARITY);
 		m_steerOutput = adjustForSensitivity(m_steerScale, m_steerTrim,
@@ -606,6 +625,18 @@ public class Drive extends Subsystem implements Loop
 			double yawError = gyroLockAngleDeg - getGyroAngleDeg();
 			m_steerOutput = kPGyro * yawError;
 		}
+		
+		double pitchAngle = getGyroPitchAngle();
+		if(Math.abs(pitchAngle) > PITCH_THRESHOLD_2) {
+			m_moveOutput = Math.signum(pitchAngle) * -1.0;
+			m_steerOutput = 0;
+			System.out.println("Pitch Treshhold 2 angle = " + pitchAngle);
+		}
+//		else if(Math.abs(pitchAngle) > PITCH_THRESHOLD_1) {
+//			m_moveOutput = 0;
+//			m_steerOutput = 0;
+//			System.out.println("Pitch Treshhold 1 angle = " + pitchAngle);
+//		}
 
 		m_drive.arcadeDrive(-m_moveOutput, -m_steerOutput);	
 	}
@@ -662,10 +693,10 @@ public class Drive extends Subsystem implements Loop
 	}
 
 	public void setShiftState(DriveSpeedShiftState state) {
-		if (state == shiftState) {
-			return;
-		}
 		shiftState = state;
+
+		System.out.println("shift state = " + state);
+		setOpenLoopVoltageRamp(state == DriveSpeedShiftState.HI ? OPEN_LOOP_VOLTAGE_RAMP_HI : OPEN_LOOP_VOLTAGE_RAMP_LO);
 		if(state == DriveSpeedShiftState.HI) {
 			speedShift.set(false);
 		}
@@ -673,7 +704,7 @@ public class Drive extends Subsystem implements Loop
 			speedShift.set(true);
 		}
 	}
-	
+
 	public DriveSpeedShiftState getShiftState() {
 		return shiftState;
 	}
@@ -784,6 +815,7 @@ public class Drive extends Subsystem implements Loop
 				SmartDashboard.putNumber("Drive Right 3 Amps", rightDrive3.getOutputCurrent());
 				SmartDashboard.putNumber("Drive Right Average Amps", getAverageRightCurrent());
 				SmartDashboard.putNumber("Yaw Angle Deg", getGyroAngleDeg());
+				SmartDashboard.putNumber("Pitch Angle Deg", getGyroPitchAngle());
 				SmartDashboard.putData("Diff Drive", m_drive);
 				NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
 				NetworkTableEntry tx = table.getEntry("tx");
