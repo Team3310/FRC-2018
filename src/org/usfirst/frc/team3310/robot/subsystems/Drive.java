@@ -43,7 +43,7 @@ public class Drive extends Subsystem implements Loop
 {
 	private static Drive instance;
 
-	public static enum DriveControlMode { JOYSTICK, MP_STRAIGHT, MP_TURN, PID_TURN, HOLD, MANUAL, ADAPTIVE_PURSUIT, VELOCITY_SETPOINT };
+	public static enum DriveControlMode { JOYSTICK, MP_STRAIGHT, MP_TURN, PID_TURN, HOLD, MANUAL, ADAPTIVE_PURSUIT, VELOCITY_SETPOINT, CAMERA_TRACK };
 	public static enum DriveSpeedShiftState { HI, LO };
 	public static enum ClimberState { DEPLOYED, RETRACTED };
 
@@ -160,6 +160,10 @@ public class Drive extends Subsystem implements Loop
 	private boolean isCalibrating = false;
 	private double gyroOffsetDeg = 0;
 	
+	private double mLastValidGyroAngle;
+	private double mCameraVelocity;
+	private double kCamera = 0.8;
+	
 	private double limeArea;
 	private double limeX;
 	private double limeY;
@@ -172,7 +176,7 @@ public class Drive extends Subsystem implements Loop
      * Check if the drive talons are configured for velocity control
      */
     protected static boolean usesTalonVelocityControl(DriveControlMode state) {
-        if (state == DriveControlMode.VELOCITY_SETPOINT || state == DriveControlMode.ADAPTIVE_PURSUIT) {
+        if (state == DriveControlMode.VELOCITY_SETPOINT || state == DriveControlMode.ADAPTIVE_PURSUIT || state == DriveControlMode.CAMERA_TRACK) {
             return true;
         }
         return false;
@@ -415,6 +419,9 @@ public class Drive extends Subsystem implements Loop
 	                        updatePathFollower(timestamp);
 	                    }
 	                    return;
+					case CAMERA_TRACK:
+	                    updateCameraTrack();
+	                    return;
 	                default:
 	                    System.out.println("Unknown drive control mode: " + currentControlMode);
 	                    break;
@@ -446,6 +453,40 @@ public class Drive extends Subsystem implements Loop
 		}
 		this.useGyroLock = useGyroLock;
 	}
+
+    /**
+     * Called periodically when the robot is in cmaera track mode.
+     */
+    private void updateCameraTrack() {
+    	updateLimelight();
+    	double deltaVelocity = 0;
+        if (isLimeValid) {
+        	deltaVelocity = limeX * kCamera;
+            mLastValidGyroAngle = getGyroAngleDeg();
+            System.out.println("Valid lime angle = " + limeX);
+        } else {
+        	deltaVelocity = (getGyroAngleDeg() - mLastValidGyroAngle) * kCamera;
+            System.out.println("In Valid lime angle = " + limeX);
+        }
+        updateVelocitySetpoint(mCameraVelocity + deltaVelocity, mCameraVelocity - deltaVelocity);
+    }
+
+    /**
+     * Configures the drivebase to drive a path. Used for autonomous driving
+     * 
+     * @see Path
+     */
+    public synchronized void setCameraTrack(double straightVelocity) {
+        if (driveControlMode != DriveControlMode.CAMERA_TRACK) {
+            configureTalonsForSpeedControl();
+            driveControlMode = DriveControlMode.CAMERA_TRACK;
+            mLastValidGyroAngle = getGyroAngleDeg();
+            mCameraVelocity = straightVelocity;
+        } else {
+            setVelocitySetpoint(0, 0);
+            System.out.println("Oh NOOOO in velocity set point for camera track");
+        }
+    }
 
     /**
      * Called periodically when the robot is in path following mode. Updates the path follower with the robots latest
@@ -777,9 +818,10 @@ public class Drive extends Subsystem implements Loop
 		NetworkTable limeTable = getLimetable();
 		
 		double valid = limeTable.getEntry("tv").getDouble(0); 
-		if(valid == 0) {
+		if (valid == 0) {
 			isLimeValid = false;
-		}else if(valid == 1) {
+		}
+		else if (valid == 1) {
 			isLimeValid = true;
 		}
 		

@@ -238,7 +238,7 @@ public class Robot extends TimedRobot {
         zeroAllSensors();
 
 		drive.setLimeLED(false);
-		drive.setLimeCameraMode(true);
+		drive.setLimeCameraMode(false);
     	
     	if (operationMode != OperationMode.COMPETITION) {
     		Scheduler.getInstance().add(new ElevatorAutoZero(false));
