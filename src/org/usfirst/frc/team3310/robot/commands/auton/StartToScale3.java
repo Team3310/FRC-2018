@@ -29,7 +29,7 @@ public class StartToScale3 extends CommandGroup {
     		PathContainer scaleToSwitchPath2, 
     		PathContainer switchToScale2) {
     	
-    	addSequential(new DriveSpeedShift(DriveSpeedShiftState.LO));
+    	addSequential(new DriveSpeedShift(DriveSpeedShiftState.HI));
     	addSequential(new ElevatorSetZero(0));
         addSequential(new DriveResetPoseFromPath(startToScalePath, true));
 
