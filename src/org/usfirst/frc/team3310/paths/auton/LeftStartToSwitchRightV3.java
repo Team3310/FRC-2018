@@ -16,10 +16,10 @@ public class LeftStartToSwitchRightV3 implements PathContainer {
     @Override
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-        sWaypoints.add(new Waypoint(65,270,0,60));
-        sWaypoints.add(new Waypoint(65,134,40,60, "raiseElevator"));
-        sWaypoints.add(new Waypoint(110,134,0,60));
-        sWaypoints.add(new Waypoint(126,134,0,60));
+        sWaypoints.add(new Waypoint(65,270,0,80));
+        sWaypoints.add(new Waypoint(65,134,40,80,  "raiseElevator"));
+        sWaypoints.add(new Waypoint(110,134,0,80));
+        sWaypoints.add(new Waypoint(126,134,0,80));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }

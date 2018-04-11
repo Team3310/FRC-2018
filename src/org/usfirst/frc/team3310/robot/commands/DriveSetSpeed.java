@@ -5,39 +5,35 @@ import org.usfirst.frc.team3310.robot.subsystems.Drive.DriveControlMode;
 
 import edu.wpi.first.wpilibj.command.Command;
 
-public class DrivePathCameraTrack extends Command
+public class DriveSetSpeed extends Command
 {
-	private double straightVelocity;
+	private double speed;
 	private double timeout;
 
-	public DrivePathCameraTrack(double straightVelocity, double timeout) {
-        this.straightVelocity = straightVelocity;
+	public DriveSetSpeed(double speed, double timeout) {
+        this.speed = speed;
         this.timeout = timeout;
 		requires(Robot.drive);
 	}
 
 	protected void initialize() {
-		System.out.println("Start camera track");
-		Robot.drive.setLimeLED(true);
-		Robot.drive.setCameraTrack(straightVelocity);
 		setTimeout(timeout);
+		Robot.drive.setSpeed(speed);
 	}
 
 	protected void execute() {
 	}
 
 	protected boolean isFinished() {
-		return isTimedOut() || Robot.drive.isFinished(); 
+		return isTimedOut(); 
 	}
 
 	protected void end() {
-		System.out.println("camera track finished");
-		Robot.drive.setLimeLED(false);
+		Robot.drive.setSpeed(0);
 		Robot.drive.setControlMode(DriveControlMode.JOYSTICK);
 	}
 
 	protected void interrupted() {
-    	System.out.println("camera track interrupted");
 		end();
 	}
 }

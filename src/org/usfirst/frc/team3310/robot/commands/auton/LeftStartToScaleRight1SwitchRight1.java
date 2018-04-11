@@ -1,7 +1,7 @@
 package org.usfirst.frc.team3310.robot.commands.auton;
 
 import org.usfirst.frc.team3310.paths.PathContainer;
-import org.usfirst.frc.team3310.paths.auton.LeftStartToScaleRight;
+import org.usfirst.frc.team3310.paths.auton.LeftStartToScaleRightSave;
 import org.usfirst.frc.team3310.paths.auton.ScaleRightToSwitchRight;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
 import org.usfirst.frc.team3310.robot.commands.DriveResetPoseFromPath;
@@ -29,11 +29,11 @@ public class LeftStartToScaleRight1SwitchRight1 extends CommandGroup {
         
     	// Initialize everything at starting position
     	addSequential(new ElevatorSetZero(0));
-    	PathContainer path = new LeftStartToScaleRight();
+    	PathContainer path = new LeftStartToScaleRightSave();
         addSequential(new DriveResetPoseFromPath(path, true));
 
     	// Drive backwards to scale.  Start raising elevator during the path when "raiseElevator" marker is crossed
-    	addParallel(new RunAfterMarker("raiseElevator", 4.0, new ElevatorSetPositionMP(Elevator.SCALE_HIGH_POSITION_INCHES)));
+    	addParallel(new RunAfterMarker("raiseElevator", 8.0, new ElevatorSetPositionMP(Elevator.SCALE_HIGH_POSITION_INCHES)));
     	addSequential(new DrivePathAdaptivePursuit(path));
     	addSequential(new WaitForChildren());
         addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 0.8));

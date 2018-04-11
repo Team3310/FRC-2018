@@ -17,7 +17,7 @@ public class Forward5 implements PathContainer {
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
         sWaypoints.add(new Waypoint(230,236,0,60));
-        sWaypoints.add(new Waypoint(218,236,0,40));
+        sWaypoints.add(new Waypoint(218,234,0,40));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }

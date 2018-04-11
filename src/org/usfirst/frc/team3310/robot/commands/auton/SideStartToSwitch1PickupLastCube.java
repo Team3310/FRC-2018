@@ -31,7 +31,7 @@ public class SideStartToSwitch1PickupLastCube extends CommandGroup {
 
     	// Drive backwards to scale.  Start raising elevator during the path when "raiseElevator" marker is crossed
     	addParallel(new RunAfterMarker("raiseElevator", 4.0, new ElevatorSetPositionMP(Elevator.SWITCH_POSITION_INCHES)));
-    	addParallel(new IntakeSetSpeedTimed(Intake.INTAKE_LOAD_SLOW_SPEED, 1.0));
+//    	addParallel(new IntakeSetSpeedTimed(Intake.INTAKE_LOAD_SLOW_SPEED, 1.0));
     	addSequential(new DrivePathAdaptivePursuit(startToScalePath));
     	addSequential(new WaitForChildren());
     	

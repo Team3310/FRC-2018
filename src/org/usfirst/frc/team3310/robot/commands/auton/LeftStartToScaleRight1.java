@@ -3,7 +3,7 @@ package org.usfirst.frc.team3310.robot.commands.auton;
 import org.usfirst.frc.team3310.paths.PathContainer;
 import org.usfirst.frc.team3310.paths.auton.Backup5;
 import org.usfirst.frc.team3310.paths.auton.Forward5;
-import org.usfirst.frc.team3310.paths.auton.LeftStartToScaleRight;
+import org.usfirst.frc.team3310.paths.auton.LeftStartToScaleRightSave;
 import org.usfirst.frc.team3310.paths.auton.ScaleRightToSwitchRight;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
 import org.usfirst.frc.team3310.robot.commands.DriveResetPoseFromPath;
@@ -31,7 +31,7 @@ public class LeftStartToScaleRight1 extends CommandGroup {
         
     	// Initialize everything at starting position
     	addSequential(new ElevatorSetZero(0));
-    	PathContainer path = new LeftStartToScaleRight();
+    	PathContainer path = new LeftStartToScaleRightSave();
         addSequential(new DriveResetPoseFromPath(path, true));
 
     	// Drive backwards to scale.  Start raising elevator during the path when "raiseElevator" marker is crossed

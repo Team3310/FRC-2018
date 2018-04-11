@@ -1,8 +1,11 @@
 package org.usfirst.frc.team3310.robot.commands.auton;
 
 import org.usfirst.frc.team3310.paths.PathContainer;
-import org.usfirst.frc.team3310.paths.auton.LeftStartToScaleRightAPR;
+import org.usfirst.frc.team3310.paths.auton.LeftStartToScaleRightAPRV2;
+import org.usfirst.frc.team3310.paths.auton.ScaleRightSideToSwitchRight;
+import org.usfirst.frc.team3310.robot.commands.DriveChaseCube;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
+import org.usfirst.frc.team3310.robot.commands.DrivePathCameraTrack;
 import org.usfirst.frc.team3310.robot.commands.DriveRelativeTurnMP;
 import org.usfirst.frc.team3310.robot.commands.DriveResetPoseFromPath;
 import org.usfirst.frc.team3310.robot.commands.DriveSetSpeed;
@@ -10,8 +13,10 @@ import org.usfirst.frc.team3310.robot.commands.DriveSpeedShift;
 import org.usfirst.frc.team3310.robot.commands.DriveStraightMP;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetPositionMP;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetZero;
+import org.usfirst.frc.team3310.robot.commands.IntakeCubeAndLiftAbortDrive;
 import org.usfirst.frc.team3310.robot.commands.IntakeSetSpeedTimed;
 import org.usfirst.frc.team3310.robot.commands.ParallelDelay;
+import org.usfirst.frc.team3310.robot.commands.RunAfterMarker;
 import org.usfirst.frc.team3310.robot.subsystems.Drive;
 import org.usfirst.frc.team3310.robot.subsystems.Drive.DriveSpeedShiftState;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator;
@@ -24,27 +29,38 @@ import edu.wpi.first.wpilibj.command.WaitForChildren;
 /**
  *
  */
-public class LeftStartToScaleRight1APR extends CommandGroup {
+public class LeftStartToScaleRight1APRV2 extends CommandGroup {
 
-    public LeftStartToScaleRight1APR() {
+    public LeftStartToScaleRight1APRV2() {
         addSequential(new DriveSpeedShift(DriveSpeedShiftState.LO));
         
     	// Initialize everything at starting position
     	addSequential(new ElevatorSetZero(0));
-    	PathContainer path = new LeftStartToScaleRightAPR();
+    	PathContainer path = new LeftStartToScaleRightAPRV2();
         addSequential(new DriveResetPoseFromPath(path, true));
 
     	// Drive backwards to scale.  Start raising elevator during the path when "raiseElevator" marker is crossed
+    	addParallel(new RunAfterMarker("shiftHi", 4.0, new DriveSpeedShift(DriveSpeedShiftState.HI)));
+    	addParallel(new RunAfterMarker("shiftLow", 4.0, new DriveSpeedShift(DriveSpeedShiftState.LO)));
+    	addParallel(new RunAfterMarker("raiseElevator", 4.0, new ElevatorSetPositionMP(Elevator.SCALE_HIGH_POSITION_INCHES)));
     	addSequential(new DrivePathAdaptivePursuit(path));
-    	addParallel(new ElevatorSetPositionMP(Elevator.SCALE_HIGH_POSITION_INCHES));
-    	addSequential(new DriveSetSpeed(-0.4, 0.5));
-    	addSequential(new ParallelDelay(1.0, new DriveStraightMP(30, Drive.MP_FAST_VELOCITY_INCHES_PER_SEC, true, false, 0)));
+//    	addParallel(new ElevatorSetPositionMP(Elevator.SCALE_HIGH_POSITION_INCHES));
+//        addSequential(new DriveSpeedShift(DriveSpeedShiftState.LO));
+    	addSequential(new DriveSetSpeed(-0.4, 0.6));
+    	addSequential(new DriveStraightMP(30, Drive.MP_FAST_VELOCITY_INCHES_PER_SEC, true, false, 0));
     	addSequential(new WaitForChildren());
-        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_EJECT_SPEED, 0.5));
+        addSequential(new IntakeSetSpeedTimed(0.5*Intake.INTAKE_EJECT_SPEED, 0.5));
     	addSequential(new DriveStraightMP(-20, Drive.MP_FAST_VELOCITY_INCHES_PER_SEC, true, false, 0));
     	addParallel(new ElevatorSetPositionMP(Elevator.MIN_POSITION_INCHES));
-    	addSequential(new DriveRelativeTurnMP(50, Drive.MAX_TURN_RATE_DEG_PER_SEC, MPSoftwareTurnType.TANK));  	
+    	addSequential(new DriveRelativeTurnMP(-65, Drive.MAX_TURN_RATE_DEG_PER_SEC, MPSoftwareTurnType.TANK));  	
 
+    	PathContainer path2 = new ScaleRightSideToSwitchRight();
+        addSequential(new DriveResetPoseFromPath(path2, true));
+    	addSequential(new DrivePathAdaptivePursuit(path2));
+
+        addParallel(new IntakeCubeAndLiftAbortDrive(true));
+       	addSequential(new DrivePathCameraTrack(20, 5));
+    	addSequential(new DriveStraightMP(-60, Drive.MP_FAST_VELOCITY_INCHES_PER_SEC, true, false, 0));
 
     	// Drive forwards to switch.  Center on last cube.  
 //        PathContainer path2 = new ScaleRightToSwitchRight();

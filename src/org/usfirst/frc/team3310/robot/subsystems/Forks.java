@@ -2,7 +2,6 @@ package org.usfirst.frc.team3310.robot.subsystems;
 
 import org.usfirst.frc.team3310.robot.Robot;
 import org.usfirst.frc.team3310.robot.RobotMap;
-import org.usfirst.frc.team3310.robot.subsystems.Elevator.ElevatorSpeedShiftState;
 import org.usfirst.frc.team3310.utility.TalonSRXFactory;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;

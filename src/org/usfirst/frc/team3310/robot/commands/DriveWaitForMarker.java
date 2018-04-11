@@ -19,7 +19,7 @@ public class DriveWaitForMarker extends Command
 	protected void initialize() {
 		setTimeout(timeout);
 		startTime = System.currentTimeMillis();
-//		System.out.println("Start marker = " + targetMarker + ", time = " + System.currentTimeMillis());
+		System.out.println("Start marker = " + targetMarker + ", time = " + System.currentTimeMillis());
 	}
 
 	@Override
@@ -29,13 +29,13 @@ public class DriveWaitForMarker extends Command
 	@Override
 	protected boolean isFinished() {
 		if (isTimedOut()) {
-//			System.out.println("IsTimedOut marker = " + targetMarker);
+			System.out.println("IsTimedOut marker = " + targetMarker);
 			return true;
 		}
 		
 		boolean markerPassed = Robot.drive.hasPassedMarker(targetMarker);
 		if (markerPassed) {
-//			System.out.println("Got to marker = " + targetMarker + ", delta time = " + (System.currentTimeMillis() - startTime) + ", time = " + System.currentTimeMillis());
+			System.out.println("Got to marker = " + targetMarker + ", delta time = " + (System.currentTimeMillis() - startTime) + ", time = " + System.currentTimeMillis());
 			return true;
 		}
 		

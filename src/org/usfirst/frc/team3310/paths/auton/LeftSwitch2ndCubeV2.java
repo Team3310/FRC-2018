@@ -16,8 +16,9 @@ public class LeftSwitch2ndCubeV2 implements PathContainer {
     @Override
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-        sWaypoints.add(new Waypoint(230,236,0,30));
-        sWaypoints.add(new Waypoint(195,205,0,30));
+        sWaypoints.add(new Waypoint(230,236,0,60));
+        sWaypoints.add(new Waypoint(210,220,0,40));
+        sWaypoints.add(new Waypoint(201,205,0,20));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }

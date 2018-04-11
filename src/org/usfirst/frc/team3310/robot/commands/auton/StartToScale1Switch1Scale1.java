@@ -5,17 +5,20 @@ import org.usfirst.frc.team3310.paths.auton.Backup5;
 import org.usfirst.frc.team3310.paths.auton.Forward5;
 import org.usfirst.frc.team3310.paths.auton.LeftSwitch2ndCubeV2;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
+import org.usfirst.frc.team3310.robot.commands.DriveRelativeTurnMP;
 import org.usfirst.frc.team3310.robot.commands.DriveResetPoseFromPath;
 import org.usfirst.frc.team3310.robot.commands.DriveSpeedShift;
 import org.usfirst.frc.team3310.robot.commands.DriveStraightMP;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetPositionPID;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetZero;
 import org.usfirst.frc.team3310.robot.commands.IntakeCubeAndLiftAbortDrive;
+import org.usfirst.frc.team3310.robot.commands.IntakeSetSpeed;
 import org.usfirst.frc.team3310.robot.commands.IntakeSetSpeedTimed;
 import org.usfirst.frc.team3310.robot.commands.ParallelDelay;
 import org.usfirst.frc.team3310.robot.commands.RunAfterMarker;
 import org.usfirst.frc.team3310.robot.subsystems.Drive;
 import org.usfirst.frc.team3310.robot.subsystems.Drive.DriveSpeedShiftState;
+import org.usfirst.frc.team3310.utility.MPSoftwarePIDController.MPSoftwareTurnType;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator;
 import org.usfirst.frc.team3310.robot.subsystems.Intake;
 
@@ -34,10 +37,12 @@ public class StartToScale1Switch1Scale1 extends CommandGroup {
     		PathContainer scaleToSwitchPath2, 
     		PathContainer switchToScale2) {
     	
+        addSequential(new IntakeSetSpeed(0.05));
     	addSequential(new DriveSpeedShift(DriveSpeedShiftState.LO));
     	addSequential(new ElevatorSetZero(0));
         addSequential(new DriveResetPoseFromPath(startToScalePath, true));
 
+    	addParallel(new RunAfterMarker("shiftHi", 4.0, new DriveSpeedShift(DriveSpeedShiftState.HI)));
     	addParallel(new RunAfterMarker("raiseElevator", 4.0, new ElevatorSetPositionPID(Elevator.SCALE_FIRST_CUBE_POSITION_INCHES)));
     	addParallel(new RunAfterMarker("startEject", 4.0, new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_MEDIUM_SPEED, 0.8)));
     	addSequential(new DrivePathAdaptivePursuit(startToScalePath));
@@ -82,6 +87,7 @@ public class StartToScale1Switch1Scale1 extends CommandGroup {
     	addSequential(new WaitForChildren());
     	
     	// Eject cube
-        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 1.0));
+        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_MEDIUM_SPEED, 1.0));
+        addSequential(new ElevatorSetPositionPID(Elevator.ZERO_POSITION_INCHES));
     }
 }

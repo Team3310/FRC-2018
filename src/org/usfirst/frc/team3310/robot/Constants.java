@@ -33,34 +33,34 @@ public class Constants extends ConstantsBase {
 
     // PID gains for drive velocity loop (HIGH GEAR)
     // Units: setpoint, error, and output are in inches per second.
-    public static double kDriveHighGearVelocityKp = 1.0; //1.2;
+    public static double kDriveHighGearVelocityKp = 0.2; //1.0;
     public static double kDriveHighGearVelocityKi = 0.0;
-    public static double kDriveHighGearVelocityKd = 0.04;//6.0;
-    public static double kDriveHighGearVelocityKf = 0.07;//.15;
+    public static double kDriveHighGearVelocityKd = 0.04;//0.04;
+    public static double kDriveHighGearVelocityKf = 0.07;//0.07;
     public static int kDriveHighGearVelocityIZone = 200;
-    public static double kDriveHighGearVelocityRampRate = 0.05;
+    public static double kDriveHighGearVelocityRampRate = 0.05; // 0.02
     public static double kDriveHighGearNominalOutput = 0.5/12.0;
     public static double kDriveHighGearMaxSetpoint = 17.0 * 12.0; // 17 fps
 
     // PID gains for drive velocity loop (LOW GEAR)
     // Units: setpoint, error, and output are in inches per second.
-    public static double kDriveLowGearVelocityKp = 0.2; //.02
+    public static double kDriveLowGearVelocityKp = 0.1; //.1
     public static double kDriveLowGearVelocityKi = 0.0;
-    public static double kDriveLowGearVelocityKd = 0.04; // .01
-    public static double kDriveLowGearVelocityKf = 0.07;  // .06
+    public static double kDriveLowGearVelocityKd = 0.04; // .04
+    public static double kDriveLowGearVelocityKf = 0.03;  // .07
     public static int kDriveLowGearVelocityIZone = 200;
-    public static double kDriveLowGearVelocityRampRate = 0.05;
-    public static double kDriveLowGearNominalOutput = 0.5/12.0;
+    public static double kDriveLowGearVelocityRampRate = 0.02;
+    public static double kDriveLowGearNominalOutput = 0.1/12.0;
     public static double kDriveLowGearMaxSetpoint = 8.0 * 12.0; // 17 fps
 
     // PID gains for drive velocity loop (LOW GEAR)
     // Units: setpoint, error, and output are in inches per second.
-    public static double kDriveLowGearPositionKp = 1.0;
-    public static double kDriveLowGearPositionKi = 0.002;
-    public static double kDriveLowGearPositionKd = 100.0;
-    public static double kDriveLowGearPositionKf = .45;
+    public static double kDriveLowGearPositionKp = 1.0;  // 1.0
+    public static double kDriveLowGearPositionKi = 0.002;   //0.002
+    public static double kDriveLowGearPositionKd = 0.04;
+    public static double kDriveLowGearPositionKf = .45; // 0.45
     public static int kDriveLowGearPositionIZone = 700;
-    public static double kDriveLowGearPositionRampRate = 240.0; // V/s
+    public static double kDriveLowGearPositionRampRate = 0.05; // V/s
     public static double kDriveLowGearMaxVelocity = 8.0 * 12.0 * 60.0 / (Math.PI * kDriveWheelDiameterInches); // 8 fps
                                                                                                                // in RPM
     public static double kDriveLowGearMaxAccel = 18.0 * 12.0 * 60.0 / (Math.PI * kDriveWheelDiameterInches); // 18 fps/s
@@ -104,10 +104,10 @@ public class Constants extends ConstantsBase {
     public static double kPathFollowingMaxAccel = 90.0; // inches per second^2
     public static double kPathFollowingMaxVel = 150.0; // inches per second
     public static double kPathFollowingProfileKp = 5.0;  //5.0
-    public static double kPathFollowingProfileKi = 0.03;
-    public static double kPathFollowingProfileKv = 0.02;
-    public static double kPathFollowingProfileKffv = 1.2;
-    public static double kPathFollowingProfileKffa = 0.05;
+    public static double kPathFollowingProfileKi = 0.03;  // 0.03
+    public static double kPathFollowingProfileKv = 0.02; //0.02
+    public static double kPathFollowingProfileKffv = 1.2;  //1.2
+    public static double kPathFollowingProfileKffa = 0.05;  //0.05
     public static double kPathFollowingGoalPosTolerance = 0.75;
     public static double kPathFollowingGoalVelTolerance = 12.0;
     public static double kPathStopSteeringDistance = 9.0;

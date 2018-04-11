@@ -3,7 +3,7 @@ package org.usfirst.frc.team3310.robot;
 import org.usfirst.frc.team3310.buttons.XBoxDPadTriggerButton;
 import org.usfirst.frc.team3310.buttons.XBoxTriggerButton;
 import org.usfirst.frc.team3310.controller.XboxController;
-import org.usfirst.frc.team3310.robot.commands.DrivePathCameraTrack;
+import org.usfirst.frc.team3310.robot.commands.DriveChaseCube;
 import org.usfirst.frc.team3310.robot.commands.DriveSpeedShift;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetMode;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetPositionMP;
@@ -116,7 +116,7 @@ public class OI {
 //        elevatorSwitchPosition.whenPressed(new ElevatorSetPositionPID(10));
 
         // Shuffleboard
-        SmartDashboard.putData("CameraTrack", new DrivePathCameraTrack(0, 10));
+        SmartDashboard.putData("CameraTrack", new DriveChaseCube());
 
         
         

@@ -29,20 +29,21 @@ public class StartToScale3 extends CommandGroup {
     		PathContainer scaleToSwitchPath2, 
     		PathContainer switchToScale2) {
     	
-    	addSequential(new DriveSpeedShift(DriveSpeedShiftState.HI));
+    	addSequential(new DriveSpeedShift(DriveSpeedShiftState.LO));
     	addSequential(new ElevatorSetZero(0));
         addSequential(new DriveResetPoseFromPath(startToScalePath, true));
 
+    	addParallel(new RunAfterMarker("shiftHi", 4.0, new DriveSpeedShift(DriveSpeedShiftState.HI)));
     	addParallel(new RunAfterMarker("raiseElevator", 4.0, new ElevatorSetPositionPID(Elevator.SCALE_FIRST_CUBE_POSITION_INCHES)));
-    	addParallel(new RunAfterMarker("startEject", 4.0, new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_MEDIUM_SPEED, 0.8)));
+    	addParallel(new RunAfterMarker("startEject", 4.0, new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_MEDIUM_SPEED, 1.5)));
 //    	addParallel(new ParallelDelay(1.0, new IntakeSetSpeedTimed(Intake.INTAKE_LOAD_SPEED, 0.5)));
     	addSequential(new DrivePathAdaptivePursuit(startToScalePath));
+    	addSequential(new DriveSpeedShift(DriveSpeedShiftState.LO));
     	addSequential(new WaitForChildren());
 //    	addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 0.8));
     	    	
     	// Drive forward to switch platform to pickup cube  	
 //        addParallel(new ElevatorSetPositionMP(Elevator.ZERO_POSITION_INCHES));
-    	addSequential(new DriveSpeedShift(DriveSpeedShiftState.LO));
         addParallel(new ElevatorSetPositionPID(Elevator.MIN_POSITION_INCHES));
 //        addSequential(new WaitCommand(0.4));
         addSequential(new DriveResetPoseFromPath(scaleToSwitchPath1, false));
@@ -77,6 +78,8 @@ public class StartToScale3 extends CommandGroup {
     	addSequential(new WaitForChildren());
     	
     	// Eject cube
-        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 1.0));
+        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 0.8));
+        addSequential(new ElevatorSetPositionPID(Elevator.ZERO_POSITION_INCHES));
+
     }
 }

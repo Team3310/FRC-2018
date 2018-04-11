@@ -181,7 +181,7 @@ public class Path {
         PathSegment currentSegment = segments.get(0);
         double remainingDist = currentSegment.getRemainingDistance(currentSegment.getClosestPoint(robotPos));
         if (remainingDist < Constants.kSegmentCompletionTolerance) {
-            System.out.println("Removed segment from path: " + currentSegment);
+//            System.out.println("Removed segment from path: " + currentSegment);
             removeCurrentSegment();
         }
     }

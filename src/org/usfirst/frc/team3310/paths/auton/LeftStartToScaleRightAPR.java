@@ -18,10 +18,10 @@ public class LeftStartToScaleRightAPR implements PathContainer {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
         sWaypoints.add(new Waypoint(18,274,0,40));
         sWaypoints.add(new Waypoint(55,274,20,40));
-        sWaypoints.add(new Waypoint(55,85,80,80));
-        sWaypoints.add(new Waypoint(260,75,0,80, "raiseElevator"));
-        sWaypoints.add(new Waypoint(310,75,20,40));
-        sWaypoints.add(new Waypoint(320,115,0,40));
+        sWaypoints.add(new Waypoint(55,65,80,80));
+        sWaypoints.add(new Waypoint(260,55,0,80));
+        sWaypoints.add(new Waypoint(310,55,20,60));
+        sWaypoints.add(new Waypoint(320,20,0,60));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }

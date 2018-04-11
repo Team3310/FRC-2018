@@ -16,8 +16,8 @@ public class ScaleRightToSwitchRight implements PathContainer {
     @Override
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-        sWaypoints.add(new Waypoint(287,85,0,60));
-        sWaypoints.add(new Waypoint(224,92,0,60));
+        sWaypoints.add(new Waypoint(287,85,0,40));
+        sWaypoints.add(new Waypoint(234,91,0,40));
         sWaypoints.add(new Waypoint(214,94,0,20));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);

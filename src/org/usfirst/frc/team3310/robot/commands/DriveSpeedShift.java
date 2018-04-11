@@ -10,7 +10,7 @@ public class DriveSpeedShift extends Command
 	private DriveSpeedShiftState state;
 	
 	public DriveSpeedShift(DriveSpeedShiftState state) {
-		requires(Robot.drive);
+//		requires(Robot.drive);
 		this.state = state;
 	}
 
@@ -18,6 +18,7 @@ public class DriveSpeedShift extends Command
 	protected void initialize() {
 		Robot.drive.setShiftState(state);
 		Robot.drive.configureTalonsForSpeedControl();
+		System.out.println("Shift " + state);
 	}
 
 	@Override

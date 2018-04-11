@@ -26,7 +26,6 @@ import org.usfirst.frc.team3310.robot.commands.auton.CenterStartToSwitchRight2;
 import org.usfirst.frc.team3310.robot.commands.auton.LeftStartToScaleLeft1SwitchRight1V2;
 import org.usfirst.frc.team3310.robot.commands.auton.LeftStartToScaleRight1APR;
 import org.usfirst.frc.team3310.robot.commands.auton.LeftStartToScaleRight1SwitchRight1;
-import org.usfirst.frc.team3310.robot.commands.auton.LeftStartToSwitch2;
 import org.usfirst.frc.team3310.robot.commands.auton.LeftStartToSwitchLeft1ScaleLeft1;
 import org.usfirst.frc.team3310.robot.commands.auton.LeftStartToSwitchLeft1ScaleRight1;
 import org.usfirst.frc.team3310.robot.commands.auton.SideStartToSwitch3;
@@ -150,6 +149,7 @@ public class Robot extends TimedRobot {
 //		leftStartScale3Cube.addRRR(new LeftStartToSwitch2(new LeftStartToSwitchRightV3(),new SwitchRightToCenterStart(), new PyramidToSwitchRight()));
 //		leftStartScale3Cube.addRRR(new LeftStartToSwitch2(new LeftStartToSwitchLeftV3(),new SwitchLeftToCenterStart(), new PyramidToSwitchLeft()));
 		leftStartScale3Cube.addRRR(new LeftStartToScaleRight1APR());
+//		leftStartScale3Cube.addRRR(new LeftStartToScaleRight1APRV2());
 
 		AutonRouteChooser leftStartScale1Switch1Scale1 = new AutonRouteChooser();
 		leftStartScale1Switch1Scale1.addLLL(new StartToScale1Switch1Scale1(new LeftStartToScaleLeftV2(), new ScaleLeftToSwitchLeft(), new SwitchLeftToScaleLeft(), new ScaleLeftToSwitchLeft2(), new SwitchLeft2ToScaleLeft()));

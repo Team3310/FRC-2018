@@ -478,6 +478,7 @@ public class Drive extends Subsystem implements Loop
      */
     public synchronized void setCameraTrack(double straightVelocity) {
         if (driveControlMode != DriveControlMode.CAMERA_TRACK) {
+        	setFinished(false);
             configureTalonsForSpeedControl();
             driveControlMode = DriveControlMode.CAMERA_TRACK;
             mLastValidGyroAngle = getGyroAngleDeg();
