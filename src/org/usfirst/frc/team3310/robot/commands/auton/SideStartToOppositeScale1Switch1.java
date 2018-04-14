@@ -23,13 +23,12 @@ import edu.wpi.first.wpilibj.command.WaitForChildren;
 /**
  *
  */
-public class LeftStartToScaleRight1SwitchRight1 extends CommandGroup {
+public class SideStartToOppositeScale1Switch1 extends CommandGroup {
 
-    public LeftStartToScaleRight1SwitchRight1() {
+    public SideStartToOppositeScale1Switch1(PathContainer path, PathContainer path2) {
         
     	// Initialize everything at starting position
     	addSequential(new ElevatorSetZero(0));
-    	PathContainer path = new LeftStartToScaleRightSave();
         addSequential(new DriveResetPoseFromPath(path, true));
 
     	// Drive backwards to scale.  Start raising elevator during the path when "raiseElevator" marker is crossed
@@ -40,7 +39,6 @@ public class LeftStartToScaleRight1SwitchRight1 extends CommandGroup {
     	
     	
     	// Drive forwards to switch.  Center on last cube.  
-        PathContainer path2 = new ScaleRightToSwitchRight();
     	addParallel(new ElevatorSetPositionPID(Elevator.MIN_POSITION_INCHES));
         addParallel(new IntakeCubeAndLiftAbortDrive(true));
         addSequential(new DriveResetPoseFromPath(path2, false));
