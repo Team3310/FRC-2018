@@ -11,19 +11,22 @@ import java.util.HashMap;
 
 import org.usfirst.frc.team3310.paths.auton.LeftStartToScaleLeft;
 import org.usfirst.frc.team3310.paths.auton.LeftStartToScaleLeftV2;
-import org.usfirst.frc.team3310.paths.auton.LeftStartToScaleRightAPR;
 import org.usfirst.frc.team3310.paths.auton.LeftStartToScaleRightSave;
 import org.usfirst.frc.team3310.paths.auton.LeftSwitch2ndCubeV2;
 import org.usfirst.frc.team3310.paths.auton.RightStartToScaleLeftAPRV2;
 import org.usfirst.frc.team3310.paths.auton.RightStartToScaleLeftSave;
+import org.usfirst.frc.team3310.paths.auton.RightStartToScaleRight;
 import org.usfirst.frc.team3310.paths.auton.RightStartToScaleRightV2;
 import org.usfirst.frc.team3310.paths.auton.RightSwitch2ndCubeV2;
 import org.usfirst.frc.team3310.paths.auton.ScaleLeftToSwitchLeft;
 import org.usfirst.frc.team3310.paths.auton.ScaleLeftToSwitchLeft2;
 import org.usfirst.frc.team3310.paths.auton.ScaleLeftToSwitchLeftNoIntake;
+import org.usfirst.frc.team3310.paths.auton.ScaleLeftToSwitchLeftV3;
+import org.usfirst.frc.team3310.paths.auton.ScaleRightToOuttaHere;
 import org.usfirst.frc.team3310.paths.auton.ScaleRightToSwitchRight;
 import org.usfirst.frc.team3310.paths.auton.ScaleRightToSwitchRight23Cube;
 import org.usfirst.frc.team3310.paths.auton.ScaleRightToSwitchRight3Cube;
+import org.usfirst.frc.team3310.paths.auton.ScaleRightToSwitchRightNoIntake;
 import org.usfirst.frc.team3310.paths.auton.SwitchLeft2ToScaleLeft;
 import org.usfirst.frc.team3310.paths.auton.SwitchLeftToScaleLeft;
 import org.usfirst.frc.team3310.paths.auton.SwitchRight2ToScaleRight3Cube;
@@ -41,9 +44,9 @@ import org.usfirst.frc.team3310.robot.commands.auton.LeftStartToSwitchLeft1Scale
 import org.usfirst.frc.team3310.robot.commands.auton.RightStartToScaleRight1SwitchLeft1V2;
 import org.usfirst.frc.team3310.robot.commands.auton.RightStartToSwitchRight1ScaleLeft1;
 import org.usfirst.frc.team3310.robot.commands.auton.SideStartToOppositeScale1Switch1;
-import org.usfirst.frc.team3310.robot.commands.auton.SideStartToScale1APR;
 import org.usfirst.frc.team3310.robot.commands.auton.SideStartToScale1APRV2;
 import org.usfirst.frc.team3310.robot.commands.auton.SideStartToSwitch3;
+import org.usfirst.frc.team3310.robot.commands.auton.StartToScale1OuttaHere;
 import org.usfirst.frc.team3310.robot.commands.auton.StartToScale1Switch1Scale1;
 import org.usfirst.frc.team3310.robot.commands.auton.StartToScale3;
 import org.usfirst.frc.team3310.robot.subsystems.Drive;
@@ -148,14 +151,18 @@ public class Robot extends TimedRobot {
 		leftStartSwitch1Scale1.addLLL(new LeftStartToSwitchLeft1ScaleLeft1());
 		leftStartSwitch1Scale1.addLRL(new LeftStartToSwitchLeft1ScaleRight1());
 		leftStartSwitch1Scale1.addRLR(new LeftStartToScaleLeft1SwitchRight1V2());
-		leftStartSwitch1Scale1.addRRR(new SideStartToOppositeScale1Switch1(new LeftStartToScaleRightSave(), new ScaleRightToSwitchRight()));
+		leftStartSwitch1Scale1.addRRR(new SideStartToOppositeScale1Switch1(new LeftStartToScaleRightSave(), new ScaleRightToSwitchRight(), false));
 		
 		AutonRouteChooser rightStartScale3Cube = new AutonRouteChooser();
-		rightStartScale3Cube.addRRR(new StartToScale3(new RightStartToScaleRightV2(), new ScaleRightToSwitchRight3Cube(), new SwitchRightToScaleRight3Cube(), new ScaleRightToSwitchRight23Cube(), new SwitchRight2ToScaleRight3Cube()));
-		rightStartScale3Cube.addRLR(new StartToScale3(new LeftStartToScaleLeftV2(), new ScaleLeftToSwitchLeft(), new SwitchLeftToScaleLeft(), new ScaleLeftToSwitchLeft2(), new SwitchLeft2ToScaleLeft()));
-		rightStartScale3Cube.addLRL(new SideStartToSwitch3(new LeftStartToScaleLeft(), new ScaleLeftToSwitchLeftNoIntake(), new SwitchLeftToScaleLeft()));
+		rightStartScale3Cube.addRRR(new StartToScale1OuttaHere(new RightStartToScaleRightV2(), new ScaleRightToOuttaHere()));
+		rightStartScale3Cube.addLRL(new StartToScale3(new RightStartToScaleRightV2(), new ScaleRightToSwitchRight3Cube(), new SwitchRightToScaleRight3Cube(), new ScaleRightToSwitchRight23Cube(), new SwitchRight2ToScaleRight3Cube()));
+		rightStartScale3Cube.addRLR(new SideStartToSwitch3(new RightStartToScaleRight(), new ScaleRightToSwitchRightNoIntake(), new RightSwitch2ndCubeV2(), true));
+
+//		rightStartScale3Cube.addRRR(new SideStartToSwitch2(new RightStartToSwitchLeftV3(),new SwitchLeftToCenterStartV2(), new PyramidToSwitchLeftV2(), true));
+//		rightStartScale3Cube.addRRR(new SideStartToSwitch2(new RightStartToSwitchRightV3(),new SwitchRightToCenterStartV2(), new PyramidToSwitchRightV2(), true));
 //		rightStartScale3Cube.addLLL(new SideStartToScale1APR(new RightStartToScaleLeftAPR(), true));
 		rightStartScale3Cube.addLLL(new SideStartToScale1APRV2(new RightStartToScaleLeftAPRV2(), true));
+//		rightStartScale3Cube.addLLL(new SideStartToOppositeScale2(new RightStartToScaleLeftSave(), new ScaleLeftToSwitchLeftV3(), new SwitchLeftToScaleLeft(), true));
 
 		AutonRouteChooser goStraight = new AutonRouteChooser();
 		goStraight.addLLL(new DriveStraightMP(120.0, Drive.MP_MEDIUM_VELOCITY_INCHES_PER_SEC, true, false, 0));
@@ -166,25 +173,24 @@ public class Robot extends TimedRobot {
 		AutonRouteChooser leftStartScale3Cube = new AutonRouteChooser();
 		leftStartScale3Cube.addLLL(new StartToScale3(new LeftStartToScaleLeftV2(), new ScaleLeftToSwitchLeft(), new SwitchLeftToScaleLeft(), new ScaleLeftToSwitchLeft2(), new SwitchLeft2ToScaleLeft()));
 		leftStartScale3Cube.addRLR(new StartToScale3(new LeftStartToScaleLeftV2(), new ScaleLeftToSwitchLeft(), new SwitchLeftToScaleLeft(), new ScaleLeftToSwitchLeft2(), new SwitchLeft2ToScaleLeft()));
-		leftStartScale3Cube.addLRL(new SideStartToSwitch3(new LeftStartToScaleLeft(), new ScaleLeftToSwitchLeftNoIntake(), new SwitchLeftToScaleLeft()));
+		leftStartScale3Cube.addLRL(new SideStartToSwitch3(new LeftStartToScaleLeft(), new ScaleLeftToSwitchLeftNoIntake(), new LeftSwitch2ndCubeV2(), false));
 //		leftStartScale3Cube.addRRR(new LeftStartToScaleRight1SwitchRight1());
-//		leftStartScale3Cube.addRRR(new LeftStartToSwitch2(new LeftStartToSwitchRightV3(),new SwitchRightToCenterStart(), new PyramidToSwitchRight()));
-//		leftStartScale3Cube.addRRR(new LeftStartToSwitch2(new LeftStartToSwitchLeftV3(),new SwitchLeftToCenterStart(), new PyramidToSwitchLeft()));
-		leftStartScale3Cube.addRRR(new SideStartToScale1APR(new LeftStartToScaleRightAPR(), false));
+//		leftStartScale3Cube.addRRR(new SideStartToSwitch2(new LeftStartToSwitchRightV3(),new SwitchRightToCenterStart(), new PyramidToSwitchRight(), false));
+//		leftStartScale3Cube.addRRR(new SideStartToSwitch2(new LeftStartToSwitchLeftV3(),new SwitchLeftToCenterStart(), new PyramidToSwitchLeft(), false));
+//		leftStartScale3Cube.addRRR(new SideStartToScale1APR(new LeftStartToScaleRightAPR(), false));
 //		leftStartScale3Cube.addRRR(new SideStartToScale1APRV2(new LeftStartToScaleRightAPRV2(), false));
 
 		AutonRouteChooser leftStartScale1Switch1Scale1 = new AutonRouteChooser();
 		leftStartScale1Switch1Scale1.addLLL(new StartToScale1Switch1Scale1(new LeftStartToScaleLeftV2(), new ScaleLeftToSwitchLeft(), new LeftSwitch2ndCubeV2(), new SwitchLeft2ToScaleLeft(), false));
 		leftStartScale1Switch1Scale1.addRLR(new LeftStartToScaleLeft1SwitchRight1V2());
 		leftStartScale1Switch1Scale1.addLRL(new LeftStartToSwitchLeft1ScaleRight1());
-		leftStartScale1Switch1Scale1.addRRR(new SideStartToOppositeScale1Switch1(new LeftStartToScaleRightSave(), new ScaleRightToSwitchRight()));
+		leftStartScale1Switch1Scale1.addRRR(new SideStartToOppositeScale1Switch1(new LeftStartToScaleRightSave(), new ScaleRightToSwitchRight(), false));
 
 		AutonRouteChooser rightStartScale1Switch1Scale1 = new AutonRouteChooser();
 		rightStartScale1Switch1Scale1.addRRR(new StartToScale1Switch1Scale1(new RightStartToScaleRightV2(), new ScaleRightToSwitchRight3Cube(), new RightSwitch2ndCubeV2(), new SwitchRight2ToScaleRight3Cube(), true));
 		rightStartScale1Switch1Scale1.addRLR(new RightStartToSwitchRight1ScaleLeft1());
 		rightStartScale1Switch1Scale1.addLRL(new RightStartToScaleRight1SwitchLeft1V2());
-		rightStartScale1Switch1Scale1.addLLL(new SideStartToOppositeScale1Switch1(new RightStartToScaleLeftSave(), new ScaleLeftToSwitchLeft()));
-
+		rightStartScale1Switch1Scale1.addLLL(new SideStartToOppositeScale1Switch1(new RightStartToScaleLeftSave(), new ScaleLeftToSwitchLeftV3(), true));
 
 		autonTaskChooser.addObject("Center Start Switch 1", centerStartSwitch1);
 		autonTaskChooser.addObject("Center Start Switch 2", centerStartSwitch2);

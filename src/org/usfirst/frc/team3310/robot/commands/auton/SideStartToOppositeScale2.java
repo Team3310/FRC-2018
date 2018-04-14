@@ -27,9 +27,9 @@ import edu.wpi.first.wpilibj.command.WaitForChildren;
 /**
  *
  */
-public class SideStartToOppositeScale1Switch1 extends CommandGroup {
+public class SideStartToOppositeScale2 extends CommandGroup {
 
-    public SideStartToOppositeScale1Switch1(PathContainer path, PathContainer path2, boolean isRight) {
+    public SideStartToOppositeScale2(PathContainer path, PathContainer path2, PathContainer switchToScale1, boolean isRight) {
         
     	// Initialize everything at starting position
         addSequential(new DriveSpeedShift(DriveSpeedShiftState.LO));
@@ -49,21 +49,19 @@ public class SideStartToOppositeScale1Switch1 extends CommandGroup {
     	addSequential(new DrivePathAdaptivePursuit(path2));
     	addSequential(new WaitForChildren());
     	
+    	// Drive backwards to scale platform that we need to eject cube  	
+//    	addParallel(new ElevatorSetPositionPID(Elevator.SCALE_HIGH_POSITION_INCHES));
+        addSequential(new DriveResetPoseFromPath(switchToScale1, false));
+        addParallel(new ParallelDelay(0.3, new IntakeSetSpeedTimed(Intake.INTAKE_LOAD_SLOW_SPEED, 0.2)));
+        addParallel(new RunAfterMarker("raiseElevator", 6.0, new ElevatorSetPositionPID(Elevator.SCALE_HIGH_POSITION_INCHES)));
+//   	addParallel(new RunAfterMarker("startEject", 4.0, new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 1.0)));
+    	addSequential(new DrivePathAdaptivePursuit(switchToScale1));
+    	addSequential(new WaitForChildren());
+    	    	
     	// Eject cube
-//    	PathContainer backup5 = new Backup5();
-//      addSequential(new DriveResetPoseFromPath(backup5, false));
-//    	addSequential(new DrivePathAdaptivePursuit(backup5));
-    	addSequential(new DriveStraightMP(-10.0, Drive.MP_FAST_VELOCITY_INCHES_PER_SEC, true, false, 0));    	
-    	addSequential(new ElevatorSetPositionPID(Elevator.SWITCH_POSITION_INCHES));
+        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 0.8));
 
-//    	PathContainer forward5 = new Forward5();
-//      addSequential(new DriveResetPoseFromPath(forward5, false));
-//    	addSequential(new DrivePathAdaptivePursuit(forward5));
-    	addSequential(new DriveStraightMP(15.0, Drive.MP_FAST_VELOCITY_INCHES_PER_SEC, true, true, isRight? -10 : 10));
-
-        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_EJECT_SPEED, 0.6));
-    	addParallel(new ParallelDelay(0.5, new ElevatorSetPositionPID(Elevator.MIN_POSITION_INCHES)));
-    	addSequential(new DriveStraightMP(-25.0, Drive.MP_FAST_VELOCITY_INCHES_PER_SEC, true, false, 0));
-
+    	// Drive forward to switch platform to pickup cube  	
+        addParallel(new ElevatorSetPositionPID(Elevator.ZERO_POSITION_INCHES));
     }
 }

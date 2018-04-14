@@ -11,15 +11,22 @@ import org.usfirst.frc.team3310.utility.math.Rotation2d;
 import org.usfirst.frc.team3310.utility.math.Translation2d;
 
 
-public class RightStartToScaleRight implements PathContainer {
+public class RightStartToScaleLeftSaveV2 implements PathContainer {
     
     @Override
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-        sWaypoints.add(new Waypoint(18,51,0,100));
-        sWaypoints.add(new Waypoint(180,51,30,100,       "raiseElevator"));
-        sWaypoints.add(new Waypoint(240,86,30,100));
-        sWaypoints.add(new Waypoint(273,84,0,100));
+        sWaypoints.add(new Waypoint(18,51,0,110));
+        sWaypoints.add(new Waypoint(60,51,0,130,    "shiftHi"));
+        sWaypoints.add(new Waypoint(159,51,0,130));
+        sWaypoints.add(new Waypoint(220,51,30,110));
+        sWaypoints.add(new Waypoint(218,115,0,60));
+        sWaypoints.add(new Waypoint(218,145,0,130));
+        sWaypoints.add(new Waypoint(218,175,0,130));
+        sWaypoints.add(new Waypoint(218,205,0,130));
+        sWaypoints.add(new Waypoint(218,234,25,50));
+        sWaypoints.add(new Waypoint(250,234,0,50,     "raiseElevator"));
+        sWaypoints.add(new Waypoint(270,231,0,40));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }

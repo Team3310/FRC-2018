@@ -20,16 +20,16 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 /**
  *
  */
-public class LeftStartToSwitch2 extends CommandGroup {
+public class SideStartToSwitch2 extends CommandGroup {
 
-    public LeftStartToSwitch2(PathContainer leftStartToCenterStart, PathContainer switchToCenter, PathContainer centerToSwitch) {
+    public SideStartToSwitch2(PathContainer sideStartToCenterStart, PathContainer switchToCenter, PathContainer centerToSwitch, boolean isRight) {
     	addSequential(new ElevatorSetZero(0));
     	addSequential(new DriveStraightMP(-60, Drive.MP_AUTON_MAX_STRAIGHT_VELOCITY_INCHES_PER_SEC, true, true, 0));
-    	addSequential(new DriveAbsoluteTurnMP(-90, Drive.MP_AUTON_MAX_TURN_RATE_DEG_PER_SEC, MPSoftwareTurnType.TANK));
+    	addSequential(new DriveAbsoluteTurnMP(isRight ? 90 : -90, Drive.MP_AUTON_MAX_TURN_RATE_DEG_PER_SEC, MPSoftwareTurnType.TANK));
     	
-        addSequential(new DriveResetPoseFromPath(leftStartToCenterStart, true));
+        addSequential(new DriveResetPoseFromPath(sideStartToCenterStart, true));
     	addParallel(new RunAfterMarker("raiseElevator", 4.0, new ElevatorSetPositionMP(Elevator.SWITCH_POSITION_INCHES)));
-    	addSequential(new DrivePathAdaptivePursuit(leftStartToCenterStart));
+    	addSequential(new DrivePathAdaptivePursuit(sideStartToCenterStart));
 		addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_EJECT_SPEED, 0.5));
 
 		addSequential(new DriveResetPoseFromPath(switchToCenter, true));

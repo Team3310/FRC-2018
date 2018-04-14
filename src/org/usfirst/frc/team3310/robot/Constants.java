@@ -51,7 +51,7 @@ public class Constants extends ConstantsBase {
     public static int kDriveLowGearVelocityIZone = 200;
     public static double kDriveLowGearVelocityRampRate = 0.02;
     public static double kDriveLowGearNominalOutput = 0.1/12.0;
-    public static double kDriveLowGearMaxSetpoint = 8.0 * 12.0; // 17 fps
+    public static double kDriveLowGearMaxSetpoint = 10.0 * 12.0; // 8 fps
 
     // PID gains for drive velocity loop (LOW GEAR)
     // Units: setpoint, error, and output are in inches per second.

@@ -18,8 +18,8 @@ public class SwitchLeftToCenterStartV2 implements PathContainer {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
         sWaypoints.add(new Waypoint(116,220,0,60));
         sWaypoints.add(new Waypoint(100,215,15,60));
-        sWaypoints.add(new Waypoint(74,178,0,60));
         sWaypoints.add(new Waypoint(64,172,0,60));
+        sWaypoints.add(new Waypoint(54,164,0,60));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }

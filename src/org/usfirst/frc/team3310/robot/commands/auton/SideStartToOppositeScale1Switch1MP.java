@@ -1,8 +1,7 @@
 package org.usfirst.frc.team3310.robot.commands.auton;
 
 import org.usfirst.frc.team3310.paths.PathContainer;
-import org.usfirst.frc.team3310.paths.auton.LeftStartToScaleRightSave;
-import org.usfirst.frc.team3310.paths.auton.ScaleRightToSwitchRight;
+import org.usfirst.frc.team3310.robot.commands.DriveAbsoluteTurnMP;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
 import org.usfirst.frc.team3310.robot.commands.DriveRelativeTurnMP;
 import org.usfirst.frc.team3310.robot.commands.DriveResetPoseFromPath;
@@ -14,11 +13,10 @@ import org.usfirst.frc.team3310.robot.commands.ElevatorSetZero;
 import org.usfirst.frc.team3310.robot.commands.IntakeCubeAndLiftAbortDrive;
 import org.usfirst.frc.team3310.robot.commands.IntakeSetSpeedTimed;
 import org.usfirst.frc.team3310.robot.commands.ParallelDelay;
-import org.usfirst.frc.team3310.robot.commands.RunAfterMarker;
 import org.usfirst.frc.team3310.robot.subsystems.Drive;
+import org.usfirst.frc.team3310.robot.subsystems.Drive.DriveSpeedShiftState;
 import org.usfirst.frc.team3310.robot.subsystems.Elevator;
 import org.usfirst.frc.team3310.robot.subsystems.Intake;
-import org.usfirst.frc.team3310.robot.subsystems.Drive.DriveSpeedShiftState;
 import org.usfirst.frc.team3310.utility.MPSoftwarePIDController.MPSoftwareTurnType;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
@@ -27,18 +25,23 @@ import edu.wpi.first.wpilibj.command.WaitForChildren;
 /**
  *
  */
-public class SideStartToOppositeScale1Switch1 extends CommandGroup {
+public class SideStartToOppositeScale1Switch1MP extends CommandGroup {
 
-    public SideStartToOppositeScale1Switch1(PathContainer path, PathContainer path2, boolean isRight) {
+    public SideStartToOppositeScale1Switch1MP(PathContainer path, PathContainer path2, boolean isRight) {
         
     	// Initialize everything at starting position
-        addSequential(new DriveSpeedShift(DriveSpeedShiftState.LO));
+        addSequential(new DriveSpeedShift(DriveSpeedShiftState.HI));
     	addSequential(new ElevatorSetZero(0));
         addSequential(new DriveResetPoseFromPath(path, true));
+    	addParallel(new ElevatorSetPositionMP(3.0));
 
     	// Drive backwards to scale.  Start raising elevator during the path when "raiseElevator" marker is crossed
-    	addParallel(new RunAfterMarker("raiseElevator", 8.0, new ElevatorSetPositionMP(Elevator.SCALE_HIGH_POSITION_INCHES)));
-    	addSequential(new DrivePathAdaptivePursuit(path));
+    	addSequential(new DriveStraightMP(-220.0, Drive.MP_AUTON_MAX_STRAIGHT_VELOCITY_INCHES_PER_SEC, true, true, 0));
+    	addSequential(new DriveAbsoluteTurnMP(isRight ? -90 : 90, Drive.MAX_TURN_RATE_DEG_PER_SEC, MPSoftwareTurnType.TANK));  	
+    	addSequential(new DriveStraightMP(-175.0, Drive.MP_AUTON_MAX_STRAIGHT_VELOCITY_INCHES_PER_SEC, true, true, isRight ? -90 : 90));
+    	addParallel(new ElevatorSetPositionMP(Elevator.SCALE_HIGH_POSITION_INCHES));
+    	addSequential(new DriveAbsoluteTurnMP(isRight ? 10 : -10, Drive.MAX_TURN_RATE_DEG_PER_SEC, MPSoftwareTurnType.TANK));  	
+    	addSequential(new DriveStraightMP(-40.0, Drive.MP_FAST_VELOCITY_INCHES_PER_SEC, true, true, isRight ? 10 : -10));
     	addSequential(new WaitForChildren());
         addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 0.8));
     	
