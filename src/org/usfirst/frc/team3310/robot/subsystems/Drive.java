@@ -111,7 +111,12 @@ public class Drive extends Subsystem implements Loop
 	public static final double STICK_DEADBAND = 0.02;
 	
 //	public static final double PITCH_THRESHOLD_1 = 20;
-	public static final double PITCH_THRESHOLD_2 = 16;
+	public static final double PITCH_THRESHOLD_2 = 25;
+	
+	private int pitchWindowSize = 5;
+	private int windowIndex = 0;
+	private double pitchSum = 0;
+	private double[] pitchAverageWindow = new double[pitchWindowSize];
 
 	private int m_moveNonLinear = 0;
 	private int m_steerNonLinear = -3;
@@ -667,22 +672,31 @@ public class Drive extends Subsystem implements Loop
 			double yawError = gyroLockAngleDeg - getGyroAngleDeg();
 			m_steerOutput = kPGyro * yawError;
 		}
-		
-		double pitchAngle = getGyroPitchAngle();
+				
+		double pitchAngle = updatePitchWindow();
 		if(Math.abs(pitchAngle) > PITCH_THRESHOLD_2) {
 			m_moveOutput = Math.signum(pitchAngle) * -1.0;
 			m_steerOutput = 0;
 			System.out.println("Pitch Treshhold 2 angle = " + pitchAngle);
 		}
-//		else if(Math.abs(pitchAngle) > PITCH_THRESHOLD_1) {
-//			m_moveOutput = 0;
-//			m_steerOutput = 0;
-//			System.out.println("Pitch Treshhold 1 angle = " + pitchAngle);
-//		}
 
 		m_drive.arcadeDrive(-m_moveOutput, -m_steerOutput);	
 	}
+    
+    private double updatePitchWindow() {
+		double lastPitchAngle = pitchAverageWindow[windowIndex];
+		double currentPitchAngle = getGyroPitchAngle();
+		pitchAverageWindow[windowIndex] = currentPitchAngle;
+		pitchSum = pitchSum - lastPitchAngle + currentPitchAngle;
 
+		windowIndex++;
+		if (windowIndex == pitchWindowSize) {
+			windowIndex = 0;
+		}	
+		
+    	return pitchSum/pitchWindowSize;
+    }
+    
 	private boolean inDeadZone(double input) {
 		boolean inDeadZone;
 		if (Math.abs(input) < STICK_DEADBAND) {

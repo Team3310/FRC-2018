@@ -17,9 +17,9 @@ public class RightStartToScaleRightV2 implements PathContainer {
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
         sWaypoints.add(new Waypoint(18,51,0,130));
-        sWaypoints.add(new Waypoint(50,51,0,130,       "shiftHi"));
-        sWaypoints.add(new Waypoint(145,52,55,130,                  "raiseElevator"));
-        sWaypoints.add(new Waypoint(257,93,0,130,             "startEject"));
+        sWaypoints.add(new Waypoint(40,51,0,130,        "shiftHi"));
+        sWaypoints.add(new Waypoint(145,52,55,130,                   "raiseElevator"));
+        sWaypoints.add(new Waypoint(257,93,0,130,              "startEject"));
         sWaypoints.add(new Waypoint(282,100,0,130));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);

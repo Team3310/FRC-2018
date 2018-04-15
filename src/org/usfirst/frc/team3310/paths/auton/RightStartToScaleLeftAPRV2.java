@@ -18,14 +18,14 @@ public class RightStartToScaleLeftAPRV2 implements PathContainer {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
         sWaypoints.add(new Waypoint(18,51,0,40));
         sWaypoints.add(new Waypoint(55,51,20,40));
-        sWaypoints.add(new Waypoint(55,75,0,110,     "shiftHi"));
-        sWaypoints.add(new Waypoint(55,120,0,110));
-        sWaypoints.add(new Waypoint(55,215,80,110));
-        sWaypoints.add(new Waypoint(140,210,0,80));
-        sWaypoints.add(new Waypoint(270,210,0,80,   "shiftLow"));
-        sWaypoints.add(new Waypoint(300,205,0,80,  "raiseElevator"));
-        sWaypoints.add(new Waypoint(340,205,20,80));
-        sWaypoints.add(new Waypoint(340,225,0,60));
+        sWaypoints.add(new Waypoint(55,75,0,110,      "shiftHi"));
+        sWaypoints.add(new Waypoint(55,130,0,110));
+        sWaypoints.add(new Waypoint(55,230,80,110));
+        sWaypoints.add(new Waypoint(140,235,0,80));
+        sWaypoints.add(new Waypoint(240,220,0,80,    "shiftLow"));
+        sWaypoints.add(new Waypoint(270,215,0,80,   "raiseElevator"));
+        sWaypoints.add(new Waypoint(310,215,20,80));
+        sWaypoints.add(new Waypoint(310,235,0,60));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }
