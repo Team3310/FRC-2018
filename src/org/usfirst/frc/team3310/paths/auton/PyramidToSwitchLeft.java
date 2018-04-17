@@ -16,10 +16,10 @@ public class PyramidToSwitchLeft implements PathContainer {
     @Override
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-        sWaypoints.add(new Waypoint(46,179,0,40));
-        sWaypoints.add(new Waypoint(66,179,15,40));
-        sWaypoints.add(new Waypoint(104,231,15,40));
-        sWaypoints.add(new Waypoint(122,236,0,40));
+        sWaypoints.add(new Waypoint(46,179,0,60));
+        sWaypoints.add(new Waypoint(66,179,15,60));
+        sWaypoints.add(new Waypoint(104,231,10,60));
+        sWaypoints.add(new Waypoint(116,236,0,60));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }

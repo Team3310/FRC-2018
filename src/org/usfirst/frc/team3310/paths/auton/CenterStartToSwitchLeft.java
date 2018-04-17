@@ -10,15 +10,16 @@ import org.usfirst.frc.team3310.utility.math.RigidTransform2d;
 import org.usfirst.frc.team3310.utility.math.Rotation2d;
 import org.usfirst.frc.team3310.utility.math.Translation2d;
 
+
 public class CenterStartToSwitchLeft implements PathContainer {
     
     @Override
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-        sWaypoints.add(new Waypoint(19,157,0,0));
-        sWaypoints.add(new Waypoint(40,157,20,60));
-        sWaypoints.add(new Waypoint(100,209,15,60));
-        sWaypoints.add(new Waypoint(116,214,0,60));
+        sWaypoints.add(new Waypoint(19,157,0,80));
+        sWaypoints.add(new Waypoint(40,157,20,80));
+        sWaypoints.add(new Waypoint(100,209,15,80));
+        sWaypoints.add(new Waypoint(116,214,0,80));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }

@@ -37,7 +37,7 @@ public class StartToScale3 extends CommandGroup {
 
     	addParallel(new RunAfterMarker("shiftHi", 4.0, new DriveSpeedShift(DriveSpeedShiftState.HI)));
     	addParallel(new RunAfterMarker("raiseElevator", 4.0, new ElevatorSetPositionPID(Elevator.SCALE_FIRST_CUBE_POSITION_INCHES)));
-    	addParallel(new RunAfterMarker("startEject", 4.0, new IntakeSetSpeedTimed(1.0, 1.5)));
+    	addParallel(new RunAfterMarker("startEject", 4.0, new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_MEDIUM_SPEED, 1.5)));
 //    	addParallel(new ParallelDelay(1.0, new IntakeSetSpeedTimed(Intake.INTAKE_LOAD_SPEED, 0.5)));
     	addSequential(new DrivePathAdaptivePursuit(startToScalePath));
     	addSequential(new DriveSpeedShift(DriveSpeedShiftState.LO));

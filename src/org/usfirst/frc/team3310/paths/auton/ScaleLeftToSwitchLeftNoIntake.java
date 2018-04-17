@@ -17,8 +17,8 @@ public class ScaleLeftToSwitchLeftNoIntake implements PathContainer {
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
         sWaypoints.add(new Waypoint(276,247,0,60));
-        sWaypoints.add(new Waypoint(235,237,0,60));
-        sWaypoints.add(new Waypoint(227,236,0,30));
+        sWaypoints.add(new Waypoint(232,237,0,60));
+        sWaypoints.add(new Waypoint(225,236,0,30));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }

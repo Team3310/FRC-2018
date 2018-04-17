@@ -16,10 +16,10 @@ public class CenterStartToSwitchRight implements PathContainer {
     @Override
     public Path buildPath() {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
-        sWaypoints.add(new Waypoint(19,157,0,60));
-        sWaypoints.add(new Waypoint(40,157,20,60));
-        sWaypoints.add(new Waypoint(100,109,15,60));
-        sWaypoints.add(new Waypoint(116,104,0,60));
+        sWaypoints.add(new Waypoint(19,157,0,80));
+        sWaypoints.add(new Waypoint(40,157,20,80));
+        sWaypoints.add(new Waypoint(100,114,15,80));
+        sWaypoints.add(new Waypoint(121,113,0,80));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }
