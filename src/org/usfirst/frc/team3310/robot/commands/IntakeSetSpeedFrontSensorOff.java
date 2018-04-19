@@ -1,6 +1,7 @@
 package org.usfirst.frc.team3310.robot.commands;
 
 import org.usfirst.frc.team3310.robot.Robot;
+import org.usfirst.frc.team3310.robot.subsystems.Intake;
 
 /**
  *
@@ -9,7 +10,7 @@ public class IntakeSetSpeedFrontSensorOff extends ExtraTimeoutCommand {
 	
 	private double speed;
 	private boolean cubeDetected;
-	private double EXTRA_INTAKE_TIME = 0.05;
+	private double EXTRA_INTAKE_TIME = 0.02;
 	private static final double TIMEOUT = 10.0;
 
     public IntakeSetSpeedFrontSensorOff(double speed) {

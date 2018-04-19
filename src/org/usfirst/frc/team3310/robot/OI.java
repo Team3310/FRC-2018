@@ -74,7 +74,7 @@ public class OI {
 		
         JoystickButton intakeEject = new JoystickButton(m_operatorXbox.getJoyStick(), XboxController.LEFT_BUMPER_BUTTON);
         intakeEject.whenPressed(new IntakeSetSpeed(Intake.INTAKE_LOAD_SPEED));
-        intakeEject.whenReleased(new IntakeSetSpeed(0.0));
+        intakeEject.whenReleased(new IntakeSetSpeed(Intake.INTAKE_HOLD_SPEED));
 		
         XBoxTriggerButton intakeLoadSlow = new XBoxTriggerButton(m_operatorXbox, XBoxTriggerButton.RIGHT_TRIGGER);
         intakeLoadSlow.whenPressed(new IntakeSetSpeed(Intake.INTAKE_EJECT_SLOW_SPEED));
@@ -82,7 +82,7 @@ public class OI {
 		
         XBoxTriggerButton intakeEjectSlow = new XBoxTriggerButton(m_operatorXbox, XBoxTriggerButton.LEFT_TRIGGER);
         intakeEjectSlow.whenPressed(new IntakeSetSpeed(Intake.INTAKE_LOAD_SLOW_SPEED));
-        intakeEjectSlow.whenReleased(new IntakeSetSpeed(0.0));
+        intakeEjectSlow.whenReleased(new IntakeSetSpeed(Intake.INTAKE_HOLD_SPEED));
 		
         XBoxDPadTriggerButton elevatorShiftHi = new XBoxDPadTriggerButton(m_operatorXbox, XBoxDPadTriggerButton.UP);
         elevatorShiftHi.whenPressed(new ElevatorSpeedShift(Elevator.ElevatorSpeedShiftState.HI));
@@ -124,8 +124,9 @@ public class OI {
 //        elevatorSwitchPosition.whenPressed(new ElevatorSetPositionPID(10));
 
         // Shuffleboard
-        SmartDashboard.putData("CameraTrack", new DriveChaseCube());
-
+//        SmartDashboard.putData("CameraTrack", new DriveChaseCube());
+          SmartDashboard.putData("Forks Deploy", new ForksSetLock(ForksLockState.DEPLOYED));
+          SmartDashboard.putData("Forks Retract", new ForksSetLock(ForksLockState.STOWED));
         
         
 //        SmartDashboard.putData("Ramp Latch Close", new RampSetLatchPosition(RampLatch.STOWED));

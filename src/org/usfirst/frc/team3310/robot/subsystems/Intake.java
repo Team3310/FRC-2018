@@ -19,11 +19,12 @@ public class Intake extends Subsystem
 	public static final double INTAKE_REAR_EJECT_SPEED = 0.9;
 	public static final double INTAKE_REAR_EJECT_MEDIUM_SPEED = 0.7; //0.7
 	public static final double INTAKE_AUTON_REAR_EJECT_SPEED = 0.7;
-	public static final double INTAKE_LOAD_SPEED = 0.8;
+	public static final double INTAKE_LOAD_SPEED = 0.7;
 	public static final double INTAKE_LOAD_SLOW_SPEED = 0.4;
 	public static final double INTAKE_EJECT_SPEED = -0.8;
 	public static final double INTAKE_EJECT_SLOW_SPEED = -0.4;
 	public static final double INTAKE_ADJUST_SPEED = 0.3;
+	public static final double INTAKE_HOLD_SPEED = 0.04;
 
 	private TalonSRX leftArm;
 	private TalonSRX rightArm;

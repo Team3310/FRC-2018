@@ -39,7 +39,7 @@ public class SideStartToSwitch1PickupLastCube extends CommandGroup {
     	// Drive forwards to switch.  Center on last cube.  
         addSequential(new DriveResetPoseFromPath(scaleToSwitchPath, false));
     	addSequential(new DrivePathAdaptivePursuit(scaleToSwitchPath));
-    	addSequential(new DriveSetSpeed(0.3, 0.1));
+    	addSequential(new DriveSetSpeed(0.2, 0.1));
     	
     	// Eject cube
         addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_EJECT_SPEED, 0.6));

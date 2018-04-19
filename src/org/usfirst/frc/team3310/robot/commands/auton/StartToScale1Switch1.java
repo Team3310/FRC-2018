@@ -57,7 +57,7 @@ public class StartToScale1Switch1 extends CommandGroup {
     	// Drive forwards to switch.  Center on last cube.  
         addSequential(new DriveResetPoseFromPath(scaleToSwitchPath2, false));
     	addSequential(new DrivePathAdaptivePursuit(scaleToSwitchPath2));
-    	addSequential(new DriveSetSpeed(0.3, 0.1));
+    	addSequential(new DriveSetSpeed(0.2, 0.1));
     	
     	// Eject cube
         addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_EJECT_SPEED, 0.6));

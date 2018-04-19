@@ -229,6 +229,12 @@ public class Robot extends TimedRobot {
 		rightStartScale1OuttaHereAPR.addLRL(new StartToScale1OuttaHere(new RightStartToScaleRightV2(), new ScaleRightToOuttaHere()));
 		rightStartScale1OuttaHereAPR.addRRR(new StartToScale1OuttaHere(new RightStartToScaleRightV2(), new ScaleRightToOuttaHere()));
 
+		AutonRouteChooser rightStartScale1OuttaHereAPR3Switch = new AutonRouteChooser();
+		rightStartScale1OuttaHereAPR3Switch.addLLL(new DriveStraightMP(-150.0, Drive.MP_MEDIUM_VELOCITY_INCHES_PER_SEC, true, false, 0));
+		rightStartScale1OuttaHereAPR3Switch.addRLR(new SideStartToSwitch3(new RightStartToScaleRight(), new ScaleRightToSwitchRightNoIntake(), new RightSwitch2ndCubeV2(), true));
+		rightStartScale1OuttaHereAPR3Switch.addLRL(new StartToScale1OuttaHere(new RightStartToScaleRightV2(), new ScaleRightToOuttaHere()));
+		rightStartScale1OuttaHereAPR3Switch.addRRR(new StartToScale1OuttaHere(new RightStartToScaleRightV2(), new ScaleRightToOuttaHere()));
+
 		// Extra routines		
 //		rightStartScale3Cube.addLLL(new SideStartToScale1APRV2(new RightStartToScaleLeftAPRV2(), true));
 //		rightStartScale3Cube.addLLL(new StartToScale1Pyramid1(new RightStartToScaleRightV2(), new ScaleRightToPyramid(), new PyramidToScaleRight(), new ScaleRightToSwitchRight23Cube(), new SwitchRight2ToScaleRight3Cube()));
@@ -250,6 +256,7 @@ public class Robot extends TimedRobot {
 		autonTaskChooser.addObject("R4 Right Start Scale 3 Same Switch 3 or APR Opposite", rightStartScale3Switch3APR);
 		autonTaskChooser.addObject("R5 Right Start Scale 3 Same Switch 2 or 3 Opposite", rightStartScale3Switch2or3);
 		autonTaskChooser.addObject("R6 Right Start Scale 1 Outta Here Same APR Opposite", rightStartScale1OuttaHereAPR);
+		autonTaskChooser.addObject("R7 Right Start Scale 1 Outta Here Same Drive Back Opposite", rightStartScale1OuttaHereAPR3Switch);
 
 		SmartDashboard.putData("Auton Tasks", autonTaskChooser);
 		
