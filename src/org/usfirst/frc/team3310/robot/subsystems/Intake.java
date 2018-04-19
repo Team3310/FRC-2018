@@ -17,7 +17,7 @@ public class Intake extends Subsystem
 	private static Intake instance;
 
 	public static final double INTAKE_REAR_EJECT_SPEED = 0.9;
-	public static final double INTAKE_REAR_EJECT_MEDIUM_SPEED = 1.0; //0.7
+	public static final double INTAKE_REAR_EJECT_MEDIUM_SPEED = 0.7; //0.7
 	public static final double INTAKE_AUTON_REAR_EJECT_SPEED = 0.7;
 	public static final double INTAKE_LOAD_SPEED = 0.8;
 	public static final double INTAKE_LOAD_SLOW_SPEED = 0.4;

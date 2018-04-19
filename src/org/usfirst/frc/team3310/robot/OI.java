@@ -9,6 +9,7 @@ import org.usfirst.frc.team3310.robot.commands.ElevatorSetMode;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetPositionMP;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetZero;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSpeedShift;
+import org.usfirst.frc.team3310.robot.commands.ForksIncrementWinchSpeed;
 import org.usfirst.frc.team3310.robot.commands.ForksSetLock;
 import org.usfirst.frc.team3310.robot.commands.ForksSetWinchSpeed;
 import org.usfirst.frc.team3310.robot.commands.IntakeCubeAndLift;
@@ -54,8 +55,15 @@ public class OI {
         winchUp.whenPressed(new ForksSetWinchSpeed(Forks.WINCH_SPEED));
         winchUp.whenReleased(new ForksSetWinchSpeed(0));
 
-        XBoxDPadTriggerButton winchOff = new XBoxDPadTriggerButton(m_driverXbox, XBoxDPadTriggerButton.DOWN);
-        winchOff.whenPressed(new ForksSetWinchSpeed(0));
+        XBoxDPadTriggerButton winchDown = new XBoxDPadTriggerButton(m_driverXbox, XBoxDPadTriggerButton.DOWN);
+        winchDown.whenPressed(new ForksSetWinchSpeed(-Forks.WINCH_SPEED));
+        winchDown.whenReleased(new ForksSetWinchSpeed(0));
+
+        XBoxDPadTriggerButton winchIncrementHoldPlus = new XBoxDPadTriggerButton(m_driverXbox, XBoxDPadTriggerButton.LEFT);
+        winchIncrementHoldPlus.whenPressed(new ForksIncrementWinchSpeed(Forks.WINCH_HOLD_INCREMENT));
+ 
+        XBoxDPadTriggerButton winchIncrementHoldNeg = new XBoxDPadTriggerButton(m_driverXbox, XBoxDPadTriggerButton.RIGHT);
+        winchIncrementHoldNeg.whenPressed(new ForksIncrementWinchSpeed(-Forks.WINCH_HOLD_INCREMENT));
 
         // Operator controller
 		m_operatorXbox = new XboxController(RobotMap.OPERATOR_JOYSTICK_1_USB_ID);

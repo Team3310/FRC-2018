@@ -19,10 +19,13 @@ public class Forks extends Subsystem
 	private static Forks instance;
 
 	public static final double WINCH_SPEED = 1.0;
+	public static final double DEFAULT_WINCH_HOLD_SPEED = 0.2;
+	public static final double WINCH_HOLD_INCREMENT = 0.05;
 
 	private TalonSRX winch;
 	private Solenoid lock1;
 	private Solenoid lock2;
+	private double winchHoldSpeed = DEFAULT_WINCH_HOLD_SPEED;
 	
 	private ForksLockState lockState;
 	
@@ -66,6 +69,16 @@ public class Forks extends Subsystem
 			lock1.set(true);
 			lock2.set(true);
 		}
+	}
+	
+	public double getWinchHoldSpeed() {
+		return winchHoldSpeed;
+	}
+	
+	public double incrementWinchHoldSpeed(double increment) {
+		winchHoldSpeed += increment;
+		
+		return winchHoldSpeed;
 	}
 	
 	public ForksLockState getLockState() {

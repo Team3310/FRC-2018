@@ -3,6 +3,7 @@ package org.usfirst.frc.team3310.robot.commands.auton;
 import org.usfirst.frc.team3310.paths.PathContainer;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
 import org.usfirst.frc.team3310.robot.commands.DriveResetPoseFromPath;
+import org.usfirst.frc.team3310.robot.commands.DriveSetSpeed;
 import org.usfirst.frc.team3310.robot.commands.DriveSpeedShift;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetPositionMP;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetPositionPID;
@@ -56,6 +57,7 @@ public class StartToScale1Switch1 extends CommandGroup {
     	// Drive forwards to switch.  Center on last cube.  
         addSequential(new DriveResetPoseFromPath(scaleToSwitchPath2, false));
     	addSequential(new DrivePathAdaptivePursuit(scaleToSwitchPath2));
+    	addSequential(new DriveSetSpeed(0.3, 0.1));
     	
     	// Eject cube
         addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_EJECT_SPEED, 0.6));

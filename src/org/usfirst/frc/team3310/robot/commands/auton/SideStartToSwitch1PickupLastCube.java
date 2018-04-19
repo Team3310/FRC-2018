@@ -3,6 +3,7 @@ package org.usfirst.frc.team3310.robot.commands.auton;
 import org.usfirst.frc.team3310.paths.PathContainer;
 import org.usfirst.frc.team3310.robot.commands.DrivePathAdaptivePursuit;
 import org.usfirst.frc.team3310.robot.commands.DriveResetPoseFromPath;
+import org.usfirst.frc.team3310.robot.commands.DriveSetSpeed;
 import org.usfirst.frc.team3310.robot.commands.DriveStraightMP;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetPositionMP;
 import org.usfirst.frc.team3310.robot.commands.ElevatorSetPositionPID;
@@ -38,6 +39,7 @@ public class SideStartToSwitch1PickupLastCube extends CommandGroup {
     	// Drive forwards to switch.  Center on last cube.  
         addSequential(new DriveResetPoseFromPath(scaleToSwitchPath, false));
     	addSequential(new DrivePathAdaptivePursuit(scaleToSwitchPath));
+    	addSequential(new DriveSetSpeed(0.3, 0.1));
     	
     	// Eject cube
         addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_EJECT_SPEED, 0.6));
