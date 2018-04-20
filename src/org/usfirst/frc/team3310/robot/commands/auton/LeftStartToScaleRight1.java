@@ -38,7 +38,7 @@ public class LeftStartToScaleRight1 extends CommandGroup {
     	addParallel(new RunAfterMarker("raiseElevator", 4.0, new ElevatorSetPositionMP(Elevator.SCALE_HIGH_POSITION_INCHES)));
     	addSequential(new DrivePathAdaptivePursuit(path));
     	addSequential(new WaitForChildren());
-        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 0.8));
+        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_FAST_SPEED, 0.8));
     	
     	
     	// Drive forwards to switch.  Center on last cube.  

@@ -43,7 +43,7 @@ public class SideStartToOppositeScale1Switch1MP extends CommandGroup {
     	addSequential(new DriveAbsoluteTurnMP(isRight ? 10 : -10, Drive.MAX_TURN_RATE_DEG_PER_SEC, MPSoftwareTurnType.TANK));  	
     	addSequential(new DriveStraightMP(-40.0, Drive.MP_FAST_VELOCITY_INCHES_PER_SEC, true, true, isRight ? 10 : -10));
     	addSequential(new WaitForChildren());
-        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 0.8));
+        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_FAST_SPEED, 0.8));
     	
     	// Drive forwards to switch.  Center on last cube.  
     	addParallel(new ElevatorSetPositionPID(Elevator.MIN_POSITION_INCHES));

@@ -34,7 +34,7 @@ public class LeftStartToScaleLeft1SwitchRight1 extends CommandGroup {
         addSequential(new DriveResetPoseFromPath(startToScalePath, true));
 
     	addParallel(new RunAfterMarker("raiseElevator", 4.0, new ElevatorSetPositionPID(Elevator.SCALE_FIRST_CUBE_POSITION_INCHES)));
-    	addParallel(new RunAfterMarker("startEject", 4.0, new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 0.8)));
+    	addParallel(new RunAfterMarker("startEject", 4.0, new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_FAST_SPEED, 0.8)));
 //    	addParallel(new ParallelDelay(1.0, new IntakeSetSpeedTimed(Intake.INTAKE_LOAD_SPEED, 0.5)));
     	addSequential(new DrivePathAdaptivePursuit(startToScalePath));
     	addSequential(new WaitForChildren());
@@ -60,7 +60,7 @@ public class LeftStartToScaleLeft1SwitchRight1 extends CommandGroup {
     	addSequential(new WaitForChildren());
     	    	
     	// Eject cube
-        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 0.8));
+        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_FAST_SPEED, 0.8));
 
     	// Drive forward to switch platform to pickup cube  	
         addParallel(new ElevatorSetPositionPID(Elevator.ZERO_POSITION_INCHES));
@@ -77,6 +77,6 @@ public class LeftStartToScaleLeft1SwitchRight1 extends CommandGroup {
     	addSequential(new WaitForChildren());
     	
     	// Eject cube
-        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 1.0));
+        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_FAST_SPEED, 1.0));
     }
 }

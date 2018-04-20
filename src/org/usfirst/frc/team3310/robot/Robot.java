@@ -139,12 +139,18 @@ public class Robot extends TimedRobot {
 
 		autonTaskChooser = new SendableChooser<AutonRouteChooser>();
 		
-		AutonRouteChooser goStraight = new AutonRouteChooser();
-		goStraight.addLLL(new DriveStraightMP(120.0, Drive.MP_MEDIUM_VELOCITY_INCHES_PER_SEC, true, false, 0));
-		goStraight.addLRL(new DriveStraightMP(120.0, Drive.MP_MEDIUM_VELOCITY_INCHES_PER_SEC, true, false, 0));
-		goStraight.addRLR(new DriveStraightMP(120.0, Drive.MP_MEDIUM_VELOCITY_INCHES_PER_SEC, true, false, 0));
-		goStraight.addRRR(new DriveStraightMP(120.0, Drive.MP_MEDIUM_VELOCITY_INCHES_PER_SEC, true, false, 0));
-		
+		AutonRouteChooser goStraightForward = new AutonRouteChooser();
+		goStraightForward.addLLL(new DriveStraightMP(150.0, Drive.MP_MEDIUM_VELOCITY_INCHES_PER_SEC, true, false, 0));
+		goStraightForward.addLRL(new DriveStraightMP(150.0, Drive.MP_MEDIUM_VELOCITY_INCHES_PER_SEC, true, false, 0));
+		goStraightForward.addRLR(new DriveStraightMP(150.0, Drive.MP_MEDIUM_VELOCITY_INCHES_PER_SEC, true, false, 0));
+		goStraightForward.addRRR(new DriveStraightMP(150.0, Drive.MP_MEDIUM_VELOCITY_INCHES_PER_SEC, true, false, 0));
+
+		AutonRouteChooser goStraightBackward = new AutonRouteChooser();
+		goStraightBackward.addLLL(new DriveStraightMP(-150.0, Drive.MP_MEDIUM_VELOCITY_INCHES_PER_SEC, true, false, 0));
+		goStraightBackward.addLRL(new DriveStraightMP(-150.0, Drive.MP_MEDIUM_VELOCITY_INCHES_PER_SEC, true, false, 0));
+		goStraightBackward.addRLR(new DriveStraightMP(-150.0, Drive.MP_MEDIUM_VELOCITY_INCHES_PER_SEC, true, false, 0));
+		goStraightBackward.addRRR(new DriveStraightMP(-150.0, Drive.MP_MEDIUM_VELOCITY_INCHES_PER_SEC, true, false, 0));
+
 		AutonRouteChooser centerStartSwitch1 = new AutonRouteChooser();
 		centerStartSwitch1.addLLL(new CenterStartToSwitchLeft1());
 		centerStartSwitch1.addLRL(new CenterStartToSwitchLeft1());
@@ -193,6 +199,12 @@ public class Robot extends TimedRobot {
 		leftStartScale1OuttaHereAPR.addLRL(new SideStartToScale1APR(new LeftStartToScaleRightAPRV3(), false));
 		leftStartScale1OuttaHereAPR.addRRR(new SideStartToScale1APR(new LeftStartToScaleRightAPRV3(), false));
 
+		AutonRouteChooser leftStartScale1OuttaHereAPR3Switch = new AutonRouteChooser();
+		leftStartScale1OuttaHereAPR3Switch.addLLL(new StartToScale1OuttaHere(new LeftStartToScaleLeftV2(), new ScaleLeftToOuttaHere()));
+		leftStartScale1OuttaHereAPR3Switch.addRLR(new StartToScale1OuttaHere(new LeftStartToScaleLeftV2(), new ScaleLeftToOuttaHere()));
+		leftStartScale1OuttaHereAPR3Switch.addLRL(new SideStartToSwitch3(new LeftStartToScaleLeft(), new ScaleLeftToSwitchLeftNoIntake(), new LeftSwitch2ndCubeV2(), false));
+		leftStartScale1OuttaHereAPR3Switch.addRRR(new DriveStraightMP(-150.0, Drive.MP_MEDIUM_VELOCITY_INCHES_PER_SEC, true, false, 0));
+
 		AutonRouteChooser rightStartScale1Switch1Scale1 = new AutonRouteChooser();
 		rightStartScale1Switch1Scale1.addLLL(new SideStartToOppositeScale1Switch1(new RightStartToScaleLeftSave(), new ScaleLeftToSwitchLeftV3(), true));
 		rightStartScale1Switch1Scale1.addRLR(new RightStartToSwitchRight1ScaleLeft1());
@@ -239,7 +251,8 @@ public class Robot extends TimedRobot {
 //		rightStartScale3Cube.addLLL(new SideStartToScale1APRV2(new RightStartToScaleLeftAPRV2(), true));
 //		rightStartScale3Cube.addLLL(new StartToScale1Pyramid1(new RightStartToScaleRightV2(), new ScaleRightToPyramid(), new PyramidToScaleRight(), new ScaleRightToSwitchRight23Cube(), new SwitchRight2ToScaleRight3Cube()));
 
-		autonTaskChooser.addObject("C1 Go Straight Do Nothing", goStraight);
+		autonTaskChooser.addObject("C0 Go Straight Backward Do Nothing", goStraightBackward);
+		autonTaskChooser.addObject("C1 Go Straight Forward Do Nothing", goStraightForward);
 		autonTaskChooser.addObject("C2 Center Start Switch 1", centerStartSwitch1);
 		autonTaskChooser.addDefault("C3 Center Start Switch 2", centerStartSwitch2);
 		
@@ -249,6 +262,7 @@ public class Robot extends TimedRobot {
 		autonTaskChooser.addObject("L4 Left Start Scale 3 Same Switch 3 or APR Opposite", leftStartScale3Switch3APR);
 		autonTaskChooser.addObject("L5 Left Start Scale 3 Same Switch 2 or 3 Opposite", leftStartScale3Switch2or3);
 		autonTaskChooser.addObject("L6 Left Start Scale 1 Outta Here Same APR Opposite", leftStartScale1OuttaHereAPR);
+		autonTaskChooser.addObject("L7 Right Start Scale 1 Outta Here Same Drive Back Opposite", leftStartScale1OuttaHereAPR3Switch);
 
 		autonTaskChooser.addObject("R1 Right Start Scale 1 Switch 1 Scale 1", rightStartScale1Switch1Scale1);
 		autonTaskChooser.addObject("R2 Right Start Scale 3 Same Scale 2 Opposite", rightStartScale2or3);

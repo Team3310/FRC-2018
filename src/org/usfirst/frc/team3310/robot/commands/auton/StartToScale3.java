@@ -30,7 +30,7 @@ public class StartToScale3 extends CommandGroup {
     		PathContainer scaleToSwitchPath2, 
     		PathContainer switchToScale2) {
     	
-        addSequential(new IntakeSetSpeed(0.05));
+        addSequential(new ParallelDelay(1.0, new IntakeSetSpeed(0.05)));
     	addSequential(new DriveSpeedShift(DriveSpeedShiftState.LO));
     	addSequential(new ElevatorSetZero(0));
         addSequential(new DriveResetPoseFromPath(startToScalePath, true));
@@ -63,7 +63,7 @@ public class StartToScale3 extends CommandGroup {
     	addSequential(new WaitForChildren());
     	    	
     	// Eject cube
-        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 0.8));
+        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_MEDIUM_SPEED, 0.8));
 
     	// Drive forward to switch platform to pickup cube  	
         addParallel(new ElevatorSetPositionPID(Elevator.ZERO_POSITION_INCHES));
@@ -80,7 +80,7 @@ public class StartToScale3 extends CommandGroup {
     	addSequential(new WaitForChildren());
     	
     	// Eject cube
-        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 0.8));
+        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_MEDIUM_SPEED, 0.8));
         addSequential(new ElevatorSetPositionPID(Elevator.ZERO_POSITION_INCHES));
 
     }

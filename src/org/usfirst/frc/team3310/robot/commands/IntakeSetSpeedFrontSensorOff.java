@@ -10,7 +10,7 @@ public class IntakeSetSpeedFrontSensorOff extends ExtraTimeoutCommand {
 	
 	private double speed;
 	private boolean cubeDetected;
-	private double EXTRA_INTAKE_TIME = 0.02;
+	private double EXTRA_INTAKE_TIME = 0.00;
 	private static final double TIMEOUT = 10.0;
 
     public IntakeSetSpeedFrontSensorOff(double speed) {
@@ -49,7 +49,7 @@ public class IntakeSetSpeedFrontSensorOff extends ExtraTimeoutCommand {
 
     // Called once after isFinished returns true
     protected void end() {
-    	Robot.intake.setSpeed(0.05);
+    	Robot.intake.setSpeed(0.03);
     	System.out.println("Intake sensor off end!!!!");
     }
 

@@ -31,7 +31,7 @@ public class CenterStartToSwitch1Scale1 extends CommandGroup {
     	addSequential(new WaitForChildren());
     	
     	// Eject cube
-        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_SPEED, 1.0));
+        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_FAST_SPEED, 1.0));
         if (lowerElevator) {
 	    	addSequential(new DriveStraightMP(12.0, Drive.MP_MEDIUM_VELOCITY_INCHES_PER_SEC, true, false, 0));
 	        addSequential(new ElevatorSetPositionMP(Elevator.ZERO_POSITION_INCHES));
