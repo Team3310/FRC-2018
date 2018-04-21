@@ -33,7 +33,7 @@ public class StartToScale1OuttaHere extends CommandGroup {
 
     	addParallel(new RunAfterMarker("shiftHi", 4.0, new DriveSpeedShift(DriveSpeedShiftState.HI)));
     	addParallel(new RunAfterMarker("raiseElevator", 4.0, new ElevatorSetPositionPID(Elevator.SCALE_FIRST_CUBE_POSITION_INCHES)));
-    	addParallel(new RunAfterMarker("startEject", 4.0, new IntakeSetSpeedTimed(Intake.INTAKE_REAR_EJECT_MEDIUM_SPEED, 1.0)));
+    	addParallel(new RunAfterMarker("startEject", 4.0, new IntakeSetSpeedTimed(1.0, 1.0)));
     	addSequential(new DrivePathAdaptivePursuit(startToScalePath));
     	addSequential(new DriveSpeedShift(DriveSpeedShiftState.LO));
 //    	addSequential(new WaitForChildren());

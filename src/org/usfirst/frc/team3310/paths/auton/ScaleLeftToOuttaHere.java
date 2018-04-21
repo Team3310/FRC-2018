@@ -19,7 +19,7 @@ public class ScaleLeftToOuttaHere implements PathContainer {
         sWaypoints.add(new Waypoint(287,240,0,80));
         sWaypoints.add(new Waypoint(287,285,20,80));
         sWaypoints.add(new Waypoint(314,285,0,80));
-        sWaypoints.add(new Waypoint(335,275,0,60));
+        sWaypoints.add(new Waypoint(329,276,0,60));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }

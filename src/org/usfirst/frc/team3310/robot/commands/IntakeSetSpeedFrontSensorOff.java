@@ -10,7 +10,7 @@ public class IntakeSetSpeedFrontSensorOff extends ExtraTimeoutCommand {
 	
 	private double speed;
 	private boolean cubeDetected;
-	private double EXTRA_INTAKE_TIME = 0.00;
+	private double EXTRA_INTAKE_TIME = 0.05;
 	private static final double TIMEOUT = 10.0;
 
     public IntakeSetSpeedFrontSensorOff(double speed) {
