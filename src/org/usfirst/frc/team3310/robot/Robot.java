@@ -199,6 +199,12 @@ public class Robot extends TimedRobot {
 		leftStartScale1OuttaHereAPR.addLRL(new SideStartToScale1APR(new LeftStartToScaleRightAPRV3(), false));
 		leftStartScale1OuttaHereAPR.addRRR(new SideStartToScale1APR(new LeftStartToScaleRightAPRV3(), false));
 
+		AutonRouteChooser leftStartScale1OuttaHere3Switch = new AutonRouteChooser();
+		leftStartScale1OuttaHere3Switch.addLLL(new StartToScale1OuttaHere(new LeftStartToScaleLeftV2(), new ScaleLeftToOuttaHere()));
+		leftStartScale1OuttaHere3Switch.addRLR(new StartToScale1OuttaHere(new LeftStartToScaleLeftV2(), new ScaleLeftToOuttaHere()));
+		leftStartScale1OuttaHere3Switch.addLRL(new SideStartToSwitch3(new LeftStartToScaleLeft(), new ScaleLeftToSwitchLeftNoIntake(), new LeftSwitch2ndCubeV2(), false));
+		leftStartScale1OuttaHere3Switch.addRRR(new SideStartToScale1APR(new LeftStartToScaleRightAPRV3(), false));
+
 		AutonRouteChooser leftStartScale1OuttaHereAPR3Switch = new AutonRouteChooser();
 		leftStartScale1OuttaHereAPR3Switch.addLLL(new StartToScale1OuttaHere(new LeftStartToScaleLeftV2(), new ScaleLeftToOuttaHere()));
 		leftStartScale1OuttaHereAPR3Switch.addRLR(new StartToScale1OuttaHere(new LeftStartToScaleLeftV2(), new ScaleLeftToOuttaHere()));
@@ -241,6 +247,12 @@ public class Robot extends TimedRobot {
 		rightStartScale1OuttaHereAPR.addLRL(new StartToScale1OuttaHere(new RightStartToScaleRightV2(), new ScaleRightToOuttaHere()));
 		rightStartScale1OuttaHereAPR.addRRR(new StartToScale1OuttaHere(new RightStartToScaleRightV2(), new ScaleRightToOuttaHere()));
 
+		AutonRouteChooser rightStartScale1OuttaHere3Switch = new AutonRouteChooser();
+		rightStartScale1OuttaHere3Switch.addLLL(new SideStartToScale1APR(new RightStartToScaleLeftAPRV3(), true));
+		rightStartScale1OuttaHere3Switch.addRLR(new SideStartToSwitch3(new RightStartToScaleRight(), new ScaleRightToSwitchRightNoIntake(), new RightSwitch2ndCubeV2(), true));
+		rightStartScale1OuttaHere3Switch.addLRL(new StartToScale1OuttaHere(new RightStartToScaleRightV2(), new ScaleRightToOuttaHere()));
+		rightStartScale1OuttaHere3Switch.addRRR(new StartToScale1OuttaHere(new RightStartToScaleRightV2(), new ScaleRightToOuttaHere()));
+
 		AutonRouteChooser rightStartScale1OuttaHereAPR3Switch = new AutonRouteChooser();
 		rightStartScale1OuttaHereAPR3Switch.addLLL(new DriveStraightMP(-150.0, Drive.MP_MEDIUM_VELOCITY_INCHES_PER_SEC, true, false, 0));
 		rightStartScale1OuttaHereAPR3Switch.addRLR(new SideStartToSwitch3(new RightStartToScaleRight(), new ScaleRightToSwitchRightNoIntake(), new RightSwitch2ndCubeV2(), true));
@@ -262,7 +274,7 @@ public class Robot extends TimedRobot {
 		autonTaskChooser.addObject("L4 Left Start Scale 3 Same Switch 3 or APR Opposite", leftStartScale3Switch3APR);
 		autonTaskChooser.addObject("L5 Left Start Scale 3 Same Switch 2 or 3 Opposite", leftStartScale3Switch2or3);
 		autonTaskChooser.addObject("L6 Left Start Scale 1 Outta Here Same APR Opposite", leftStartScale1OuttaHereAPR);
-		autonTaskChooser.addObject("L7 Right Start Scale 1 Outta Here Same Drive Back Opposite", leftStartScale1OuttaHereAPR3Switch);
+		autonTaskChooser.addObject("L7 Left Start Scale 1 Outta Here Same 3 Switch APR Opposite", leftStartScale1OuttaHere3Switch);
 
 		autonTaskChooser.addObject("R1 Right Start Scale 1 Switch 1 Scale 1", rightStartScale1Switch1Scale1);
 		autonTaskChooser.addObject("R2 Right Start Scale 3 Same Scale 2 Opposite", rightStartScale2or3);
@@ -270,7 +282,7 @@ public class Robot extends TimedRobot {
 		autonTaskChooser.addObject("R4 Right Start Scale 3 Same Switch 3 or APR Opposite", rightStartScale3Switch3APR);
 		autonTaskChooser.addObject("R5 Right Start Scale 3 Same Switch 2 or 3 Opposite", rightStartScale3Switch2or3);
 		autonTaskChooser.addObject("R6 Right Start Scale 1 Outta Here Same APR Opposite", rightStartScale1OuttaHereAPR);
-		autonTaskChooser.addObject("R7 Right Start Scale 1 Outta Here Same Drive Back Opposite", rightStartScale1OuttaHereAPR3Switch);
+		autonTaskChooser.addObject("R7 Right Start Scale 1 Outta Here Same 3 Switch APR Oppisite", rightStartScale1OuttaHere3Switch);
 
 		SmartDashboard.putData("Auton Tasks", autonTaskChooser);
 		
