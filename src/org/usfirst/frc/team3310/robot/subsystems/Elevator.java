@@ -47,7 +47,7 @@ public class Elevator extends Subsystem implements Loop
 
 	public static final double SWITCH_POSITION_INCHES = 24.0;
 	public static final double SCALE_LOW_POSITION_INCHES = 56.0;
-	public static final double SCALE_FIRST_CUBE_POSITION_INCHES = 72.0;
+	public static final double SCALE_FIRST_CUBE_POSITION_INCHES = 77.0; //72.0
 	public static final double SCALE_SECOND_CUBE_POSITION_INCHES = 77.0;
 	public static final double SCALE_HIGH_POSITION_INCHES = MAX_POSITION_INCHES;
 	public static final double CLIMB_BAR_POSITION_INCHES = 70.0;
