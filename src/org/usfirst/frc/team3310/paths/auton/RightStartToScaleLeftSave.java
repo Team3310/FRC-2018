@@ -24,8 +24,8 @@ public class RightStartToScaleLeftSave implements PathContainer {
         sWaypoints.add(new Waypoint(218,175,0,100));
         sWaypoints.add(new Waypoint(218,205,0,100));
         sWaypoints.add(new Waypoint(218,234,25,50));
-        sWaypoints.add(new Waypoint(250,234,0,50,     "raiseElevator"));
-        sWaypoints.add(new Waypoint(270,231,0,40));
+        sWaypoints.add(new Waypoint(250,228,0,50,       "raiseElevator"));
+        sWaypoints.add(new Waypoint(271,226,0,40));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }

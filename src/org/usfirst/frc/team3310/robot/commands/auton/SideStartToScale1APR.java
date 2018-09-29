@@ -20,6 +20,7 @@ import org.usfirst.frc.team3310.robot.subsystems.Intake;
 import org.usfirst.frc.team3310.utility.MPSoftwarePIDController.MPSoftwareTurnType;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
+import edu.wpi.first.wpilibj.command.WaitCommand;
 import edu.wpi.first.wpilibj.command.WaitForChildren;
 
 /**
@@ -27,7 +28,8 @@ import edu.wpi.first.wpilibj.command.WaitForChildren;
  */
 public class SideStartToScale1APR extends CommandGroup {
 
-    public SideStartToScale1APR(PathContainer path, boolean isRight) {
+    public SideStartToScale1APR(PathContainer path, boolean isRight, double delay) {
+    	addSequential(new WaitCommand(delay));
         addSequential(new DriveSpeedShift(DriveSpeedShiftState.LO));
         addSequential(new IntakeSetSpeed(0.05));
        
@@ -39,12 +41,12 @@ public class SideStartToScale1APR extends CommandGroup {
     	addSequential(new DrivePathAdaptivePursuit(path));
     	addParallel(new ElevatorSetPositionMP(Elevator.SCALE_HIGH_POSITION_INCHES));
     	addSequential(new DriveRelativeTurnMP(isRight ? -90 : 90, Drive.MAX_TURN_RATE_DEG_PER_SEC, MPSoftwareTurnType.TANK));  	
-    	addSequential(new DriveSetSpeed(-0.3, 0.5));
-    	addSequential(new ParallelDelay(1.0, new DriveStraightMP(30, Drive.MP_FAST_VELOCITY_INCHES_PER_SEC, true, false, 0)));
-    	addSequential(new WaitForChildren());
-        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_EJECT_SPEED, 0.5));
-    	addSequential(new DriveStraightMP(-20, Drive.MP_FAST_VELOCITY_INCHES_PER_SEC, true, false, 0));
-    	addParallel(new ElevatorSetPositionMP(Elevator.MIN_POSITION_INCHES));
-    	addSequential(new DriveRelativeTurnMP(isRight ? -50 : 50, Drive.MAX_TURN_RATE_DEG_PER_SEC, MPSoftwareTurnType.TANK));  	
+    //	addSequential(new DriveSetSpeed(-0.3, 0.5));
+    //	addSequential(new ParallelDelay(1.0, new DriveStraightMP(30, Drive.MP_FAST_VELOCITY_INCHES_PER_SEC, true, false, 0)));
+    //	addSequential(new WaitForChildren());
+    //  addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_EJECT_SPEED, 0.5));
+    // 	addSequential(new DriveStraightMP(-20, Drive.MP_FAST_VELOCITY_INCHES_PER_SEC, true, false, 0));
+    //	addParallel(new ElevatorSetPositionMP(Elevator.MIN_POSITION_INCHES));
+    //	addSequential(new DriveRelativeTurnMP(isRight ? -50 : 50, Drive.MAX_TURN_RATE_DEG_PER_SEC, MPSoftwareTurnType.TANK));  	
     }
 }

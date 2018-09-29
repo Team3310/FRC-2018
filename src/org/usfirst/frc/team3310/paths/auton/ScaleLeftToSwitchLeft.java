@@ -18,7 +18,7 @@ public class ScaleLeftToSwitchLeft implements PathContainer {
         ArrayList<Waypoint> sWaypoints = new ArrayList<Waypoint>();
         sWaypoints.add(new Waypoint(291,247,0,60));
         sWaypoints.add(new Waypoint(230,238,0,60));
-        sWaypoints.add(new Waypoint(218,236,0,20));
+        sWaypoints.add(new Waypoint(217,236,0,20));
 
         return PathBuilder.buildPathFromWaypoints(sWaypoints);
     }
