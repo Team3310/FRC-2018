@@ -38,7 +38,7 @@ public class SideStartToSwitch3 extends CommandGroup {
         addSequential(new DriveResetPoseFromPath(startToScale, true));
 
     	// Drive backwards to scale.  Start raising elevator during the path when "raiseElevator" marker is crossed
-    	addParallel(new RunAfterMarker("raiseElevator", 4.0, new ElevatorSetPositionMP(Elevator.SWITCH_POSITION_INCHES)));
+    	addParallel(new RunAfterMarker("raiseElevator", 4.0, new ElevatorSetPositionMP(Elevator.SWITCH_POSITION_HIGH_INCHES)));
 //    	addParallel(new IntakeSetSpeedTimed(Intake.INTAKE_LOAD_SLOW_SPEED, 1.0));
     	addSequential(new DrivePathAdaptivePursuit(startToScale));
     	addSequential(new WaitForChildren());
@@ -48,7 +48,7 @@ public class SideStartToSwitch3 extends CommandGroup {
     	addSequential(new DrivePathAdaptivePursuit(scaleToSwitch));
     	
     	// Eject cube
-        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_EJECT_SPEED, 0.6));
+        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_EJECT_FAST_SPEED, 0.6));
         
         // Back up, lower elevator, start intake, wait until cube acquired
     	addParallel(new ParallelDelay(0.7, new ElevatorSetPositionPID(Elevator.ZERO_POSITION_INCHES)));
@@ -79,7 +79,7 @@ public class SideStartToSwitch3 extends CommandGroup {
     	addSequential(new DrivePathAdaptivePursuit(forwardTo2ndCube));
     	addParallel(new ElevatorSetPositionPID(Elevator.SWITCH_POSITION_INCHES));
     	addSequential(new DriveRelativeTurnMP(isRight ? -50 : 50, Drive.MAX_TURN_RATE_DEG_PER_SEC, MPSoftwareTurnType.TANK));  	
-        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_EJECT_SPEED, 1.0));
+//        addSequential(new IntakeSetSpeedTimed(Intake.INTAKE_EJECT_SPEED, 1.0));
 
 //    	// Drive backwards to scale platform that we need to eject cube  	
 //    	PathContainer backup6 = isRight ? new Backup5Right() : new Backup5();
